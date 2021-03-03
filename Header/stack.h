@@ -9,8 +9,8 @@ typedef struct stack
     //struct stack* prev;
 }stack;
 
-// Initializes an empty stack i.e returns a sentinel
-stack* init_stack();
+// Initializes an empty stack, programmer mallocs the stack and then init
+void init_stack(stack* s);
 
 /* Pop the first element and reorders the structure
  * Takes as parameter a pointer to the sentinel and returns the data stored
@@ -22,15 +22,19 @@ void* pop_stack(stack* s);
 
 /* Pushes an element at the head of the stack, takes as parameter the stack and
  * a pointer to the data that we want to push
- * We consider that the data is mallocd outside of the function but the stack
- * structure is taken care of inside this function
+ * We consider that the data is mallocd outside of the function
  */
-void push_stack(stack* s, void* data, char* detail);
+void push_stack(stack* s, stack* new_el);
 
 // Simple print of each element for debugging purposes
 void print_stack(stack* s);
 
+size_t stack_len(stack* s);
+
 // Frees every element in the stack to prevent the spicy memleaks
+// Sentinel must be freed by the programmer
 void clear_stack(stack* s);
+
+int stack_isempty(stack* s);
 
 #endif
