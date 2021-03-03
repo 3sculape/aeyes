@@ -1,5 +1,5 @@
 #include <err.h>
-#include "lib_sdl.h"
+#include "../Header/lib_sdl.h"
 
 SDL_Window *create_window(int width, int height)
 {
