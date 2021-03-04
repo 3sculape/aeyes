@@ -23,6 +23,14 @@ void* pop_stack(stack* s)
     return data;
 }
 
+stack* element_from_data(void* data)
+{
+    stack* new_el = malloc(sizeof(stack));
+    new_el->next = NULL;
+    new_el->data = data;
+    return new_el;
+}
+
 void push_stack(stack* s, stack* new_el)
 {
     if (s == NULL)

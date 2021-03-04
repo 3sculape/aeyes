@@ -26,6 +26,8 @@ void* pop_stack(stack* s);
  */
 void push_stack(stack* s, stack* new_el);
 
+stack* element_from_data(void* data);
+
 // Simple print of each element for debugging purposes
 void print_stack(stack* s);
 
