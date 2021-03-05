@@ -15,13 +15,13 @@ int main(int argc, char *argv[])
 	SDL_Texture		*texture;
 	SDL_Surface		*surface;
 
-	init(&window, &renderer, 1450, 1050);
+	init(&window, &renderer, 1366, 768);
 
 	surface = load_BMP(argv[1]);
 	if(surface == NULL)
 		errx(3, "Coudn't load %s: %s", argv[1], SDL_GetError());
 
-	grayscale(surface);
+	negative(surface);
 
 	texture = surface_to_texture(surface, renderer);
 	
