@@ -35,7 +35,7 @@ SDL_Texture *create_texture(SDL_Renderer *renderer, size_t width, size_t height)
 	SDL_Texture		*texture;
 	texture = SDL_CreateTexture(
 			renderer,
-			SDL_PIXELFORMAT_RGBA8888,
+			SDL_PIXELFORMAT_RGBA32,
 			SDL_TEXTUREACCESS_TARGET,
 			width,
 			height
@@ -51,7 +51,7 @@ SDL_Surface *create_surface(size_t width, size_t height)
 			width,
 			height,
 			32,
-			SDL_PIXELFORMAT_RGBA8888
+			SDL_PIXELFORMAT_RGBA32
 			);
 	return surface;
 }
@@ -63,7 +63,10 @@ SDL_Surface *load_BMP(char *filename)
 	if(tmp == NULL)
 		return NULL;
 
-	surface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGBA8888, 0);
+	SDL_PixelFormat *format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
+
+	surface = SDL_ConvertSurface(tmp, format, 0);
+	SDL_FreeFormat(format);
 
 	SDL_FreeSurface(tmp);
 
@@ -126,7 +129,7 @@ Uint32 get_pixel(SDL_Surface *surface, size_t posx, size_t posy)
 	if(w <= posx || h <= posy)
 		return -1;
 
-	return pixels[posy * h + posx];
+	return pixels[posy * w + posx];
 }
 
 void set_pixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t posx, size_t posy)
