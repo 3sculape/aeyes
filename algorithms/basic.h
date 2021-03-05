@@ -1,6 +1,8 @@
 #ifndef BASIC_H
 #define BASIC_H
 #include <SDL2/SDL.h>
+#include <err.h>
+#include "../Header/lib_sdl.h"
 
 /*
     All algorithms provided in this header do not

@@ -1,6 +1,4 @@
 #include "basic.h"
-#include <err.h>
-#include "../Header/lib_sdl.h"
 
 void grayscale(SDL_Surface *surface)
 {

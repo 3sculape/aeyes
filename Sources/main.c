@@ -1,9 +1,11 @@
 #include <SDL2/SDL.h>
 #include <err.h>
 #include <gtk/gtk.h>
+#include <stdio.h>
 #include "../Header/lib_sdl.h"
 #include "../Header/stack.h"
 #include "../algorithms/basic.h"
+#include "../algorithms/convert.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +16,10 @@ int main(int argc, char *argv[])
 	SDL_Renderer	*renderer;
 	SDL_Texture		*texture;
 	SDL_Surface		*surface;
+
+	double hsv[3];
+	rgb_to_hsv(45, 215, 0, hsv);
+	printf("rgb: 45, 215, 0 | hsv: %f, %f, %f\n", hsv[0], hsv[1], hsv[2]);
 
 	init(&window, &renderer, 1366, 768);
 
