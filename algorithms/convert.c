@@ -1,5 +1,4 @@
 #include "convert.h"
-#include <stdio.h>
 
 double max(double a, double b)
 {
@@ -46,4 +45,20 @@ void rgb_to_hsv(Uint8 r, Uint8 g, Uint8 b, double *hsv)
         hsv[1] = (diff / max_val) * 100;
 
     hsv[2] = max_val * 100;
+}
+
+double hsv_to_rgb_sub(double h, double s, double v, double n)
+{
+    double k = fmod((n + h / 60), 6);
+    return v - v * s * max(0, min(k, min(4 - k, 1)));
+}
+
+void hsv_to_rgb(double h, double s, double v, double *rgb)
+{
+    s /= 100;
+    v /= 100;
+
+    rgb[0] = hsv_to_rgb_sub(h, s, v, 5);
+    rgb[1] = hsv_to_rgb_sub(h, s, v, 3);
+    rgb[2] = hsv_to_rgb_sub(h, s, v, 1);
 }
