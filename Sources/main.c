@@ -17,10 +17,6 @@ int main(int argc, char *argv[])
 	SDL_Texture		*texture;
 	SDL_Surface		*surface;
 
-	double hsv[3];
-	rgb_to_hsv(45, 215, 0, hsv);
-	printf("rgb: 45, 215, 0 | hsv: %f, %f, %f\n", hsv[0], hsv[1], hsv[2]);
-
 	init(&window, &renderer, 1366, 768);
 
 	surface = load_BMP(argv[1]);
