@@ -1,4 +1,5 @@
 #include <err.h>
+#include <SDL2/SDL_image.h>
 #include "../Header/lib_sdl.h"
 
 SDL_Window *create_window(size_t width, size_t height)
@@ -35,7 +36,7 @@ SDL_Texture *create_texture(SDL_Renderer *renderer, size_t width, size_t height)
 	SDL_Texture		*texture;
 	texture = SDL_CreateTexture(
 			renderer,
-			SDL_PIXELFORMAT_RGBA8888,
+			SDL_PIXELFORMAT_RGBA32,
 			SDL_TEXTUREACCESS_TARGET,
 			width,
 			height
@@ -51,19 +52,22 @@ SDL_Surface *create_surface(size_t width, size_t height)
 			width,
 			height,
 			32,
-			SDL_PIXELFORMAT_RGBA8888
+			SDL_PIXELFORMAT_RGBA32
 			);
 	return surface;
 }
-SDL_Surface *load_BMP(char *filename)
-{
-	SDL_Surface *surface, *tmp;
 
-	tmp = SDL_LoadBMP(filename);
+SDL_Surface *load(char *filename)
+{
+	SDL_Surface *surface;
+	SDL_Surface *tmp;
+
+	tmp = IMG_Load(filename);
+
 	if(tmp == NULL)
 		return NULL;
 
-	surface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGBA8888, 0);
+	surface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGBA32, 0);
 
 	SDL_FreeSurface(tmp);
 
@@ -126,7 +130,7 @@ Uint32 get_pixel(SDL_Surface *surface, size_t posx, size_t posy)
 	if(w <= posx || h <= posy)
 		return -1;
 
-	return pixels[posy * h + posx];
+	return pixels[posy * w + posx];
 }
 
 void set_pixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t posx, size_t posy)
@@ -143,7 +147,7 @@ void set_pixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t 
 	if(w <= posx || h <= posy)
 		return;
 
-	pixels[posy * surface->w + posx] = color;
+	pixels[posy * w + posx] = color;
 }
 
 void init(SDL_Window **window, SDL_Renderer **renderer, size_t w, size_t h)
@@ -151,9 +155,16 @@ void init(SDL_Window **window, SDL_Renderer **renderer, size_t w, size_t h)
 	if(SDL_Init(SDL_INIT_VIDEO) != 0)
 		errx(3, "Couldn't load SDL: %s", SDL_GetError());
 
+	if(IMG_Init(0))
+	{
+		SDL_Quit();
+		errx(3, "Coundn't load SDL_image : %s", IMG_GetError());
+	}
+
 	*window = create_window(w, h);
 	if(*window == NULL)
 	{
+		IMG_Quit();
 		SDL_Quit();
 		errx(3, "Couldn't create window %s:", SDL_GetError());
 	}
@@ -161,10 +172,11 @@ void init(SDL_Window **window, SDL_Renderer **renderer, size_t w, size_t h)
 	*renderer = create_renderer(*window);
 	if(*renderer == NULL)
 	{
-		SDL_Quit();
 		SDL_DestroyWindow(*window);
+		IMG_Quit();
+		SDL_Quit();
 		errx(3, "Couldn't create renderer %s:", SDL_GetError());
-	}
+    }
 }
 
 void quit(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture)
@@ -175,5 +187,6 @@ void quit(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture)
 		SDL_DestroyRenderer(renderer);
 	if(window != NULL)
 		SDL_DestroyWindow(window);
+	IMG_Quit();
 	SDL_Quit();
 }

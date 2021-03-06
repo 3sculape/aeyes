@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <err.h>
 #include <gtk/gtk.h>
 #include "../Header/lib_sdl.h"
@@ -17,10 +18,12 @@ int main(int argc, char *argv[])
 
 	init(&window, &renderer, 1450, 1050);
 
-	surface = load_BMP(argv[1]);
+	surface = load(argv[1]);
 	if(surface == NULL)
-		errx(3, "Coudn't load %s: %s", argv[1], SDL_GetError());
-
+	{
+		quit(window, renderer, NULL);
+		errx(3, "Coudn't load %s", argv[1]);
+	}
 
 	texture = surface_to_texture(surface, renderer);
 	

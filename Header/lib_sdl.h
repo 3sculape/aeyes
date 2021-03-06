@@ -19,9 +19,9 @@ SDL_Texture *create_texture(SDL_Renderer *renderer, size_t width, size_t height)
 //Return NULL when an error occured.
 SDL_Surface *create_surface(size_t width, size_t height);
 
-//Load an Bitmap image from the path filename with the format format.
+//Load a JPG or PNG image from the path filename.
 //Return NULL if an error occured.
-SDL_Surface *load_BMP(char *filename);
+SDL_Surface *load(char *filename);
 
 //Convert an SDL_Surface *surface to a new SDL_Texture *texture.
 //return NULL if an error occured.
