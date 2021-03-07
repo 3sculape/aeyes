@@ -58,3 +58,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Extra excludes
+*.bmp
+gtk
+.vscode
