@@ -123,10 +123,11 @@ Uint32 get_pixel(SDL_Surface *surface, size_t posx, size_t posy)
 	h = surface->h;
 	pixels = surface->pixels;
 
+        //printf("\nGET PIXEL :\n w is %lu h is %lu and posx is %lu posy is %lu\n\n", w, h,posx, posy);
 	if(w <= posx || h <= posy)
 		return -1;
 
-	return pixels[posy * h + posx];
+	return pixels[posy * w + posx];
 }
 
 void set_pixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t posx, size_t posy)

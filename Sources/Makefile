@@ -1,20 +1,17 @@
-CC=gcc
-CPPFLAGS=`pkg-config --cflags sdl2` `pkg-config --cflags gtk+-3.0` -MMD
-CFLAGS=-Wall -Wextra -Werror -std=c99 -O3
-LDFLAGS=
-LDLIBS=`pkg-config --libs sdl2` `pkg-config --libs gtk+-3.0` -lSDL_image -lSDL -lm 
+CC = gcc -fsanitize=address
 
-# Source for SDL and GTK compilation
-GTK_SRC= main.c lib_sdl.c
-GTK_OBJ=$(GTK_SRC:.c=.o)
-GTK_DEP=$(GTK_SRC:.c=.d)
+CPPFLAGS= `pkg-config --cflags sdl2` `pkg-config --cflags --libs gtk+-3.0` -MMD
+CFLAGS = -Wall -Werror -Wextra -lm -std=c99 -O3 -g -rdynamic -pthread -pipe
+OBJ = main.o stack.o lib_sdl.o color_histogram.o
+DEP = ${OBJ:.o=.d}
+LDLIBS = -lm `pkg-config --libs sdl2` -lSDL2_image `pkg-config --cflags --libs gtk+-3.0` -export-dynamic
 
-all: gtk
 
-gtk: $(GTK_OBJ)
-	$(CC) $(LDLIBS) $(GTK_OBJ) -o gtk
+main: ${OBJ}
 
-.PHONY: clean
+all: main
 
 clean:
-	$(RM) $(GTK_OBJ) $(GTK_DEP) gtk
+	${RM} *.o
+	${RM} *.d
+	${RM} main
