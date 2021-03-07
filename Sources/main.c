@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-	if(argc != 2)
+	if(argc != 3)
 		errx(3, "Usage : ./gtk <filename>");
 
 	SDL_Window		*window;
@@ -26,11 +26,12 @@ int main(int argc, char *argv[])
 	}
 
 	texture = surface_to_texture(surface, renderer);
-	SDL_FreeSurface(surface);
 
 	print_texture_to_window(texture, renderer);
+    saveJPG(argv[2], surface);
 	SDL_Delay(3000);
     
+	SDL_FreeSurface(surface);
 	quit(window, renderer, texture);
 
 	return 0;

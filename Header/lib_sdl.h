@@ -3,13 +3,9 @@
 
 #include <SDL2/SDL.h>
 
-//Create a SDL_Window object with size width and height.
+//Create a SDL_Window object with size width and height and the SDL_Renderer object linked to it.
 //Return NULL if an error occured.
 void create_window(size_t width, size_t height, SDL_Window **window, SDL_Renderer **renderer);
-
-//Create a SDL_Renderer object for the SDL_Window object window.
-//Return NULL when an error occured.
-//SDL_Renderer *create_renderer(SDL_Window *window);
 
 //Create a texture with the renderer format and size width and height.
 //Return NULL when an error occured.
@@ -22,6 +18,14 @@ SDL_Surface *create_surface(size_t width, size_t height);
 //Load a JPG or PNG image from the path filename.
 //Return NULL if an error occured.
 SDL_Surface *load(char *filename);
+
+//Save a SDL_Surface to the path filename with a png format.
+//Return NULL if an error occured.
+void savePNG(char *filename, SDL_Surface *surface);
+
+//Save a SDL_Surface to the path filename with a jpg format.
+//Return NULL if an error occured.
+void saveJPG(char *filename, SDL_Surface *surface);
 
 //Convert an SDL_Surface *surface to a new SDL_Texture *texture.
 //return NULL if an error occured.

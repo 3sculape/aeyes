@@ -1,6 +1,9 @@
 #include <err.h>
 #include <SDL2/SDL_image.h>
 #include "../Header/lib_sdl.h"
+#include <png.h>
+#include <jpeglib.h>
+#include <stdio.h>
 
 void create_window(size_t width, size_t height, SDL_Window **window, SDL_Renderer **renderer)
 {
@@ -53,6 +56,140 @@ SDL_Surface *load(char *filename)
 	SDL_FreeSurface(tmp);
 
 	return surface;
+}
+
+void savePNG(char *filename, SDL_Surface *surface)
+{
+	FILE * fp;
+    png_structp png_ptr = NULL;
+    png_infop info_ptr = NULL;
+    int x, y;
+    png_byte ** row_pointers = NULL;
+    int pixel_size = 3;
+    int depth = 8;
+
+    fp = fopen(filename, "wb");
+    if (!fp)
+    {
+       return;
+    }
+
+	png_ptr = png_create_write_struct(
+									PNG_LIBPNG_VER_STRING,
+									NULL,
+									NULL,
+									NULL
+									);
+    if (!png_ptr)
+       return;
+
+    info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+    {
+       png_destroy_write_struct(
+					&png_ptr,
+         			NULL
+					);
+       return;
+    }
+	
+	png_set_IHDR (png_ptr,
+                  info_ptr,
+                  surface->w,
+                  surface->h,
+                  depth,
+                  PNG_COLOR_TYPE_RGB,
+                  PNG_INTERLACE_NONE,
+                  PNG_COMPRESSION_TYPE_DEFAULT,
+                  PNG_FILTER_TYPE_DEFAULT
+				  );
+	
+	row_pointers = png_malloc (png_ptr, surface->h * sizeof (png_byte *));
+    for (y = 0; y < surface->h; y++) {
+        png_byte *row = 
+            png_malloc (png_ptr, sizeof (uint8_t) * surface->w * pixel_size);
+        row_pointers[y] = row;
+        for (x = 0; x < surface->w; x++) {
+            Uint32 pixel = get_pixel(surface, x, y);
+			uint8_t r, g, b, a;
+			SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+            *row++ = (uint8_t)r;
+            *row++ = (uint8_t)g;
+            *row++ = (uint8_t)b;
+        }
+    }
+
+	png_init_io (png_ptr, fp);
+    png_set_rows (png_ptr, info_ptr, row_pointers);
+    png_write_png (png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
+
+    
+    for (y = 0; y < surface->h; y++) {
+        png_free (png_ptr, row_pointers[y]);
+    }
+
+    png_free (png_ptr, row_pointers);
+    png_destroy_write_struct (&png_ptr, &info_ptr);
+    fclose (fp);
+    return;
+}
+
+void saveJPG(char *filename, SDL_Surface *surface)
+{
+	struct jpeg_compress_struct cinfo;
+	struct jpeg_error_mgr jerr;
+	
+	JSAMPROW row_pointer[1];
+	FILE *outfile = fopen( filename, "wb" );
+	
+	if ( !outfile )
+	{
+		printf("Error opening output jpeg file %s\n!", filename );
+		return;
+	}
+
+	cinfo.err = jpeg_std_error( &jerr );
+	jpeg_create_compress(&cinfo);
+	jpeg_stdio_dest(&cinfo, outfile);
+
+
+	cinfo.image_width = surface->w;
+	cinfo.image_height = surface->h;
+	cinfo.input_components = 3;
+	cinfo.in_color_space = JCS_RGB;
+
+	jpeg_set_defaults( &cinfo );
+
+	jpeg_start_compress( &cinfo, TRUE );
+	
+	unsigned char *raw_image = (unsigned char*)malloc( surface->w * surface->h * cinfo.num_components );
+
+	for(int y = 0; y < surface->h; y++)
+	{
+		for(int x = 0; x < surface->w; x++)
+        {
+            Uint32 pixel = get_pixel(surface, x, y);
+            Uint8 r, g, b, a;
+            SDL_GetRGBA(pixel,surface->format, &r, &g, &b, &a);
+            
+            raw_image[y * surface->w * 3 + x * 3] = (unsigned char)r;
+            raw_image[y * surface->w * 3 + x * 3 + 1] = (unsigned char)g;
+            raw_image[y * surface->w * 3 + x * 3 + 2] = (unsigned char)b;
+        }
+	}
+
+	while( cinfo.next_scanline < cinfo.image_height )
+	{
+		row_pointer[0] = &raw_image[cinfo.next_scanline * cinfo.image_width *  cinfo.input_components];
+		jpeg_write_scanlines( &cinfo, row_pointer, 1 );
+	}
+
+	free(raw_image);
+	jpeg_finish_compress( &cinfo );
+	jpeg_destroy_compress( &cinfo );
+	fclose( outfile );
+
+	return;
 }
 
 SDL_Texture *surface_to_texture(SDL_Surface *surface, SDL_Renderer *renderer)
