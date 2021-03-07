@@ -4,9 +4,8 @@
 
 /*
     Convert an RGB value into its HSV (Hue, Saturation, Value)
-    equivalent. Notice parameters are not pointers but direct
-    values. <*hsv> is updated with H at index 0, S at index 1
-    and V at index 2. 
+    equivalent. <*hsv> is updated with H at index 0, S at
+    index 1 and V at index 2. 
     WARNING: since the size of <*hsv> cannot be checked, the
     program will not compile if the provided size is too small
     <r>: the pixel's red value
@@ -26,6 +25,6 @@ void rgb_to_hsv(Uint8 r, Uint8 g, Uint8 b, double *hsv);
     <v>: the pixel's brightness value
     <*rgb>: an array with the newly computed R, G and B values
 */
-void hsv_to_rgb(double h, double s, double v, double *rgb);
+void hsv_to_rgb(double h, double s, double v, Uint8 *rgb);
 
 #endif

@@ -18,11 +18,11 @@ int main(int argc, char *argv[])
 	SDL_Surface		*surface;
 
 	double hsv[3];
-	double rgb[3];
+	Uint8 rgb[3];
 	rgb_to_hsv(222, 0, 32, hsv);
 	hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
-	printf("R (222): %f\nG (0):   %f\nB (32):  %f\n", rgb[0], rgb[1], rgb[2]);
+	printf("R (222): %d\nG (0):   %d\nB (32):  %d\n", rgb[0], rgb[1], rgb[2]);
 
 	init(&window, &renderer, 1366, 768);
 
