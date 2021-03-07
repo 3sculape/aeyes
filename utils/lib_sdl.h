@@ -3,13 +3,9 @@
 
 #include <SDL2/SDL.h>
 
-//Create a SDL_Window object with size width and height.
+//Create a SDL_Window object with size width and height and the SDL_Renderer object linked to it.
 //Return NULL if an error occured.
-SDL_Window *create_window(size_t width, size_t height);
-
-//Create a SDL_Renderer object for the SDL_Window object window.
-//Return NULL when an error occured.
-SDL_Renderer *create_renderer(SDL_Window *window);
+void create_window(size_t width, size_t height, SDL_Window **window, SDL_Renderer **renderer);
 
 //Create a texture with the renderer format and size width and height.
 //Return NULL when an error occured.
@@ -19,9 +15,17 @@ SDL_Texture *create_texture(SDL_Renderer *renderer, size_t width, size_t height)
 //Return NULL when an error occured.
 SDL_Surface *create_surface(size_t width, size_t height);
 
-//Load an Bitmap image from the path filename with the format format.
+//Load a JPG or PNG image from the path filename.
 //Return NULL if an error occured.
-SDL_Surface *load_BMP(char *filename);
+SDL_Surface *load(char *filename);
+
+//Save a SDL_Surface to the path filename with a png format.
+//Return NULL if an error occured.
+void savePNG(char *filename, SDL_Surface *surface);
+
+//Save a SDL_Surface to the path filename with a jpg format.
+//Return NULL if an error occured.
+void saveJPG(char *filename, SDL_Surface *surface);
 
 //Convert an SDL_Surface *surface to a new SDL_Texture *texture.
 //return NULL if an error occured.
@@ -32,7 +36,7 @@ SDL_Texture *surface_to_texture(SDL_Surface *surface, SDL_Renderer *renderer);
 SDL_Surface *texture_to_surface(SDL_Texture *texture);
 
 //Print the SDL_Texture *texture to the window linked to SDL_Renderer *renderer at position posx and posy.
-void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer, size_t posx, size_t posy);
+void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer);
 
 //Get the pixel at position posx and posy in the SDL_Surface *surface.
 //Return -1 if posx or posy are outside the image.
