@@ -1,7 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 #include <SDL2/SDL.h>
-#include "../Header/lib_sdl.h"
+#include "../utils/lib_sdl.h"
 
 /*
     Find the brightest pixel by iterating through

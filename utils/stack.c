@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../Header/stack.h"
+#include "stack.h"
 #include <err.h>
 
 void init_stack(stack* s)

@@ -2,11 +2,11 @@
 #include <err.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
-#include "../Header/lib_sdl.h"
-#include "../Header/stack.h"
-#include "../algorithms/basic.h"
-#include "../algorithms/convert.h"
-#include "../algorithms/color.h"
+#include "utils/lib_sdl.h"
+#include "utils/stack.h"
+#include "algos/basic.h"
+#include "algos/convert.h"
+#include "algos/color.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,10 +24,7 @@ int main(int argc, char *argv[])
 	if(surface == NULL)
 		errx(3, "Coudn't load %s: %s", argv[1], SDL_GetError());
 
-	int coordinates[2];
-	brightest_pixel(surface, coordinates);
-
-	printf("Coordinates: x: %d, y: %d\n", coordinates[0], coordinates[1]);
+	negative(surface);
 
 	texture = surface_to_texture(surface, renderer);
 	
