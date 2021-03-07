@@ -2,33 +2,14 @@
 #include <SDL2/SDL_image.h>
 #include "../Header/lib_sdl.h"
 
-SDL_Window *create_window(size_t width, size_t height)
+void create_window(size_t width, size_t height, SDL_Window **window, SDL_Renderer **renderer)
 {
-	SDL_Window		*window;
-
-	window = SDL_CreateWindow(
-			"AEyes Viewer",
-			0,
-			0,
-			width,
-			height,
-			SDL_WINDOW_SHOWN
-			);
-
-	return window;
-}
-
-SDL_Renderer *create_renderer(SDL_Window *window)
-{
-	SDL_Renderer	*renderer;
-
-	renderer = SDL_CreateRenderer(
-			window,
-			-1,
-			0
-			);
-
-	return renderer;
+	SDL_CreateWindowAndRenderer(width,
+                                height,
+                                SDL_WINDOW_ALWAYS_ON_TOP,
+                                window,
+                                renderer
+								);
 }
 
 SDL_Texture *create_texture(SDL_Renderer *renderer, size_t width, size_t height)
@@ -109,12 +90,10 @@ SDL_Surface *texture_to_surface(SDL_Texture *texture)
 	return surface;
 }
 
-void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer, size_t posx, size_t posy)
+void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer)
 {
-	SDL_Rect		dst = {posx, posy, 0, 0};
-
-	SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
-	SDL_RenderCopy(renderer, texture, NULL, &dst);
+	SDL_QueryTexture(texture, NULL, NULL, NULL, NULL);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
 
@@ -161,18 +140,10 @@ void init(SDL_Window **window, SDL_Renderer **renderer, size_t w, size_t h)
 		errx(3, "Coundn't load SDL_image : %s", IMG_GetError());
 	}
 
-	*window = create_window(w, h);
-	if(*window == NULL)
-	{
-		IMG_Quit();
-		SDL_Quit();
-		errx(3, "Couldn't create window %s:", SDL_GetError());
-	}
-	
-	*renderer = create_renderer(*window);
-	if(*renderer == NULL)
-	{
-		SDL_DestroyWindow(*window);
+    
+    create_window(w, h, window, renderer);
+    if(*window == NULL || *renderer == NULL)
+    {
 		IMG_Quit();
 		SDL_Quit();
 		errx(3, "Couldn't create renderer %s:", SDL_GetError());

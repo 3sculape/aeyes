@@ -5,11 +5,11 @@
 
 //Create a SDL_Window object with size width and height.
 //Return NULL if an error occured.
-SDL_Window *create_window(size_t width, size_t height);
+void create_window(size_t width, size_t height, SDL_Window **window, SDL_Renderer **renderer);
 
 //Create a SDL_Renderer object for the SDL_Window object window.
 //Return NULL when an error occured.
-SDL_Renderer *create_renderer(SDL_Window *window);
+//SDL_Renderer *create_renderer(SDL_Window *window);
 
 //Create a texture with the renderer format and size width and height.
 //Return NULL when an error occured.
@@ -32,7 +32,7 @@ SDL_Texture *surface_to_texture(SDL_Surface *surface, SDL_Renderer *renderer);
 SDL_Surface *texture_to_surface(SDL_Texture *texture);
 
 //Print the SDL_Texture *texture to the window linked to SDL_Renderer *renderer at position posx and posy.
-void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer, size_t posx, size_t posy);
+void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer);
 
 //Get the pixel at position posx and posy in the SDL_Surface *surface.
 //Return -1 if posx or posy are outside the image.

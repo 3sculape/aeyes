@@ -26,10 +26,11 @@ int main(int argc, char *argv[])
 	}
 
 	texture = surface_to_texture(surface, renderer);
-	
-	print_texture_to_window(texture, renderer, 0, 0);
-	SDL_Delay(10000);
+	SDL_FreeSurface(surface);
 
+	print_texture_to_window(texture, renderer);
+	SDL_Delay(3000);
+    
 	quit(window, renderer, texture);
 
 	return 0;
