@@ -6,6 +6,7 @@
 #include "../Header/stack.h"
 #include "../algorithms/basic.h"
 #include "../algorithms/convert.h"
+#include "../algorithms/color.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,20 +18,16 @@ int main(int argc, char *argv[])
 	SDL_Texture		*texture;
 	SDL_Surface		*surface;
 
-	double hsv[3];
-	Uint8 rgb[3];
-	rgb_to_hsv(222, 0, 32, hsv);
-	hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
-
-	printf("R (222): %d\nG (0):   %d\nB (32):  %d\n", rgb[0], rgb[1], rgb[2]);
-
 	init(&window, &renderer, 1366, 768);
 
 	surface = load_BMP(argv[1]);
 	if(surface == NULL)
 		errx(3, "Coudn't load %s: %s", argv[1], SDL_GetError());
 
-	negative(surface);
+	int coordinates[2];
+	brightest_pixel(surface, coordinates);
+
+	printf("Coordinates: x: %d, y: %d\n", coordinates[0], coordinates[1]);
 
 	texture = surface_to_texture(surface, renderer);
 	
