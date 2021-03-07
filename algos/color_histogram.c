@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../Header/lib_sdl.h"
-#include "../Header/color_histogram.h"
+#include "../utils/lib_sdl.h"
+#include "color_histogram.h"
 #include <err.h>
 
 void print_vector(size_t arr[], size_t len)
