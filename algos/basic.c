@@ -83,3 +83,36 @@ void negative(SDL_Surface *surface)
 
     SDL_UnlockSurface(surface);
 }
+
+void clipping(SDL_Surface *surface)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in clipping");
+        return;
+    }
+
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+            if (r == 255 && g == 255 && b == 255)
+            {
+                g = 0;
+                b = 0;
+            }
+
+            else if (r == 0 && g == 0 && b == 0)
+            {
+                b = 255;
+            }
+
+            set_pixel(surface, r, g, b, a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+}
