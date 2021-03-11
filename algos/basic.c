@@ -132,7 +132,7 @@ SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer,
     if(SDL_SetRenderTarget(renderer, cropped))
         warnx("SetRenderTarget fail");
 
-    if (SDL_RenderCopy(renderer, original, src, NULL))
+    if (SDL_RenderCopy(renderer, original, &src, NULL))
         warnx("RenderCopy fail");
 
     return cropped;

@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include <err.h>
 #include "../utils/lib_sdl.h"
-#include <SDL2/SDL2_>
+#include <SDL2/SDL2_rotozoom.h>
 
 /*
     All algorithms provided in this header do not
@@ -48,9 +48,9 @@ void clipping(SDL_Surface *surface);
  * the starting position of the left corner and the width and height of the 
  * wanted section. Returns the texture create from it 
  */
-SDL_Texture* image_crop(SDL_Texture* original, size_t x, size_t y,
-        size_t w, size_t h);
+SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer, size_t x, 
+        size_t y, size_t w, size_t h);
 
-SDL_Surface* resize(SDL_Surface* original, double factor);
+SDL_Texture* resize(SDL_Surface* original, SDL_Renderer* render, double factor);
 
 #endif
