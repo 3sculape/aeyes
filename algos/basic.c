@@ -116,3 +116,29 @@ void clipping(SDL_Surface *surface)
 
     SDL_UnlockSurface(surface);
 }
+
+SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer, 
+        size_t x, size_t y, size_t w, size_t h)
+{
+    SDL_Rect src;
+
+    src.x = x;
+    src.y = y;
+    src.w = w;
+    src.h = h;
+
+    SDL_Texture* cropped = create_texture(renderer, w, h);
+
+    if(SDL_SetRenderTarget(renderer, cropped))
+        warnx("SetRenderTarget fail");
+
+    if (SDL_RenderCopy(renderer, original, src, NULL))
+        warnx("RenderCopy fail");
+
+    return cropped;
+}
+
+SDL_Texture* resize(SDL_Surface* original,SDL_Renderer* render, double factor)
+{
+    return surface_to_texture(rotozoomSurface(original, 0, factor, 1),render);
+}
