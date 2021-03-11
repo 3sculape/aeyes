@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
 	if(surface == NULL)
 		errx(3, "Coudn't load %s: %s", argv[1], SDL_GetError());
 
-	clipping(surface);
 
+	clipping(surface);
 	texture = surface_to_texture(surface, renderer);
 	
 	print_texture_to_window(texture, renderer, 0, 0);
