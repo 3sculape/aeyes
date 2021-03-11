@@ -35,4 +35,11 @@ void binarization(SDL_Surface *surface, char threshold);
 */
 void negative(SDL_Surface *surface);
 
+/*
+    Image clipping. Turn all fully white pixels into red, and turn
+    all fully black pixels into blue.
+    <surface>: the surface to be processed
+*/
+void clipping(SDL_Surface *surface);
+
 #endif
