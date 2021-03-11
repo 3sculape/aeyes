@@ -28,12 +28,13 @@ int main(int argc, char *argv[])
 		errx(3, "Coudn't load %s", argv[1]);
 	}
 
+	clipping(surface);
 	texture = surface_to_texture(surface, renderer);
 
 	print_texture_to_window(texture, renderer);
     saveJPG(argv[2], surface);
 	SDL_Delay(3000);
-    
+
 	SDL_FreeSurface(surface);
 	quit(window, renderer, texture);
 
