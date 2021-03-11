@@ -53,5 +53,8 @@ dkms.conf
 
 # Extra excludes
 *.bmp
+*.jpg
+*.jpeg
+*.png
 gtk
 .vscode

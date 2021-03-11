@@ -28,7 +28,10 @@ int main(int argc, char *argv[])
 		errx(3, "Coudn't load %s", argv[1]);
 	}
 
-	clipping(surface);
+	Uint8 reference[3];
+	brightest_pixel(surface, reference);
+	white_balance(surface, reference);
+
 	texture = surface_to_texture(surface, renderer);
 
 	print_texture_to_window(texture, renderer);
