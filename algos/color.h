@@ -6,6 +6,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 #include <err.h>
+#include "utility.h"
 
 /*
     Find the brightest pixel by iterating through

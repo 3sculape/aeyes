@@ -43,9 +43,9 @@ void white_balance(SDL_Surface *surface, Uint8 *reference)
     gsl_vector *c = gsl_vector_calloc(3);
     gsl_vector *res = gsl_vector_calloc(3);
 
-    m -> data[0 * m -> tda + 0] = 255 / reference[0];
-    m -> data[1 * m -> tda + 1] = 255 / reference[1];
-    m -> data[2 * m -> tda + 2] = 255 / reference[2];
+    gsl_matrix_set(m, 0, 0, 255 / reference[0]);
+    gsl_matrix_set(m, 1, 1, 255 / reference[1]);
+    gsl_matrix_set(m, 2, 2, 255 / reference[2]);
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
