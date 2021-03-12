@@ -51,6 +51,6 @@ void clipping(SDL_Surface *surface);
 SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer, size_t x, 
         size_t y, size_t w, size_t h);
 
-SDL_Texture* resize(SDL_Surface* original, SDL_Renderer* render, double factor);
+SDL_Texture* resize(SDL_Texture* original, SDL_Renderer* render, double factor);
 
 #endif

@@ -14,7 +14,8 @@ void print_vector(size_t arr[], size_t len)
     printf("]\n");
 }
 
-void color_histogram(SDL_Surface* surface, size_t red[], size_t green[], size_t blue[])
+void color_histogram(SDL_Surface* surface, size_t red[], size_t green[],
+        size_t blue[])
 {
     size_t maxh = surface->h;
     size_t maxw = surface->w;
@@ -41,12 +42,5 @@ void color_histogram(SDL_Surface* surface, size_t red[], size_t green[], size_t 
         red[width] = avgr;
         green[width] = avgg;
         blue[width] = avgb;
-        //printf("Column %lu |r:%lu, g:%lu, b:%lu|\n", width, avgr, avgg, avgb);
     }
-    printf("red:\n");
-    print_vector(red, maxw);
-    printf("green:\n");
-    print_vector(green,maxw);
-    printf("blue:\n");
-    print_vector(blue, maxw);
 }

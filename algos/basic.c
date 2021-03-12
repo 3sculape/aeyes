@@ -138,7 +138,11 @@ SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer,
     return cropped;
 }
 
-SDL_Texture* resize(SDL_Surface* original,SDL_Renderer* render, double factor)
+SDL_Texture* resize(SDL_Texture* original,SDL_Renderer* render, double factor)
 {
-    return surface_to_texture(rotozoomSurface(original, 0, factor, 1),render);
+    SDL_Surface* tmp = texture_to_surface(original);
+    SDL_Texture* res = surface_to_texture(rotozoomSurface(tmp, 0, factor, 1), 
+            render);
+    SDL_FreeSurface(tmp);
+    return res;
 }
