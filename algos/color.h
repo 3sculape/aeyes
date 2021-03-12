@@ -17,4 +17,6 @@
 */
 void brightest_pixel(SDL_Surface *surface, Uint8 *reference);
 
+void white_balance(SDL_Surface *surface, size_t factor);
+
 #endif
