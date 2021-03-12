@@ -18,7 +18,7 @@ void brightest_pixel(SDL_Surface *surface, Uint8 *reference)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
             Uint8 average = (r + g + b) / 3;
 
-            if (average > max)
+            if (average < 250 && average > max)
             {
                 max = average;
                 reference[0] = r;
@@ -31,7 +31,7 @@ void brightest_pixel(SDL_Surface *surface, Uint8 *reference)
     SDL_UnlockSurface(surface);
 }
 
-void white_balance(SDL_Surface *surface, Uint8 *reference)
+void deep_fry(SDL_Surface *surface, Uint8 *reference)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -57,7 +57,7 @@ void white_balance(SDL_Surface *surface, Uint8 *reference)
             c -> data[1] = g;
             c -> data[2] = b;
 
-            gsl_blas_dgemv(CblasNoTrans, 1, m, c, 1, res);
+            gsl_blas_dgemv(CblasNoTrans, 1, m, c, 0, res);
 
             set_pixel(surface, res -> data[0], res -> data[1], res -> data[2],
              a, i, j);

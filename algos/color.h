@@ -17,17 +17,4 @@
 */
 void brightest_pixel(SDL_Surface *surface, Uint8 *reference);
 
-/*
-    Balance the whites in the surface by computing
-    a matrix multiplication based on a reference
-    pixel (generally considered the brightest in the
-    image, although it does not have to)
-    NOTE: The reference parameter from the brightest_pixel
-    function can be used as a parameter to this function.
-    <surface>: the surface to be processed
-    <*reference>: an array with the pixel considered
-    brightest in the image
-*/
-void white_balance(SDL_Surface *surface, Uint8 *reference);
-
 #endif
