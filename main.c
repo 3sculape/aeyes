@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
 	texture2 = surface_to_texture(surface, renderer);
 
-    SDL_Texture *texture = image_crop(texture2, renderer, 150, 150, 3000, 2000);
+    SDL_Texture *texture = resize(texture2, renderer, 2);
 
 	print_texture_to_window(texture, renderer);
     SDL_FreeSurface(surface);
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     savePNG(argv[2], surface);
 	SDL_Delay(3000);
-
+        free(surface->pixels);
 	SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture2);
 	quit(window, renderer, texture);
