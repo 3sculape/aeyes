@@ -82,3 +82,55 @@ void white_balance(SDL_Surface *surface, size_t factor)
 
     SDL_UnlockSurface(surface);
 }
+
+void tint(SDL_Surface *surface, size_t factor)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in tint");
+        return;
+    }
+
+    Uint8 purple[3] = {203, 0, 203};
+    Uint8 green[3] = {0, 203, 0};
+    Uint8 base_color[3];
+    double base_factor;
+    double og_factor;
+    if (factor == 50)
+        return;
+
+    if (factor > 50)
+    {
+        base_color[0] = purple[0];
+        base_color[1] = purple[1];
+        base_color[2] = purple[2];
+        base_factor = (double)factor / 200;
+    }
+
+    else
+    {
+        base_color[0] = green[0];
+        base_color[1] = green[1];
+        base_color[2] = green[2];
+        base_factor = (double)factor / 100;
+    }
+
+    og_factor = 1 - base_factor;
+
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+            r = r * og_factor + base_color[0] * base_factor; 
+            g = g * og_factor + base_color[1] * base_factor;
+            b = b * og_factor + base_color[2] * base_factor;
+
+            set_pixel(surface, r, g, b, a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+}
