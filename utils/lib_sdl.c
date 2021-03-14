@@ -208,21 +208,23 @@ SDL_Texture *surface_to_texture(SDL_Surface *surface, SDL_Renderer *renderer)
 	return texture;
 }
 
-SDL_Surface *texture_to_surface(SDL_Texture *texture)
+SDL_Surface *texture_to_surface(SDL_Texture *texture, SDL_Renderer *renderer)
 {
 	Uint32			format_pixels;
 	SDL_Surface		*surface;
-	void			*pixels;
-	int				pitch, w, h;
+	int				w, h;
 	if(SDL_QueryTexture(texture, &format_pixels, NULL, &w, &h) != 0)
-		return NULL;
+        return NULL;
 
-	if(SDL_LockTexture(texture, NULL, &pixels, &pitch) != 0)
-		return NULL;
-	
+	void *pixels = (void *)malloc(32 * w * h);
+    SDL_Rect r = {0, 0, w, h};
+    SDL_SetRenderTarget(renderer, texture);
+    SDL_RenderReadPixels(renderer, &r, format_pixels, pixels, w * sizeof(Uint32));
+    if(pixels == NULL)
+    {
+        warnx("%s\n", SDL_GetError());
+    }
 	surface = SDL_CreateRGBSurfaceWithFormatFrom(pixels, w, h, 32, w *sizeof(Uint32), format_pixels);
-
-	SDL_UnlockTexture(texture);
 
 	return surface;
 }

@@ -33,7 +33,7 @@ SDL_Texture *surface_to_texture(SDL_Surface *surface, SDL_Renderer *renderer);
 
 //Convert an SDL_Texture *texture to a new SDL_Surface *surface.
 //return NULL if an error occured.
-SDL_Surface *texture_to_surface(SDL_Texture *texture);
+SDL_Surface *texture_to_surface(SDL_Texture *texture, SDL_Renderer *renderer);
 
 //Print the SDL_Texture *texture to the window linked to SDL_Renderer *renderer at position posx and posy.
 void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer);
