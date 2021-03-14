@@ -52,7 +52,7 @@ void white_balance(SDL_Surface *surface, size_t factor)
         base_color[0] = blue[0];
         base_color[1] = blue[1];
         base_color[2] = blue[2];
-        base_factor = factor / 200;
+        base_factor = (double)factor / 200;
     }
 
     else
@@ -60,7 +60,7 @@ void white_balance(SDL_Surface *surface, size_t factor)
         base_color[0] = orange[0];
         base_color[1] = orange[1];
         base_color[2] = orange[2];
-        base_factor = factor / 100;
+        base_factor = (double)factor / 100;
     }
 
     og_factor = 1 - base_factor;

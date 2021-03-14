@@ -17,6 +17,16 @@
 */
 void brightest_pixel(SDL_Surface *surface, Uint8 *reference);
 
+/*
+    Calibrate the image towards a more orange or
+    blue hue depending a factor in range [0; 100]
+     - [0; 49] -> orange
+     - [50] -> no balancing
+     - [51; 100] -> blue
+    <surface>: the surface to be processed
+    <factor>: a factor representing the amount of
+    calibration to apply
+*/
 void white_balance(SDL_Surface *surface, size_t factor);
 
 #endif
