@@ -42,6 +42,12 @@ gboolean on_configure()
     return True;
 }
 
+gboolean on_quit()
+{
+    gtk_main_quit();
+    return True;
+}
+
 int main(int argc, char *argv[])
 {
     if(argc != 2)
@@ -96,6 +102,7 @@ int main(int argc, char *argv[])
     SDL_AddEventWatch(resizingEventWatcher, NULL);
 
     g_signal_connect(gtk_window, "configure-event", G_CALLBACK(on_configure), NULL);
+    g_signal_connect(gtk_window, "destroy", G_CALLBACK(on_quit), NULL);
     gtk_main();
     quit(sdl_window, sdl_renderer, texture);
     return 0;
