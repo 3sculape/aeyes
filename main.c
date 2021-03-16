@@ -7,13 +7,14 @@
 #include "algos/basic.h"
 #include "algos/convert.h"
 #include "algos/color.h"
+#include "utils/lib_exif.h"
 
 int main(int argc, char *argv[])
 {
-	if(argc != 3)
+/*	if(argc != 3)
 		errx(3, "Usage : ./gtk <filename>");
-
-	SDL_Window		*window;
+*/
+/*	SDL_Window		*window;
 	SDL_Renderer	*renderer;
 	SDL_Texture		*texture2;
 	SDL_Surface		*surface;
@@ -42,6 +43,9 @@ int main(int argc, char *argv[])
 	SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture2);
 	quit(window, renderer, texture);
-
-	return 0;
+*/
+    if (argc != 2)
+        errx(3, "Usage: ./gtk <JPEG image path>");
+    show_info(argv[1]);
+    return 0;
 }
