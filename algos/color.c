@@ -31,7 +31,7 @@ void brightest_pixel(SDL_Surface *surface, Uint8 *reference)
     SDL_UnlockSurface(surface);
 }
 
-void white_balance(SDL_Surface *surface, size_t factor)
+void white_balance(SDL_Surface *surface, double factor)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -39,96 +39,49 @@ void white_balance(SDL_Surface *surface, size_t factor)
         return;
     }
 
-    Uint8 blue[3] = {0, 67, 255};
-    Uint8 orange[3] = {255, 143, 0};
-    Uint8 base_color[3];
-    double base_factor;
-    double og_factor;
-    if (factor == 50)
+    Uint8 color[3];
+    if (factor < -1 || factor > 1 || factor == 0)
         return;
 
-    if (factor > 50)
+    if (factor < 0)
     {
-        base_color[0] = blue[0];
-        base_color[1] = blue[1];
-        base_color[2] = blue[2];
-        base_factor = (double)factor / 200;
+        color[0] = 0;
+        color[1] = 67;
+        color[2] = 255;
     }
 
     else
     {
-        base_color[0] = orange[0];
-        base_color[1] = orange[1];
-        base_color[2] = orange[2];
-        base_factor = (double)factor / 100;
+        color[0] = 255;
+        color[1] = 138;
+        color[2] = 0;
     }
 
-    og_factor = 1 - base_factor;
+    factor = fabs(factor);
 
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
         {
             Uint8 r, g, b, a;
+            double old_hsl[3];
+            double new_hsl[3];
+            Uint8 rgb[3];
+
             Uint32 pixel = get_pixel(surface, i, j);
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
-            r = r * og_factor + base_color[0] * base_factor; 
-            g = g * og_factor + base_color[1] * base_factor;
-            b = b * og_factor + base_color[2] * base_factor;
 
-            set_pixel(surface, r, g, b, a, i, j);
-        }
-    }
+            rgb_to_hsl(r, g, b, old_hsl);
+            r = (r * (color[0] + (255 - color[0]) * (1 - factor))) / 255;
+            g = (g * (color[1] + (255 - color[1]) * (1 - factor))) / 255;
+            b = (b * (color[2] + (255 - color[2]) * (1 - factor))) / 255;
 
-    SDL_UnlockSurface(surface);
-}
+            rgb_to_hsl(r, g, b, new_hsl);
+            new_hsl[1] = (factor / 2) * new_hsl[1] * fmin(0.5, (b / 255));
+            new_hsl[2] = old_hsl[2];
+            hsl_to_rgb(new_hsl[0], new_hsl[1], new_hsl[2], rgb);
 
-void tint(SDL_Surface *surface, size_t factor)
-{
-    if (SDL_LockSurface(surface) != 0)
-    {
-        warnx("LockSurface fail in tint");
-        return;
-    }
-
-    Uint8 purple[3] = {203, 0, 203};
-    Uint8 green[3] = {0, 203, 0};
-    Uint8 base_color[3];
-    double base_factor;
-    double og_factor;
-    if (factor == 50)
-        return;
-
-    if (factor > 50)
-    {
-        base_color[0] = purple[0];
-        base_color[1] = purple[1];
-        base_color[2] = purple[2];
-        base_factor = (double)factor / 200;
-    }
-
-    else
-    {
-        base_color[0] = green[0];
-        base_color[1] = green[1];
-        base_color[2] = green[2];
-        base_factor = (double)factor / 100;
-    }
-
-    og_factor = 1 - base_factor;
-
-    for (int i = 0; i < surface -> w; i++)
-    {
-        for (int j = 0; j < surface -> h; j++)
-        {
-            Uint8 r, g, b, a;
-            Uint32 pixel = get_pixel(surface, i, j);
-            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
-            r = r * og_factor + base_color[0] * base_factor; 
-            g = g * og_factor + base_color[1] * base_factor;
-            b = b * og_factor + base_color[2] * base_factor;
-
-            set_pixel(surface, r, g, b, a, i, j);
+            set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
         }
     }
 

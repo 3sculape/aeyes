@@ -6,7 +6,9 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 #include <err.h>
+#include <math.h>
 #include "utility.h"
+#include "convert.h"
 
 /*
     Find the brightest pixel by iterating through
@@ -18,27 +20,15 @@
 void brightest_pixel(SDL_Surface *surface, Uint8 *reference);
 
 /*
-    Calibrate the image towards a more orange or
-    blue hue depending a factor:
-     - [0; 49] -> orange
-     - [50] -> no balancing
-     - [51; 100] -> blue
+    Calibrate the image towards a blue or orange
+    hue depending on a factor:
+     - [-1; 0] -> towards blue
+     - [0] -> no balancing
+     - [0; 1] -> towards orange
     <surface>: the surface to be processed
     <factor>: a factor representing the amount of
     calibration to apply
 */
-void white_balance(SDL_Surface *surface, size_t factor);
-
-/*
-    Calibrate the image towards a more green or
-    purple hue depending on a factor:
-     - [0; 49] -> green
-     - [50] -> no balancing
-     - [51; 100] -> purple
-    <surface>: the surface to be processed
-    <factor>: a factor representing the amount of
-    calibration to apply
-*/
-void tint(SDL_Surface *surface, size_t factor);
+void white_balance(SDL_Surface *surface, double factor);
 
 #endif
