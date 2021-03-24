@@ -43,14 +43,16 @@ void negative(SDL_Surface *surface);
 */
 void clipping(SDL_Surface *surface);
 
-/* 
+/*
  * Basic image cropping, takes into parameter the source we want to copy from,
- * the starting position of the left corner and the width and height of the 
- * wanted section. Returns the texture create from it 
+ * the starting position of the left corner and the width and height of the
+ * wanted section. Returns the texture create from it
  */
-SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer, size_t x, 
+SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer, size_t x,
         size_t y, size_t w, size_t h);
 
 SDL_Texture* resize(SDL_Texture* original, SDL_Renderer* render, double factor);
+
+SDL_Texture* rotate(SDL_Texture* original, SDL_Renderer* render, double angle);
 
 #endif

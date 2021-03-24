@@ -12,7 +12,7 @@ GTK_DEP=$(GTK_SRC:.c=.d)
 all: gtk
 
 gtk: $(GTK_OBJ)
-	$(CC) $(LDLIBS) $(GTK_OBJ) -o gtk
+	$(CC) $(GTK_OBJ) -o gtk $(LDLIBS)
 
 .PHONY: clean
 

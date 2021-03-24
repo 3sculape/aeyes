@@ -70,44 +70,4 @@ int main(int argc, char *argv[])
     gtk_da = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "image_window"));
 
     gtk_widget_show_all(GTK_WIDGET(gtk_window));
-
-    gdk_window = gtk_widget_get_window(GTK_WIDGET(gtk_da));
-    window_id = (void*)(intptr_t)GDK_WINDOW_XID(gdk_window);
-
-    SDL_Init(SDL_INIT_VIDEO);
-    IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
-
-    SDL_Surface *surface;
-    surface = load(argv[1]);
-    if(surface == NULL)
-    {
-        errx(3, "Coudn't load %s", argv[1]);
-    }
-
-    sdl_window = SDL_CreateWindowFrom(window_id);
-    if(!sdl_window)
-        errx(1, "Coudn't create window");
-
-    sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
-
-    motion_blur(surface, 31);
-    saveJPG(argv[2], surface);
-
-    texture = create_texture(sdl_renderer, surface->w, surface->h);
-    texture = surface_to_texture(surface, sdl_renderer);
-
-    SDL_RenderClear(sdl_renderer);
-    SDL_RenderCopy(sdl_renderer, texture, NULL, NULL);
-    SDL_RenderPresent(sdl_renderer);
-
-    SDL_FreeSurface(surface);
-
-    SDL_AddEventWatch(resizingEventWatcher, NULL);
-
-    g_signal_connect(gtk_window, "configure-event", G_CALLBACK(on_configure), NULL);
-    g_signal_connect(gtk_window, "destroy", G_CALLBACK(on_quit), NULL);
-    gtk_main();
-    quit(sdl_window, sdl_renderer, texture);
-    return 0;
-
 }

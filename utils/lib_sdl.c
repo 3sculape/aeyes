@@ -215,7 +215,7 @@ SDL_Surface *texture_to_surface(SDL_Texture *texture, SDL_Renderer *renderer)
 	if(SDL_QueryTexture(texture, &format_pixels, NULL, &w, &h) != 0)
         return NULL;
 
-	void *pixels = (void *)malloc(32 * w * h);
+	void* pixels = (void *)malloc(32 * w * h);
     SDL_Rect r = {0, 0, w, h};
     SDL_SetRenderTarget(renderer, texture);
     SDL_RenderReadPixels(renderer, &r, format_pixels, pixels, w * sizeof(Uint32));
