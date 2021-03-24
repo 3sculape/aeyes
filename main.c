@@ -50,7 +50,7 @@ gboolean on_quit()
 
 int main(int argc, char *argv[])
 {
-    if(argc != 2)
+    if(argc != 3)
         errx(3, "Usage : ./gtk <filename>");
 
     gtk_init(NULL, NULL);
@@ -89,6 +89,9 @@ int main(int argc, char *argv[])
         errx(1, "Coudn't create window");
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
+
+    motion_blur(surface, 31);
+    saveJPG(argv[2], surface);
 
     texture = create_texture(sdl_renderer, surface->w, surface->h);
     texture = surface_to_texture(surface, sdl_renderer);
