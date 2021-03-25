@@ -10,5 +10,5 @@ void box_blur(SDL_Surface *surface);
 void gaussian_blur(SDL_Surface *surface, int x);
 
 //Blur the SDL_Surface *surface with the motion blur.
-void motion_blur(SDL_Surface *surface, int x);
+void motion_blur(SDL_Surface *surface, SDL_Renderer *renderer, int x, double angle);
 #endif /* BLURS_H */

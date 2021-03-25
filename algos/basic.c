@@ -143,7 +143,6 @@ SDL_Texture* resize(SDL_Texture* original,SDL_Renderer* render, double factor)
     SDL_Surface* tmp = texture_to_surface(original, render);
     SDL_Texture* res = surface_to_texture(rotozoomSurface(tmp, 0, factor, 1), 
             render);
-    free(tmp->pixels);
     SDL_FreeSurface(tmp);
     return res;
 }
@@ -153,7 +152,6 @@ SDL_Texture* rotate(SDL_Texture* original,SDL_Renderer* render, double angle)
     SDL_Surface* tmp = texture_to_surface(original, render);
     SDL_Texture* res = surface_to_texture(rotozoomSurface(tmp, angle, 1, 1),
             render);
-    free(tmp->pixels);
     SDL_FreeSurface(tmp);
     return res;
 }
