@@ -38,9 +38,9 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force)
                         goto error;
                     SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
                     //printf("kernel %f\n", (gsl_matrix_get(kernel, kj + 1, ki + 1)) * r);
-                    nr = (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * r);
-                    ng = (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * g);
-                    nb = (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * b);
+                    nr += (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * r);
+                    ng += (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * g);
+                    nb += (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * b);
                 }
             }
             set_pixel(surface, nr, ng, nb, a, i, j);
