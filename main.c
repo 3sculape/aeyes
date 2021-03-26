@@ -21,9 +21,12 @@ int main(int argc, char *argv[])
     SDL_Window* window;
     create_window(500, 500, &window, &renderer);
     SDL_Surface* original = load(argv[1]);
+    // saveJPG("test.JPG", original);
     if (original == NULL)
-        errx(EXIT_FAILURE, "caca");
-    SDL_Surface* sharpened = sharpen(original, 1);
+        errx(EXIT_FAILURE, "Load image returned NULL");
+    SDL_Surface* sharpened = sharpen(original, 2.97);
+    if (sharpened == NULL)
+        errx(EXIT_FAILURE, "Load image returned NULL");
     saveJPG("test.JPG", sharpened);
     SDL_FreeSurface(original);
     SDL_FreeSurface(sharpened);

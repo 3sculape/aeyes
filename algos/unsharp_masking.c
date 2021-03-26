@@ -5,7 +5,11 @@
 
 SDL_Surface* sharpen(SDL_Surface *surface, double force)
 {
+    if (surface == NULL)
+        goto error;
     SDL_Surface* res = create_surface(surface->w, surface->h);
+    if (res == NULL)
+        goto error;
     gsl_matrix* kernel = gsl_matrix_calloc(3, 3);
     gsl_matrix_set(kernel, 0, 0, 0);
     gsl_matrix_set(kernel, 0, 1, -1 * force);
@@ -34,20 +38,19 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force)
                 for (int ki = -1; ki < 2; ki++)
                 {
                     Uint32 pixel = get_pixel(surface, i, j);
-                    if (pixel == (Uint32)-1)
-                        goto error;
+                    /*if (pixel == -1)
+                        goto error;*/
                     SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
-                    //printf("kernel %f\n", (gsl_matrix_get(kernel, kj + 1, ki + 1)) * r);
                     nr += (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * r);
                     ng += (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * g);
                     nb += (Uint8)(gsl_matrix_get(kernel, kj + 1, ki + 1) * b);
                 }
             }
-            set_pixel(surface, nr, ng, nb, a, i, j);
+            set_pixel(res, nr, ng, nb, a, i, j);
         }
     }
     return res;
 
-error: warnx("function fail");
+error: warnx("unsharp mask function fail");
        return NULL;
 }
