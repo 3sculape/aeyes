@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
     // saveJPG("test.JPG", original);
     if (original == NULL)
         errx(EXIT_FAILURE, "Load image returned NULL");
-    SDL_Surface* sharpened = sharpen(original, 2.97);
+    SDL_Surface* sharpened = sharpen(original, 1, renderer);
     if (sharpened == NULL)
         errx(EXIT_FAILURE, "Load image returned NULL");
-    saveJPG("test.JPG", sharpened);
+    savePNG("result.PNG", sharpened);
     SDL_FreeSurface(original);
     SDL_FreeSurface(sharpened);
     quit(window, renderer, NULL);
