@@ -116,3 +116,75 @@ void clipping(SDL_Surface *surface)
 
     SDL_UnlockSurface(surface);
 }
+
+void saturation(SDL_Surface *surface, double value)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in saturation");
+        return;
+    }
+
+    double hsv[3];
+    Uint8 rgb[3];
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+
+            rgb_to_hsv(r, g, b, hsv);
+
+            hsv[1] += value * (hsv[1] / 100);
+            if (hsv[1] < 0)
+                hsv[1] = 0;
+            if (hsv[1] > 100)
+                hsv[1] = 100;
+
+            hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
+
+            set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+}
+
+void exposure(SDL_Surface *surface, double value)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in saturation");
+        return;
+    }
+
+    double hsl[3];
+    Uint8 rgb[3];
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+
+            rgb_to_hsv(r, g, b, hsl);
+
+            hsl[2] += value * (hsl[2] / 100);
+            if (hsl[1] < 0)
+                hsl[1] = 0;
+            if (hsl[1] > 100)
+                hsl[1] = 100;
+
+            hsv_to_rgb(hsl[0], hsl[1], hsl[2], rgb);
+
+            set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+}

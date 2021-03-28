@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <err.h>
 #include "../utils/lib_sdl.h"
+#include "convert.h"
 
 /*
     All algorithms provided in this header do not
@@ -41,5 +42,21 @@ void negative(SDL_Surface *surface);
     <surface>: the surface to be processed
 */
 void clipping(SDL_Surface *surface);
+
+/*
+    Saturation control. Converts each pixel into HSL, then changes
+    the value to the <value> parameter.
+    <surface>: the surface to be processed
+    <value>: the new saturation (S) value
+*/
+void saturation(SDL_Surface *surface, double value);
+
+/*
+    Exposure control. Converts each pixel into HSL, then changes
+    the value to the <value> parameter.
+    <surface>: the surface to be processed
+    <value>: the new exposure (L) value
+*/
+void exposure(SDL_Surface *surface, double value);
 
 #endif
