@@ -3,6 +3,6 @@
 
 #include <gsl/gsl_matrix.h>
 
-SDL_Surface* sharpen(SDL_Surface *surface, double force);
+SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold);
 
 #endif

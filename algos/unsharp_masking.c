@@ -4,7 +4,7 @@
 #include "unsharp_masking.h"
 #include "blurs.h"
 
-SDL_Surface* sharpen(SDL_Surface *surface, double force)
+SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
 {
     if (surface == NULL)
         goto error;
@@ -14,11 +14,9 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force)
 
     SDL_Surface* org = create_surface(surface->w, surface->h);
     copy_surface(surface, org);
-    saveJPG("org.JPG", org);
     if (org == NULL)
         goto error;
-    gaussian_blur(surface, 5);
-    saveJPG("blur.JPG", surface);
+    gaussian_blur(org, 11);
 
     for (int i = 0; i < surface->w; i++)
     {
@@ -34,15 +32,17 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force)
             bg = 0;
             bb = 0;
 
-            Uint32 pixelorg = get_pixel(org, i, j);
-            Uint32 pixelblr = get_pixel(surface, i, j);
-
+            Uint32 pixelblr = get_pixel(org, i, j);
+            Uint32 pixelorg = get_pixel(surface, i, j);
             SDL_GetRGBA(pixelorg, org->format, &or, &og, &ob, &a);
             SDL_GetRGB(pixelblr, surface->format, &br, &bg, &bb);
             Uint8 r, g, b;
             r = or + ((or - br) * force);
             g = og + ((og - bg) * force);
             b = ob + ((ob - bb) * force);
+            r = r + threshold < or ? or : r;
+            g = g + threshold < og ? og : g;
+            b = b + threshold < ob ? ob : b;
             set_pixel(res, r, g, b, a, i, j);
         }
     }
