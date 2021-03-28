@@ -299,3 +299,17 @@ void quit(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture)
     IMG_Quit();
     SDL_Quit();
 }
+
+void copy_surface(SDL_Surface *surface1, SDL_Surface *surface2)
+{
+    for(int i = 0; i < surface1->w; i++)
+    {
+        for (int j = 0; j < surface1->h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface1, i, j);
+            SDL_GetRGBA(pixel, surface1->format, &r, &g, &b, &a);
+            set_pixel(surface2, r, g, b, a, i, j);
+        }
+    }
+}
