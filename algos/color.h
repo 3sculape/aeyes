@@ -31,4 +31,16 @@ void brightest_pixel(SDL_Surface *surface, Uint8 *reference);
 */
 void white_balance(SDL_Surface *surface, double factor);
 
+/*
+    Calibrate the image towards a green or purple
+    hue depending on a factor:
+     - [-1; 0] -> towards green
+     - [0] -> no balancing
+     - [0; 1] -> towards purple
+    <surface>: the surface to be processed
+    <factor>: a factor representing the amount of
+    calibration to apply
+*/
+void tint(SDL_Surface *surface, double factor);
+
 #endif

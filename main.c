@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 		errx(3, "Coudn't load %s", argv[1]);
 	}
 
-	white_balance(surface, -0.7);
+	tint(surface, 1);
 
 	texture = surface_to_texture(surface, renderer);
 

@@ -77,7 +77,62 @@ void white_balance(SDL_Surface *surface, double factor)
             b = (b * (color[2] + (255 - color[2]) * (1 - factor))) / 255;
 
             rgb_to_hsl(r, g, b, new_hsl);
-            new_hsl[1] = (factor / 2) * new_hsl[1] * fmin(0.5, (b / 255));
+            new_hsl[2] = old_hsl[2];
+            hsl_to_rgb(new_hsl[0], new_hsl[1], new_hsl[2], rgb);
+
+            set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+}
+
+void tint(SDL_Surface *surface, double factor)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in white_balance");
+        return;
+    }
+
+    Uint8 color[3];
+    if (factor < -1 || factor > 1 || factor == 0)
+        return;
+
+    if (factor < 0)
+    {
+        color[0] = 0;
+        color[1] = 203;
+        color[2] = 0;
+    }
+
+    else
+    {
+        color[0] = 203;
+        color[1] = 0;
+        color[2] = 203;
+    }
+
+    factor = fabs(factor);
+
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            double old_hsl[3];
+            double new_hsl[3];
+            Uint8 rgb[3];
+
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+
+            rgb_to_hsl(r, g, b, old_hsl);
+            r = (r * (color[0] + (255 - color[0]) * (1 - factor))) / 255;
+            g = (g * (color[1] + (255 - color[1]) * (1 - factor))) / 255;
+            b = (b * (color[2] + (255 - color[2]) * (1 - factor))) / 255;
+
+            rgb_to_hsl(r, g, b, new_hsl);
             new_hsl[2] = old_hsl[2];
             hsl_to_rgb(new_hsl[0], new_hsl[1], new_hsl[2], rgb);
 
