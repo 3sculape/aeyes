@@ -5,7 +5,7 @@ LDFLAGS=
 LDLIBS=`pkg-config --libs sdl2` `pkg-config --libs gtk+-3.0` `pkg-config --libs gsl` -lSDL2_image -lm -lpng -ljpeg
 
 # Source for SDL and GTK compilation
-GTK_SRC= main.c utils/lib_sdl.c algos/basic.c algos/convert.c algos/color.c algos/utility.c
+GTK_SRC= main.c utils/lib_sdl.c algos/basic.c algos/convert.c algos/color.c algos/utility.c algos/whites.c
 GTK_OBJ=$(GTK_SRC:.c=.o)
 GTK_DEP=$(GTK_SRC:.c=.d)
 
