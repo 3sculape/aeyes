@@ -175,10 +175,10 @@ void exposure(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsl);
 
             hsl[2] += value * (hsl[2] / 100);
-            if (hsl[1] < 0)
-                hsl[1] = 0;
-            if (hsl[1] > 100)
-                hsl[1] = 100;
+            if (hsl[2] < 0)
+                hsl[2] = 0;
+            if (hsl[2] > 100)
+                hsl[2] = 100;
 
             hsv_to_rgb(hsl[0], hsl[1], hsl[2], rgb);
 
