@@ -406,16 +406,20 @@ body{
 
 
 #el1.active{
-	background: url(img/head-in-clouds.jpg);
+	background: url(img/overview.png);
 	background-repeat: no-repeat;
-	background-size: cover;
+	background-size: contain;
 	background-position: center;
 	animation: FadeInUp 700ms ease 1;
 	animation-fill-mode:forwards;
+	width: 40vw;
+	height: 40vh;
+	left: -5vw;
+	top: -2vw;
 }
 
 #el2.active{
-	background: url(img/balloon.jpg);
+	background: url(img/deformation.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -424,7 +428,7 @@ body{
 }
 
 #el3.active{
-	background: url(img/paris.jpg);
+	background: url(img/colors.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -433,7 +437,7 @@ body{
 }
 
 #el4.active{
-	background: url(img/road.jpg);
+	background: url(img/dir_blur.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -442,7 +446,7 @@ body{
 }
 
 #el5.active{
-	background: url(img/street.jpg);
+	background: url(img/special.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -568,13 +572,21 @@ body{
 	width: 40vw;
 	height: 30vh;
 	position: absolute;
-	border-radius: 30px;
-	background: url(img/road.jpg);
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center;
 	animation: FadeInUp 700ms ease 1;
 	animation-fill-mode:forwards;
+
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-items: center;
+	align-content: space-around;
+}
+
+.alignwrap8{
+	margin-top: 5vh;;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	align-content: space-around;
 }
 
 .elem9{
@@ -582,13 +594,13 @@ body{
 	width: 40vw;
 	height: 30vh;
 	position: absolute;
-	border-radius: 30px;
-	background: url(img/head-in-clouds.jpg);
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center;
 	animation: FadeInUp 700ms ease 1;
 	animation-fill-mode:forwards;
+
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	align-content: space-around;
 }
 
 #el6.active{
@@ -600,11 +612,173 @@ body{
 }
 
 #el8.active{
-	display: block;
+	display: flex;
 }
 
 #el9.active{
-	display: block;
+	display: flex;
+}
+
+.softlogo{
+	height: 9vh;
+	width: 9vh;
+	z-index: 20;
+	margin: 20px;
+
+	
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+
+	opacity: 65%;
+	cursor: pointer;
+
+	transition: 0.2s;
+
+}
+
+.softlogo:hover{
+	opacity: 100%;
+	transition: 0.2s;
+	transform: translateY(-5px);
+	filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.2));
+}
+
+.logo1{
+	background-image: url(img/softwares/ai.png);
+}
+
+.logo2{
+	background-image: url(img/softwares/ps.png);
+}
+
+.logo3{
+	background-image: url(img/softwares/dw.png);
+}
+
+.logo4{
+	background-image: url(img/softwares/overleaf.png);
+}
+
+.logo5{
+	background-image: url(img/softwares/glade.png);
+}
+
+.logo6{
+	background-image: url(img/softwares/vsc.png);
+}
+
+.logo7{
+	background-image: url(img/softwares/vim.png);
+}
+
+.logo8{
+	background-image: url(img/softwares/gtk.png);
+}
+
+.logo9{
+	background-image: url(img/softwares/sdl.png);
+}
+
+.logo10{
+	background-image: url(img/softwares/discord.png);
+}
+
+
+
+.teammember{
+	height: 19vh;
+	width: 12vh;
+	z-index: 20;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-right: 2vw;
+	margin-left: 2vw;
+
+	cursor: pointer;
+
+	transition: 0.2s;
+}
+
+.teammember:hover{
+	transition: 0.2s;
+	transform: translateY(-5px);
+	filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.2));
+}
+
+.memberdescription{
+	color:rgba(255, 255, 255, 0.7);
+	font-size: 1.2rem;
+}
+
+.memberthumbnail{
+	height: 12vh;
+	width: 12vh;
+	z-index: 20;
+	
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	transition: 0.2s;
+	border-radius: 15px;
+}
+
+.thumb1{
+	filter: grayscale(0.7) brightness(1.3) saturate(0.5);
+	background-image: url(img/team/nigel.png);
+}
+
+.thumb2{
+	filter: grayscale(0.7) brightness(1.3) saturate(0.5);
+	background-image: url(img/team/samuel.png);
+}
+
+.thumb3{
+	filter: grayscale(0.7) brightness(1.3) saturate(0.5);
+	background-image: url(img/team/thibaut.png);
+}
+
+.thumb4{
+	filter: grayscale(0.7) brightness(1.3) saturate(0.5);
+	background-image: url(img/team/clement.png);
+}
+
+
+
+.member1:hover .thumb1{
+	filter: none;
+	transition: 0.2s;
+}
+
+.member1:hover .description1{
+	color: rgba(255, 255, 255, 1);
+}
+
+
+.member2:hover .thumb2{
+	filter: none;
+}
+
+.member2:hover .description2{
+	color: rgba(255, 255, 255, 1);
+}
+
+
+.member3:hover .thumb3{
+	filter: none;
+}
+
+.member3:hover .description3{
+	color: rgba(255, 255, 255, 1);
+}
+
+
+.member4:hover .thumb4{
+	filter: none;
+}
+
+.member4:hover .description4{
+	color: rgba(255, 255, 255, 1);
 }
 
 
