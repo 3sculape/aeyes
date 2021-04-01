@@ -1,4 +1,3 @@
 # aeyes
 
-JE SUIS UN CONTRIBUTOR AUSSI BORDEL !!!
-C EST BON
+The Image Manipulation software by AEYES.

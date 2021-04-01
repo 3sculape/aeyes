@@ -89,25 +89,17 @@ int main(int argc, char *argv[])
         errx(1, "Coudn't create window");
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
-
-    motion_blur(surface, 31);
+    
+    gaussian_blur(surface, 10, 0.84089642);
     saveJPG(argv[2], surface);
-
-    texture = create_texture(sdl_renderer, surface->w, surface->h);
     texture = surface_to_texture(surface, sdl_renderer);
 
     SDL_RenderClear(sdl_renderer);
     SDL_RenderCopy(sdl_renderer, texture, NULL, NULL);
     SDL_RenderPresent(sdl_renderer);
-
-    SDL_FreeSurface(surface);
-
-    SDL_AddEventWatch(resizingEventWatcher, NULL);
-
-    g_signal_connect(gtk_window, "configure-event", G_CALLBACK(on_configure), NULL);
+    
     g_signal_connect(gtk_window, "destroy", G_CALLBACK(on_quit), NULL);
     gtk_main();
+    SDL_FreeSurface(surface);
     quit(sdl_window, sdl_renderer, texture);
-    return 0;
-
 }
