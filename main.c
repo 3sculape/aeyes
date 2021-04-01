@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
     
-    box_blur(surface);
+    gaussian_blur(surface, 10, 0.84089642);
     saveJPG(argv[2], surface);
     texture = surface_to_texture(surface, sdl_renderer);
 
