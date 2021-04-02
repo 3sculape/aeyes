@@ -3,7 +3,11 @@
 #include <SDL2/SDL.h>
 #include <err.h>
 #include "../utils/lib_sdl.h"
+<<<<<<< HEAD
 #include "convert.h"
+=======
+#include <SDL2/SDL2_rotozoom.h>
+>>>>>>> main
 
 /*
     All algorithms provided in this header do not
@@ -44,6 +48,7 @@ void negative(SDL_Surface *surface);
 void clipping(SDL_Surface *surface);
 
 /*
+<<<<<<< HEAD
     Saturation control. Converts each pixel into HSL, then changes
     the value to the <value> parameter.
     <surface>: the surface to be processed
@@ -60,3 +65,17 @@ void saturation(SDL_Surface *surface, double value);
 void exposure(SDL_Surface *surface, double value);
 
 #endif
+=======
+ * Basic image cropping, takes into parameter the source we want to copy from,
+ * the starting position of the left corner and the width and height of the
+ * wanted section. Returns the texture create from it
+ */
+SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer, size_t x,
+        size_t y, size_t w, size_t h);
+
+SDL_Texture* resize(SDL_Texture* original, SDL_Renderer* render, double factor);
+
+SDL_Texture* rotate(SDL_Texture* original, SDL_Renderer* render, double angle);
+
+#endif
+>>>>>>> main

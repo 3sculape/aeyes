@@ -1,3 +1,11 @@
+# Image extensions
+*.png
+*.PNG
+*.jpg
+*.JPG
+*.bmp
+*.BMP
+
 # Prerequisites
 *.d
 

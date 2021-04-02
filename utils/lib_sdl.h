@@ -33,7 +33,7 @@ SDL_Texture *surface_to_texture(SDL_Surface *surface, SDL_Renderer *renderer);
 
 //Convert an SDL_Texture *texture to a new SDL_Surface *surface.
 //return NULL if an error occured.
-SDL_Surface *texture_to_surface(SDL_Texture *texture);
+SDL_Surface *texture_to_surface(SDL_Texture *texture, SDL_Renderer *renderer);
 
 //Print the SDL_Texture *texture to the window linked to SDL_Renderer *renderer at position posx and posy.
 void print_texture_to_window(SDL_Texture *texture, SDL_Renderer *renderer);
@@ -56,5 +56,9 @@ void init(SDL_Window **window, SDL_Renderer **renderer, size_t w, size_t h);
 //Destroy all parameters, put a NULL as parameters if nothing to destroy.
 //Quit SDL.
 void quit(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture);
+
+//Copy Surface1 pixels to Surface2 pixels.
+//The two surface must be of the same size.
+void copy_surface(SDL_Surface *surface1, SDL_Surface *surface2);
 
 #endif

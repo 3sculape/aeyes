@@ -13,4 +13,9 @@
 */
 void deep_fry(SDL_Surface *surface, Uint8 *reference);
 
+/*
+    Call this function with force < 0.5 or force > 1 
+*/
+SDL_Surface* fever_dream(SDL_Surface *surface, double force);
+
 #endif
