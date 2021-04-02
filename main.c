@@ -102,5 +102,4 @@ int main(int argc, char *argv[])
     gtk_main();
     SDL_FreeSurface(surface);
     quit(sdl_window, sdl_renderer, texture);
-    return 0;
 }
