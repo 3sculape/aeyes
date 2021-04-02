@@ -8,7 +8,6 @@
 #include "algos/basic.h"
 #include "algos/convert.h"
 #include "algos/color.h"
-<<<<<<< HEAD
 #include "algos/blurs.h"
 
 SDL_Window *sdl_window;
