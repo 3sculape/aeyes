@@ -327,7 +327,6 @@ void copy_surface(SDL_Surface *surface1, SDL_Surface *surface2)
             Uint8 r, g, b, a;
             Uint32 pixel = get_pixel(surface1, i, j);
             SDL_GetRGBA(pixel, surface1 -> format, &r, &g, &b, &a);
-            set_pixel(surface2, r, g, b, a, i, j);
         }
     }
 }
