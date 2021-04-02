@@ -117,7 +117,6 @@ void clipping(SDL_Surface *surface)
     SDL_UnlockSurface(surface);
 }
 
-<<<<<<< HEAD
 void saturation(SDL_Surface *surface, double value)
 {
     if (SDL_LockSurface(surface) != 0)
@@ -189,7 +188,6 @@ void exposure(SDL_Surface *surface, double value)
 
     SDL_UnlockSurface(surface);
 }
-=======
 SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer,
         size_t x, size_t y, size_t w, size_t h)
 {
@@ -228,4 +226,3 @@ SDL_Texture* rotate(SDL_Texture* original,SDL_Renderer* render, double angle)
     SDL_FreeSurface(tmp);
     return res;
 }
->>>>>>> main
