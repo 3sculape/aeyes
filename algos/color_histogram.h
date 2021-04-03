@@ -3,11 +3,22 @@
 
 #include "../utils/lib_sdl.h"
 #include "basic.h"
+#include "convert.h"
 
 /* Creates an image from the arrays given by color_histogram, output the
  * surface resulting from the function (Planning on using a wrapper in the end)
  */
 SDL_Surface* show_histogram(SDL_Surface* surface);
+
+/* Creates the histogram in function of the luminance
+ */
+void clrl_histo(SDL_Surface *surface, int red[], int green[], int blue[]);
+
+void l_histo(SDL_Surface *surface, int lum[]);
+
+void show_l_histo(SDL_Surface *surface);
+
+void show_clrl_histo(SDL_Surface * surface);
 
 /* Main histogram function, takes the surface as parameter as well as three
  * arrays corresponding to the average of rgb in an image (arrays are

@@ -3,11 +3,174 @@
 #include "color_histogram.h"
 #include <err.h>
 
-#define COEFF 0.39215686
+#define COEFF 2.55
+#define LEN 101
 
 SDL_Surface* resize2(SDL_Surface *surface, double factor)
 {
     return rotozoomSurface(surface, 0, factor, 1);
+}
+
+void clrl_histo(SDL_Surface *surface, int red[], int green[], int blue[])
+{
+    int copy[LEN] = {0};
+    int w = surface->w;
+    int h = surface->h;
+
+    for(int i = 0; i < w; i++)
+    {
+        for(int j = 0; j < h; j++)
+        {
+            Uint32 pixel = get_pixel(surface, i, j);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, surface->format, &r, &g, &b);
+            double hsl[3];
+            rgb_to_hsl(r, g, b, hsl);
+            size_t l = (size_t)hsl[2];
+            copy[l] += 1;
+            red[l] += r;
+            green[l] += g;
+            blue[l] += b;
+        }
+    }
+    for (int i = 0; i < LEN; i++)
+    {
+        if (copy[i])
+        {
+            red[i] /= copy[i];
+            green[i] /= copy[i];
+            blue[i] /= copy[i];
+        }
+    }
+}
+void l_histo(SDL_Surface *surface, int lum[])
+{
+    int w = surface->w;
+    int h = surface->h;
+
+    for(int i = 0; i < w; i++)
+    {
+        for(int j = 0; j < h; j++)
+        {
+            Uint32 pixel = get_pixel(surface, i, j);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, surface->format, &r, &g, &b);
+            double hsl[3];
+            rgb_to_hsl(r, g, b, hsl);
+            int l = (int)hsl[2];
+            // printf("%i\n", l);
+            lum[l] += 1;
+        }
+    }
+    /*printf("[ %i", lum[0]);
+    for (int i = 1; i < LEN; i++)
+    {
+        printf(", %i", lum[i]);
+    }
+    printf("]\n");*/
+
+}
+
+int get_max(int arr[])
+{
+    int res = arr[0];
+    for(int i = 1; i < LEN; i++)
+    {
+        if (arr[i] > res)
+            res = arr[i];
+    }
+    return res;
+}
+
+void show_l_histo(SDL_Surface * surface)
+{
+    SDL_Surface* histo = create_surface(LEN, LEN);
+    double factor = 100.0 / (double)surface->w;
+    SDL_Surface* tmp = resize2(surface, factor);
+    int lum[LEN] = {0};
+    l_histo(surface, lum);/*
+    printf("[ %i", lum[0]);
+    for (int i = 1; i < LEN; i++)
+    {
+        printf(", %i", lum[i]);
+    }
+    printf("]\n");*/
+    SDL_FreeSurface(tmp);
+    int range = get_max(lum);
+    for(int i = 0; i < LEN; i++)
+    {
+        int tmp = lum[i] / (int)((double)range / 100.0);
+        for (int j = LEN; j > 0; --j)
+        {
+            if (tmp)
+            {
+                set_pixel(histo, 255,255,255, 1, i, j);
+                tmp -= 1;
+            }
+            else
+            {
+                set_pixel(histo, 0, 0, 0, 0, i, j);
+            }
+        }
+    }
+    savePNG("l_histo.PNG", histo);
+    SDL_FreeSurface(histo);
+}
+
+void show_clrl_histo(SDL_Surface* surface)
+{
+    SDL_Surface* histo = create_surface(LEN, LEN);
+    double factor = 100.0 / (double)surface->w;
+    SDL_Surface* tmp = resize2(surface, factor);
+    int red[LEN] = {0};
+    int green[LEN] = {0};
+    int blue[LEN] = {0};
+    clrl_histo(tmp, red, green, blue);
+    SDL_FreeSurface(tmp);
+
+    for(int i = 0; i < LEN; i++)
+    {
+        int ri = (int)((double)red[i] / COEFF);
+        int gi = (int)((double)green[i] / COEFF);
+        int bi = (int)((double)blue[i] / COEFF);
+        int j = 100;
+        if (!ri && !gi && !bi)
+        {
+            for(; j > 0; --j)
+            {
+                set_pixel(histo, 0, 0, 0, 0, i, j);
+            }
+            continue;
+        }
+        for(; j > 0; --j)
+        {
+            Uint8 r, g, b, a;
+            r = 0;
+            g = 0;
+            b = 0;
+            a = 0;
+            if (ri)
+            {
+                r = 255;
+                ri -= 1;
+            }
+            if (gi)
+            {
+                g = 255;
+                gi -= 1;
+            }
+            if (bi)
+            {
+                b = 255;
+                bi -= 1;
+            }
+            a = r || g || b;
+            set_pixel(histo, r, g, b, a, i, j);
+        }
+    }
+
+    savePNG("histo.PNG", histo);
+    SDL_FreeSurface(histo);
 }
 
 void color_histogram(SDL_Surface* surface, size_t red[], size_t green[],

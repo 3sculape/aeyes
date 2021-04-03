@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     SDL_Window* window;
     create_window(500, 500, &window, &renderer);
     SDL_Surface* original = load(argv[1]);
-    savePNG("original.PNG", original);
+    //savePNG("original.PNG", original);
  /*   // saveJPG("test.JPG", original);
     if (original == NULL)
         errx(EXIT_FAILURE, "Load image returned NULL");
@@ -44,9 +44,7 @@ int main(int argc, char *argv[])
     SDL_FreeSurface(sharpened2);
     SDL_FreeSurface(sharpened5);
     quit(window, renderer, NULL);*/
-    SDL_Surface* histo = show_histogram(original);
-    savePNG("hist.PNG", histo);
-    SDL_FreeSurface(histo);
+    show_l_histo(original);
     SDL_FreeSurface(original);
     return 0;
 }
