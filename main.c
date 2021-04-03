@@ -15,8 +15,7 @@
 int main(int argc, char *argv[])
 {
     if (argc != 2)
-        errx(3, "Usage: ./gtk <JPEG image path>");
-    // show_info(argv[1]);
+        errx(EXIT_FAILURE, "error ");
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Renderer* renderer;
     SDL_Window* window;

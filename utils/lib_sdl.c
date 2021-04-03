@@ -207,23 +207,41 @@ SDL_Texture *surface_to_texture(SDL_Surface *surface, SDL_Renderer *renderer)
     return texture;
 }
 
+
 SDL_Surface *texture_to_surface(SDL_Texture *texture, SDL_Renderer *renderer)
 {
-	Uint32			format_pixels;
 	SDL_Surface		*surface;
 	int				w, h;
-	if(SDL_QueryTexture(texture, &format_pixels, NULL, &w, &h) != 0)
+	if(SDL_QueryTexture(texture, NULL, NULL, &w, &h) != 0)
         return NULL;
 
-	void* pixels = (void *)malloc(32 * w * h);
-    SDL_Rect r = {0, 0, w, h};
+	Uint32 *pixels = malloc(w * h * sizeof(Uint32));
     SDL_SetRenderTarget(renderer, texture);
-    SDL_RenderReadPixels(renderer, &r, format_pixels, pixels, w * sizeof(Uint32));
+    SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA32, pixels, w * sizeof(Uint32));
+    SDL_SetRenderTarget(renderer, NULL);
+
     if(pixels == NULL)
     {
         warnx("%s\n", SDL_GetError());
     }
-	surface = SDL_CreateRGBSurfaceWithFormatFrom(pixels, w, h, 32, w *sizeof(Uint32), format_pixels);
+
+	surface = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
+
+    SDL_LockSurface(surface);
+
+    for(int j = 0; j < h; j++)
+    {
+        for(int i = 0; i < w; i++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = pixels[j * surface->w + i];
+            SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+            set_pixel(surface, r, g, b, a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+    free(pixels);
 
 	return surface;
 }
@@ -304,12 +322,11 @@ void copy_surface(SDL_Surface *surface1, SDL_Surface *surface2)
 {
     for(int i = 0; i < surface1->w; i++)
     {
-        for (int j = 0; j < surface1->h; j++)
+        for(int j = 0; j < surface1->h; j++)
         {
             Uint8 r, g, b, a;
             Uint32 pixel = get_pixel(surface1, i, j);
-            SDL_GetRGBA(pixel, surface1->format, &r, &g, &b, &a);
-            set_pixel(surface2, r, g, b, a, i, j);
+            SDL_GetRGBA(pixel, surface1 -> format, &r, &g, &b, &a);
         }
     }
 }

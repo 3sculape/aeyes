@@ -57,6 +57,8 @@ void init(SDL_Window **window, SDL_Renderer **renderer, size_t w, size_t h);
 //Quit SDL.
 void quit(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture);
 
+//Copy Surface1 pixels to Surface2 pixels.
+//The two surface must be of the same size.
 void copy_surface(SDL_Surface *surface1, SDL_Surface *surface2);
 
 #endif

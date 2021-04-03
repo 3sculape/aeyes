@@ -16,7 +16,7 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
     copy_surface(surface, org);
     if (org == NULL)
         goto error;
-    gaussian_blur(org, 11);
+    gaussian_blur(org, 11, 0.5);
 
     for (int i = 0; i < surface->w; i++)
     {
