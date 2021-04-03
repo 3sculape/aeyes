@@ -1,17 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../utils/lib_sdl.h"
 #include "color_histogram.h"
 #include <err.h>
 
-void print_vector(size_t arr[], size_t len)
+#define COEFF 0.39215686
+
+SDL_Surface* resize2(SDL_Surface *surface, double factor)
 {
-    printf("[%lu", arr[0]);
-    for(size_t i = 1; i < len; i++)
-    {
-        printf(",%lu", arr[i]);
-    }
-    printf("]\n");
+    return rotozoomSurface(surface, 0, factor, 1);
 }
 
 void color_histogram(SDL_Surface* surface, size_t red[], size_t green[],
@@ -43,4 +39,64 @@ void color_histogram(SDL_Surface* surface, size_t red[], size_t green[],
         green[width] = avgg;
         blue[width] = avgb;
     }
+}
+
+SDL_Surface* show_histogram(SDL_Surface *surface)
+{
+    // Creates the output image
+    SDL_Surface* histo = create_surface(250, 100);
+
+    // calculates the factor in function of the image size
+    double factor = 250.0 / (double)surface->w;
+    //Temporary image of the size of the box
+    SDL_Surface* tmp = resize2(surface, factor);
+    size_t red[250];
+    size_t green[250];
+    size_t blue[250];
+    //create histo
+    color_histogram(tmp, red, green, blue);
+    SDL_FreeSurface(tmp);
+    for(int i = 0; i < 250; i++)
+    {
+        int j = 100;
+        // scales the rgb values from 255 to 100
+        int ri = (int)(COEFF * (double)red[i]);
+        int gi = (int)(COEFF * (double)green[i]);
+        int bi = (int)(COEFF * (double)blue[i]);
+
+        if (!ri && !gi && !bi)
+        {
+            for(; j > 0; --j)
+            {
+                set_pixel(histo, 0, 0, 0, 0, i, j);
+            }
+            continue;
+        }
+        for(; j > 0; --j)
+        {
+            Uint8 r, g, b, a;
+            r = 0;
+            g = 0;
+            b = 0;
+            a = 0;
+            if (ri)
+            {
+                r = 255;
+                ri -= 1;
+            }
+            if (gi)
+            {
+                g = 255;
+                gi -= 1;
+            }
+            if (bi)
+            {
+                b = 255;
+                bi -= 1;
+            }
+            a = r || g || b;
+            set_pixel(histo, r, g, b, a, i, j);
+        }
+    }
+    return histo;
 }

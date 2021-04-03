@@ -10,6 +10,7 @@
 #include "algos/color.h"
 #include "utils/lib_exif.h"
 #include "algos/unsharp_masking.h"
+#include "algos/color_histogram.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
     create_window(500, 500, &window, &renderer);
     SDL_Surface* original = load(argv[1]);
     savePNG("original.PNG", original);
-    // saveJPG("test.JPG", original);
+ /*   // saveJPG("test.JPG", original);
     if (original == NULL)
         errx(EXIT_FAILURE, "Load image returned NULL");
     SDL_Surface* sharpened01 = sharpen(original, 0.1, 50);
@@ -30,8 +31,8 @@ int main(int argc, char *argv[])
     SDL_Surface* sharpened1 = sharpen(original, 1, 50);
     SDL_Surface* sharpened2 = sharpen(original, 2, 50);
     SDL_Surface* sharpened5 = sharpen(original, 5, 50);
-    /*if (sharpened == NULL)
-        errx(EXIT_FAILURE, "unsharp_masking returned NULL");*/
+    if (sharpened == NULL)
+        errx(EXIT_FAILURE, "unsharp_masking returned NULL");
     savePNG("sharpened01.PNG", sharpened01);
     savePNG("sharpened05.PNG", sharpened05);
     savePNG("sharpened1.PNG", sharpened1);
@@ -43,6 +44,10 @@ int main(int argc, char *argv[])
     SDL_FreeSurface(sharpened1);
     SDL_FreeSurface(sharpened2);
     SDL_FreeSurface(sharpened5);
-    quit(window, renderer, NULL);
+    quit(window, renderer, NULL);*/
+    SDL_Surface* histo = show_histogram(original);
+    savePNG("hist.PNG", histo);
+    SDL_FreeSurface(histo);
+    SDL_FreeSurface(original);
     return 0;
 }
