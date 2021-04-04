@@ -13,7 +13,6 @@
 SDL_Window *sdl_window;
 SDL_Renderer *sdl_renderer;
 SDL_Texture *texture;
-//GtkWindow *gtk_window;
 
 GError* error;
 GtkDrawingArea *gtk_da;
@@ -67,37 +66,16 @@ typedef struct {
 
 
 
-
-int resizingEventWatcher(void *data, SDL_Event* event)
-{
-    if (event->type == SDL_WINDOWEVENT)
-    {
-        SDL_RenderClear(sdl_renderer);
-        SDL_RenderCopy(sdl_renderer, texture, NULL, NULL);
-        SDL_RenderPresent(sdl_renderer);
-    }
-    return 0;
-}
-
-gboolean on_configure()
-{
-    SDL_Event user_event;
-
-    user_event.type = SDL_WINDOWEVENT;
-    user_event.user.code = 2;
-    SDL_PushEvent(&user_event);
-
-    return True;
-}
-
-
-
 int main(int argc, char *argv[])
 {
     GtkBuilder *builder;
     GtkWidget *window;
 
     app_widgets *widgets = g_slice_new(app_widgets);
+
+    SDL_Init(SDL_INIT_EVERYTHING);
+    IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
+    SDL_CreateWindowAndRenderer(1,1, SDL_WINDOW_HIDDEN, &sdl_window, &sdl_renderer);
 
     if(argc != 3)
         errx(3, "Usage : ./gtk <filename>");
@@ -108,19 +86,8 @@ int main(int argc, char *argv[])
     gtk_builder_add_from_file(builder, "window_main.glade", NULL);
 
     window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
+    
 
-    /* GtkBuilder* builder = gtk_builder_new();
-    error = NULL;
-    if (gtk_builder_add_from_file(builder, "window_main.glade", &error) == 0)
-    {
-        g_printerr("Error loading file: %s\n", error->message);
-        g_clear_error(&error);
-        return 1;
-    } */
-
-    //gtk_window = GTK_WINDOW(gtk_builder_get_object(builder, "main_window"));
-
-    //gtk_da = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "image_window"));
 
     widgets->w_dlg_file_choose = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_file_choose"));
@@ -204,40 +171,10 @@ int main(int argc, char *argv[])
 
     gtk_widget_show(window);
 
-    //gtk_widget_show_all(GTK_WIDGET(gtk_window));
 
-    //gdk_window = gtk_widget_get_window(GTK_WIDGET(gtk_da));
-    // window_id = (void*)(intptr_t)GDK_WINDOW_XID(gdk_window);
-
-    // SDL_Init(SDL_INIT_VIDEO);
-    // IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
-
-    // SDL_Surface *surface;
-    // surface = load(argv[1]);
-    // if(surface == NULL)
-    // {
-    //     errx(3, "Coudn't load %s", argv[1]);
-    // }
-
-    // sdl_window = SDL_CreateWindowFrom(window_id);
-    // if(!sdl_window)
-    //     errx(1, "Coudn't create window");
-
-    // sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
-
-    // gaussian_blur(surface, 10, 0.84089642);
-    // saveJPG(argv[2], surface);
-    // texture = surface_to_texture(surface, sdl_renderer);
-
-    // SDL_RenderClear(sdl_renderer);
-    // SDL_RenderCopy(sdl_renderer, texture, NULL, NULL);
-    // SDL_RenderPresent(sdl_renderer);
-
-    //g_signal_connect(gtk_window, "destroy", G_CALLBACK(on_quit), NULL);
     gtk_main();
     g_slice_free(app_widgets, widgets);
-    /* SDL_FreeSurface(surface);
-    quit(sdl_window, sdl_renderer, texture); */
+
 
     return 0;
 }
@@ -257,6 +194,9 @@ void on_btn_apply_wb_clicked(GtkButton *button, app_widgets *app_wdgts)
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_wb_spin_btn));
 
     g_print("Applying White Balance with %d value\n", quantity);
+
+    SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+    
 }
 
 void on_btn_apply_tint_clicked(GtkButton *button, app_widgets *app_wdgts)
@@ -326,29 +266,51 @@ void on_btn_apply_saturation_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 //-----------------------------------------------//
 //-------------- QUITTING FUNCTIONS -------------//
 //-----------------------------------------------//
 
 gboolean on_quit()
 {
+    quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
     return True;
 }
 
 gboolean on_btn_quit_activate()
 {
+    quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
     return True;
 }
 
 void on_window_main_destroy()
 {
+    quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
 }
 
 
 
+
+void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
+{
+    savePNG("./tmp.png", surface);
+    SDL_DestroyTexture(texture);
+    texture = surface_to_texture(surface, sdl_renderer);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+}
 
 
 // LOAD BUTTON FUNCTION FOR THE IMAGE
@@ -368,7 +330,10 @@ void on_btn_open_activate(GtkMenuItem *btn_open, app_widgets *app_wdgts)
             gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
                     app_wdgts->image_path);
 
-            
+            SDL_Surface *surface = load(app_wdgts->image_path);
+            texture = surface_to_texture(surface, sdl_renderer);
+
+            SDL_FreeSurface(surface);
 
             //---- LOAD EXIF ----//
 

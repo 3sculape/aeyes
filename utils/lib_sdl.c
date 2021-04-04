@@ -9,7 +9,7 @@ void create_window(size_t width, size_t height, SDL_Window **window, SDL_Rendere
 {
     SDL_CreateWindowAndRenderer(width,
             height,
-            SDL_WINDOW_ALWAYS_ON_TOP,
+            SDL_WINDOW_HIDDEN,
             window,
             renderer
             );
