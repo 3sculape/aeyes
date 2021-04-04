@@ -27,7 +27,6 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
     if (org == NULL)
         goto error;
     gaussian_blur(org, 5, 5);
-    saveJPG("./g.jpg", org);
 
     for (int i = 0; i < surface->w; i++)
     {
