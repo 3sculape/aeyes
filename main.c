@@ -8,6 +8,9 @@
 #include "algos/basic.h"
 #include "algos/convert.h"
 #include "algos/color.h"
+#include "utils/lib_exif.h"
+#include "algos/unsharp_masking.h"
+#include "algos/color_histogram.h"
 #include "algos/whites.h"
 #include "algos/blurs.h"
 #include "algos/secret_sauce.h"
@@ -545,7 +548,7 @@ void on_btn_apply_direct_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Applying Directional Blur with a size of %d and an angle of %d °\n", strength_quantity, angle_quantity);
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    motion_blur(surface, sdl_renderer, (int)strength_quantity, (double)angle_quantity);
+    motion_blur(surface, (int)strength_quantity, (double)angle_quantity);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 

@@ -4,6 +4,16 @@
 #include "unsharp_masking.h"
 #include "blurs.h"
 
+int clamp(int x, int min, int max)
+{
+    if(x < min)
+        return min;
+    else if(x > max)
+        return max;
+    else
+        return x;
+}
+
 SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
 {
     if (surface == NULL)
@@ -16,7 +26,7 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
     copy_surface(surface, org);
     if (org == NULL)
         goto error;
-    gaussian_blur(org, 11, 0.5);
+    gaussian_blur(org, 5, 5);
 
     for (int i = 0; i < surface->w; i++)
     {
@@ -36,14 +46,17 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
             Uint32 pixelorg = get_pixel(surface, i, j);
             SDL_GetRGBA(pixelorg, org->format, &or, &og, &ob, &a);
             SDL_GetRGB(pixelblr, surface->format, &br, &bg, &bb);
-            Uint8 r, g, b;
-            r = or + ((or - br) * force);
-            g = og + ((og - bg) * force);
-            b = ob + ((ob - bb) * force);
-            r = r + threshold < or ? or : r;
-            g = g + threshold < og ? og : g;
-            b = b + threshold < ob ? ob : b;
-            set_pixel(res, r, g, b, a, i, j);
+            int r, g, b;
+            r = (int)or + (((int)or - (int)br) * force);
+            g = (int)og + (((int)og - (int)bg) * force);
+            b = (int)ob + (((int)ob - (int)bb) * force);
+            r = clamp(r, 0, 255);
+            g = clamp(g, 0, 255);
+            b = clamp(b, 0, 255);
+            r = (int)or - (int)r > threshold ? or : r;
+            g = (int)or - (int)g > threshold ? og : g;
+            b = (int)or - (int)b > threshold ? ob : b;
+            set_pixel(res, (Uint8)r, (Uint8)g, (Uint8)b, a, i, j);
         }
     }
     SDL_FreeSurface(org);
