@@ -20,6 +20,7 @@ void *gdk_window;
 void *window_id;
 
 
+
 typedef struct {
     GtkWidget *w_dlg_file_choose;                 // Pointer to file chooser dialog box
     GtkWidget *w_dlg_save_choose;                 // Pointer to save file chooser dialog box
@@ -174,7 +175,6 @@ int main(int argc, char *argv[])
 
     gtk_main();
     g_slice_free(app_widgets, widgets);
-
 
     return 0;
 }
@@ -360,11 +360,9 @@ void on_btn_open_activate(GtkMenuItem *btn_open, app_widgets *app_wdgts)
 }
 
 
-
 //-----------------------------------------------//
 //------------ FILTERS AND FUNCTIONS ------------//
 //-----------------------------------------------//
-
 
 
 //------------ Sharpen ------------//
