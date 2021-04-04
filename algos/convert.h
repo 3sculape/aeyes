@@ -6,7 +6,7 @@
 /*
     Convert an RGB value into its HSV (Hue, Saturation, Value)
     equivalent. <*hsv> is updated with H at index 0, S at
-    index 1 and V at index 2. 
+    index 1 and V at index 2.
     H is in range [0; 360]
     S is in range [0; 100]
     V is in range [0; 100]
@@ -34,7 +34,7 @@ void hsv_to_rgb(double h, double s, double v, Uint8 *rgb);
 /*
     Convert an RGB value into its HSL (Hue, Saturation, Lightness)
     equivalent. <*hsl> is updated with H at index 0, S at
-    index 1 and L at index 2. 
+    index 1 and L at index 2.
     H is in range [0; 360]
     S is in range [0; 100]
     L is in range [0; 100]

@@ -8,6 +8,9 @@
 #include "algos/basic.h"
 #include "algos/convert.h"
 #include "algos/color.h"
+#include "utils/lib_exif.h"
+#include "algos/unsharp_masking.h"
+#include "algos/color_histogram.h"
 #include "algos/whites.h"
 #include "algos/blurs.h"
 
@@ -21,7 +24,6 @@ GtkDrawingArea *gtk_da;
 void *gdk_window;
 void *window_id;
 
-<<<<<<< HEAD
 /*void update_image()
 {
     SDL_Surface *surface = texture_to_surface(texture);
@@ -30,10 +32,7 @@ void *window_id;
     SDL_FreeSurface(surface);
 }*/
 
-int resizingEventWatcher(void *data, SDL_Event* event) 
-=======
 int resizingEventWatcher(void *data, SDL_Event* event)
->>>>>>> 9f6fbc9d869843536f02fb1fec7fe636b27307f1
 {
     if (event->type == SDL_WINDOWEVENT)
     {
@@ -102,7 +101,6 @@ int main(int argc, char *argv[])
         errx(1, "Coudn't create window");
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
-    
     gaussian_blur(surface, 31, 7);
     saveJPG(argv[2], surface);
     texture = surface_to_texture(surface, sdl_renderer);
@@ -115,4 +113,5 @@ int main(int argc, char *argv[])
     gtk_main();
     SDL_FreeSurface(surface);
     quit(sdl_window, sdl_renderer, texture);
+    return 0;
 }
