@@ -188,41 +188,29 @@ void exposure(SDL_Surface *surface, double value)
 
     SDL_UnlockSurface(surface);
 }
-SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer,
-        size_t x, size_t y, size_t w, size_t h)
+SDL_Surface* image_crop(SDL_Surface* original, size_t x, size_t y, size_t w,
+        size_t h)
 {
-    SDL_Rect src;
-
-    src.x = x;
-    src.y = y;
-    src.w = w;
-    src.h = h;
-
-    SDL_Texture* cropped = create_texture(renderer, w, h);
-
-    if(SDL_SetRenderTarget(renderer, cropped))
-        warnx("SetRenderTarget fail");
-
-    if (SDL_RenderCopy(renderer, original, &src, NULL))
-        warnx("RenderCopy fail");
-
-    return cropped;
+    SDL_Surface* cropped = create_surface(w, h);
+    for (size_t i = 0; i < w; i++)
+    {
+        for (size_t j = 0; j < h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(original, x + i, y + j);
+            SDL_GetRGBA(pixel, original -> format, &r, &g, &b, &a);
+            set_pixel(cropped, r, g, b, a, i, j);
+        }
+    }
+     return cropped;
 }
 
-SDL_Texture* resize(SDL_Texture* original,SDL_Renderer* render, double factor)
+SDL_Surface* resize(SDL_Surface* original, double factor)
 {
-    SDL_Surface* tmp = texture_to_surface(original, render);
-    SDL_Texture* res = surface_to_texture(rotozoomSurface(tmp, 0, factor, 1),
-            render);
-    SDL_FreeSurface(tmp);
-    return res;
+    return rotozoomSurface(original, 0, factor, 1);
 }
 
-SDL_Texture* rotate(SDL_Texture* original,SDL_Renderer* render, double angle)
+SDL_Surface* rotate(SDL_Surface* original, double angle)
 {
-    SDL_Surface* tmp = texture_to_surface(original, render);
-    SDL_Texture* res = surface_to_texture(rotozoomSurface(tmp, angle, 1, 1),
-            render);
-    SDL_FreeSurface(tmp);
-    return res;
+    return rotozoomSurface(original, angle, 1, 1);
 }

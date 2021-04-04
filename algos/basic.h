@@ -65,11 +65,11 @@ void exposure(SDL_Surface *surface, double value);
     the starting position of the left corner and the width and height of the
     wanted section. Returns the texture create from it
 */
-SDL_Texture* image_crop(SDL_Texture* original, SDL_Renderer* renderer, size_t x,
-        size_t y, size_t w, size_t h);
+SDL_Surface* image_crop(SDL_Surface* original, size_t x, size_t y, size_t w,
+        size_t h);
 
-SDL_Texture* resize(SDL_Texture* original, SDL_Renderer* render, double factor);
+SDL_Surface* resize(SDL_Surface* original, double factor);
 
-SDL_Texture* rotate(SDL_Texture* original, SDL_Renderer* render, double angle);
+SDL_Surface* rotate(SDL_Surface* original, double angle);
 
 #endif
