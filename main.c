@@ -20,6 +20,14 @@ GtkDrawingArea *gtk_da;
 void *gdk_window;
 void *window_id;
 
+/*void update_image()
+{
+    SDL_Surface *surface = texture_to_surface(texture);
+    saveJPG(surface, "tmp.jgp");
+    gtk_image_set_from_file (GTK_IMAGE (image), "tmp.jpg");
+    SDL_FreeSurface(surface);
+}*/
+
 int resizingEventWatcher(void *data, SDL_Event* event) 
 {
     if (event->type == SDL_WINDOWEVENT) 
@@ -90,7 +98,7 @@ int main(int argc, char *argv[])
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
     
-    gaussian_blur(surface, 10, 0.84089642);
+    gaussian_blur(surface, 31, 7);
     saveJPG(argv[2], surface);
     texture = surface_to_texture(surface, sdl_renderer);
 

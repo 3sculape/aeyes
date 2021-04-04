@@ -89,13 +89,13 @@ void get_pixel_rect(SDL_Surface *surface, Uint32 *rect, int posx, int posy, int 
 }
 
 
-void get_average(SDL_Surface *surface, Uint32 *matrix, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a)
+void get_average(SDL_Surface *surface, Uint32 *matrix, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a, int x)
 {
     int totr, totg, totb;
     totr = 0;
     totg = 0;
     totb = 0;
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < x * x; i++)
     {
         SDL_GetRGB(matrix[i], surface->format, r, g, b);
         totr += *r;
@@ -103,11 +103,11 @@ void get_average(SDL_Surface *surface, Uint32 *matrix, Uint8 *r, Uint8 *g, Uint8
         totb += *b;
     }
 
-    SDL_GetRGBA(matrix[4], surface->format, r, g, b, a);
+    SDL_GetRGBA(matrix[(x - 1) / 2 * x + (x - 1) / 2 + 1], surface->format, r, g, b, a);
 
-    totr /= 9;
-    totg /= 9;
-    totb /= 9;
+    totr /= x * x;
+    totg /= x * x;
+    totb /= x * x;
 
     *r = totr;
     *g = totg;
@@ -198,7 +198,7 @@ void box_blur(SDL_Surface *surface, int x)
         {
             Uint8 r, g, b, a;
             get_pixel_around_x(surface, matrix, i, j, x);
-            get_average(surface, matrix, &r, &g, &b, &a);
+            get_average(surface, matrix, &r, &g, &b, &a, x);
             set_pixel(surface2, r, g, b, a, i, j);
         }
     }
