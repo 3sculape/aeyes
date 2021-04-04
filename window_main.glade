@@ -300,6 +300,28 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
+                      <object class="GtkMenuItem" id="btn_binarization">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Binarization</property>
+                        <signal name="activate" handler="on_btn_binarization_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_negative">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Negative</property>
+                        <signal name="activate" handler="on_btn_negative_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="btn_mean_blur">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -365,6 +387,14 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Deep Fry</property>
                         <signal name="activate" handler="on_btn_deep_fry_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_fever_dream">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Fever Dream</property>
+                        <signal name="activate" handler="on_btn_fever_dream_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>

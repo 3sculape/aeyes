@@ -227,7 +227,7 @@ SDL_Surface *texture_to_surface(SDL_Texture *texture, SDL_Renderer *renderer)
 
 	surface = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
 
-    SDL_LockSurface(surface);
+    //SDL_LockSurface(surface);
 
     for(int j = 0; j < h; j++)
     {
@@ -240,7 +240,7 @@ SDL_Surface *texture_to_surface(SDL_Texture *texture, SDL_Renderer *renderer)
         }
     }
 
-    SDL_UnlockSurface(surface);
+    //SDL_UnlockSurface(surface);
     free(pixels);
 
 	return surface;
@@ -327,6 +327,7 @@ void copy_surface(SDL_Surface *surface1, SDL_Surface *surface2)
             Uint8 r, g, b, a;
             Uint32 pixel = get_pixel(surface1, i, j);
             SDL_GetRGBA(pixel, surface1 -> format, &r, &g, &b, &a);
+            set_pixel(surface2, r, g, b, a, i, j);
         }
     }
 }
