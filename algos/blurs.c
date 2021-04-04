@@ -189,7 +189,7 @@ void box_blur(SDL_Surface *surface, int x)
 {
     if(SDL_LockSurface(surface) != 0)
         return;
-    
+
     SDL_Surface *surface2 = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
     Uint32 *matrix = (Uint32 *)malloc(sizeof(Uint32) * x * x);
     for(int j = 0; j < surface->h; j++)
@@ -227,7 +227,7 @@ void gaussian_blur(SDL_Surface *surface, int x, double sigma)
         }
     }
     copy_surface(surface2, surface);
-    
+
     free(matrix);
     gsl_matrix_free(filter);
     SDL_FreeSurface(surface2);
@@ -258,34 +258,29 @@ void motion_blur_hor(SDL_Surface *surface, int x)
     SDL_UnlockSurface(surface);
 }
 
-void motion_blur(SDL_Surface *surface, SDL_Renderer *sdl_renderer, int x, double angle)
+void motion_blur(SDL_Surface *surface, int x, double angle)
 {
     int w = surface->w;
     int h = surface->h;
 
-    SDL_Surface *tmp = rotozoomSurface(surface, angle, 1, 1);
+    SDL_Surface *tmp = rotate(surface, angle);
     motion_blur_hor(tmp, x);
 
-    SDL_Surface *tmp2 = rotozoomSurface(tmp, (-1 * angle), 1, 1);
+    SDL_Surface *tmp2 = rotate(tmp, (-1 * angle));
     SDL_FreeSurface(tmp);
-
-    SDL_Texture *tmp_text = surface_to_texture(tmp2, sdl_renderer);
 
     size_t posx = (size_t)((tmp2->w / 2) - (w / 2));
     size_t posy = (size_t)((tmp2->h / 2) - (h / 2));
 
-    SDL_Texture *tmp_text2 = image_crop(tmp_text, sdl_renderer, posx,
-            posy, w, h);
+    tmp = image_crop(tmp2, posx, posy, w, h);
 
-    SDL_DestroyTexture(tmp_text);
     SDL_FreeSurface(tmp2);
 
-    SDL_Texture *texture = resize(tmp_text2, sdl_renderer, 100/99);
-    SDL_Surface *res = texture_to_surface(texture, sdl_renderer);
-    
-    copy_surface(res, surface);
+    tmp2 = resize(tmp, 100/99);
 
-    SDL_FreeSurface(res);
-    SDL_DestroyTexture(tmp_text2);
-    SDL_DestroyTexture(texture);
+    copy_surface(tmp2, surface);
+
+    SDL_FreeSurface(tmp2);
+
+    SDL_FreeSurface(tmp);
 }
