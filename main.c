@@ -8,6 +8,7 @@
 #include "algos/basic.h"
 #include "algos/convert.h"
 #include "algos/color.h"
+#include "algos/whites.h"
 #include "algos/blurs.h"
 
 SDL_Window *sdl_window;
@@ -20,6 +21,7 @@ GtkDrawingArea *gtk_da;
 void *gdk_window;
 void *window_id;
 
+<<<<<<< HEAD
 /*void update_image()
 {
     SDL_Surface *surface = texture_to_surface(texture);
@@ -29,8 +31,11 @@ void *window_id;
 }*/
 
 int resizingEventWatcher(void *data, SDL_Event* event) 
+=======
+int resizingEventWatcher(void *data, SDL_Event* event)
+>>>>>>> 9f6fbc9d869843536f02fb1fec7fe636b27307f1
 {
-    if (event->type == SDL_WINDOWEVENT) 
+    if (event->type == SDL_WINDOWEVENT)
     {
         SDL_RenderClear(sdl_renderer);
         SDL_RenderCopy(sdl_renderer, texture, NULL, NULL);
@@ -105,7 +110,7 @@ int main(int argc, char *argv[])
     SDL_RenderClear(sdl_renderer);
     SDL_RenderCopy(sdl_renderer, texture, NULL, NULL);
     SDL_RenderPresent(sdl_renderer);
-    
+
     g_signal_connect(gtk_window, "destroy", G_CALLBACK(on_quit), NULL);
     gtk_main();
     SDL_FreeSurface(surface);
