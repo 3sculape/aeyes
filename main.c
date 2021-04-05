@@ -350,11 +350,12 @@ void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
 }
 
 
-void btn_refresh_texture(GtkMenuItem *btn_open, app_widgets *app_wdgts)
+void on_btn_refresh_texture_activate(GtkMenuItem *btn_open, app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
+
 }
 
 
@@ -479,8 +480,6 @@ void on_btn_save_activate(GtkMenuItem *btn_open, app_widgets *app_wdgts)
             SDL_Surface *result = texture_to_surface(app_wdgts->texture, sdl_renderer);
             savePNG(app_wdgts->save_path, result);
 
-            g_print("IMAGE DSAVE PATH:%s\n",app_wdgts->save_path );
-
             SDL_FreeSurface(result);
         }
     }
@@ -518,8 +517,6 @@ void on_btn_apply_wb_clicked(GtkButton *button, app_widgets *app_wdgts)
     gint quantity = 0;
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_wb_spin_btn));
-
-    g_print("Applying White Balance with %d value\n", quantity);
     
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     white_balance(surface, ((double)quantity)/100);
@@ -533,8 +530,6 @@ void on_btn_apply_tint_clicked(GtkButton *button, app_widgets *app_wdgts)
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_tint_spin_btn));
 
-    g_print("Applying Tint with %d value\n", quantity);
-
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     tint(surface, ((double)quantity)/100);
     update_image(surface, app_wdgts);
@@ -546,8 +541,6 @@ void on_btn_apply_exposure_clicked(GtkButton *button, app_widgets *app_wdgts)
     gint quantity = 0;
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_exposure_spin_btn));
-
-    g_print("Applying Exposure with %d value\n", quantity);
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     exposure(surface, ((double)quantity));
@@ -561,7 +554,6 @@ void on_btn_apply_whites_clicked(GtkButton *button, app_widgets *app_wdgts)
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_whites_spin_btn));
 
-    g_print("Applying Whites with %d value\n", quantity);
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     whites(surface, ((double)quantity));
@@ -575,8 +567,6 @@ void on_btn_apply_highlights_clicked(GtkButton *button, app_widgets *app_wdgts)
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_highlights_spin_btn));
 
-    g_print("Applying Highlights with %d value\n", quantity);
-
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     highlights(surface, ((double)quantity));
     update_image(surface, app_wdgts);
@@ -588,8 +578,6 @@ void on_btn_apply_shadows_clicked(GtkButton *button, app_widgets *app_wdgts)
     gint quantity = 0;
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_shadows_spin_btn));
-
-    g_print("Applying Shadows with %d value\n", quantity);
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     shadows(surface, ((double)quantity));
@@ -603,8 +591,6 @@ void on_btn_apply_blacks_clicked(GtkButton *button, app_widgets *app_wdgts)
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_blacks_spin_btn));
 
-    g_print("Applying Blacks with %d value\n", quantity);
-
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     blacks(surface, ((double)quantity));
     update_image(surface, app_wdgts);
@@ -616,8 +602,6 @@ void on_btn_apply_saturation_clicked(GtkButton *button, app_widgets *app_wdgts)
     gint quantity = 0;
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_saturation_spin_btn));
-
-    g_print("Applying Saturation with %d value\n", quantity);
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     saturation(surface, ((double)quantity));
@@ -654,8 +638,6 @@ void on_btn_apply_sharpening_clicked(GtkButton *button, app_widgets *app_wdgts)
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn));
 
-    g_print("Applying Sharpening with a strength of %d\n", quantity);
-
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     SDL_Surface *res = sharpen(surface, ((double)quantity)/100, 50);
     update_image(res, app_wdgts);
@@ -690,8 +672,6 @@ void on_btn_apply_mean_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn));
 
-    g_print("Applying Mean Blur with a size of %d \n", quantity);
-
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     box_blur(surface, ((int)quantity));
     update_image(surface, app_wdgts);
@@ -724,8 +704,6 @@ void on_btn_apply_gaussian_blur_clicked(GtkButton *button, app_widgets *app_wdgt
     gint quantity = 0;
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn));
-
-    g_print("Applying Gaussian Blur with a size of %d \n", quantity);
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     gaussian_blur(surface, ((int)quantity), 5);
@@ -764,14 +742,10 @@ void on_btn_apply_direct_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
     angle_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_angle_direct_blur_spin_btn));
     strength_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_direct_blur_spin_btn));
 
-    g_print("Applying Directional Blur with a size of %d and an angle of %d °\n", strength_quantity, angle_quantity);
-
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     motion_blur(surface, (int)strength_quantity, (double)angle_quantity);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
-
-    g_print("Applying Directional Blur Finished\n");
 
     gint reset_value = 3;
     gint reset_value_angle = 0;
@@ -806,8 +780,6 @@ void on_btn_apply_resize_clicked(GtkButton *button, app_widgets *app_wdgts)
     height_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_height_resize_spin_btn));
     width_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_width_resize_spin_btn));
 
-    g_print("Applying Resizing with a new height of %d px and a new width of %d px\n", height_quantity, width_quantity);
-
     gint reset_value = 0;
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_height_resize_spin_btn), reset_value);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_width_resize_spin_btn), reset_value);
@@ -836,8 +808,6 @@ void on_btn_apply_rotation_clicked(GtkButton *button, app_widgets *app_wdgts)
     gint quantity = 0;
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_angle_rotation_spin_btn));
-
-    g_print("Applying Rotation with an angle of %d °\n", quantity);
 
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
@@ -874,8 +844,6 @@ void on_btn_apply_scale_clicked(GtkButton *button, app_widgets *app_wdgts)
     gdouble quantity = 0;
 
     quantity = gtk_spin_button_get_value(GTK_SPIN_BUTTON(app_wdgts->w_factor_scale_spin_btn));
-
-    g_print("Applying Scaling with factor of %f times\n", quantity);
 
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
@@ -923,7 +891,6 @@ void on_btn_apply_grayscale_clicked(GtkButton *button, app_widgets *app_wdgts)
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
-    g_print("Applying Grayscale\n");
 }
 
 
