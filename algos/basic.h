@@ -68,8 +68,14 @@ void exposure(SDL_Surface *surface, double value);
 SDL_Surface* image_crop(SDL_Surface* original, size_t x, size_t y, size_t w,
         size_t h);
 
+/*
+ * Basic image resize, wrapper to rotozoom for practicality
+ */
 SDL_Surface* resize(SDL_Surface* original, double factor);
 
+/*
+ * Basic image rotate, wrapper to rotozoom for practicality
+ */
 SDL_Surface* rotate(SDL_Surface* original, double angle);
 
 #endif

@@ -5,8 +5,9 @@
 #include "basic.h"
 #include "convert.h"
 
-/* Creates an image from the arrays given by color_histogram, output the
- * surface resulting from the function (Planning on using a wrapper in the end)
+/* (DEPRECATED) Creates an image from the arrays given by color_histogram,
+ * output the surface resulting from the function (Planning on using a wrapper
+ * in the end)
  */
 SDL_Surface* show_histogram(SDL_Surface* surface);
 
@@ -14,15 +15,19 @@ SDL_Surface* show_histogram(SDL_Surface* surface);
  */
 void clrl_histo(SDL_Surface *surface, int red[], int green[], int blue[]);
 
+// sub function for main l histo function
 void l_histo(SDL_Surface *surface, int lum[]);
 
+// Main luminance histogram function
 void show_l_histo(SDL_Surface *surface);
 
+// Main histogram fnc, color in function of luminance (WIP)
 void show_clrl_histo(SDL_Surface * surface);
 
-/* Main histogram function, takes the surface as parameter as well as three
- * arrays corresponding to the average of rgb in an image (arrays are
- * considered initialized by the programmer before the function call)
+/* (DEPRECATED) Main histogram function, takes the surface as parameter as
+ * well as three arrays corresponding to the average of rgb in an image
+ * (arrays are considered initialized by the programmer before the function
+ * call)
  */
 void color_histogram(SDL_Surface* surface, size_t red[], size_t green[],
         size_t blue[]);
