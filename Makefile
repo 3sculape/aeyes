@@ -8,7 +8,7 @@ LDFLAGS=$(PTHREAD) $(GTKLIB) -export-dynamic
 LDLIBS=`pkg-config --libs sdl2` `pkg-config --libs gtk+-3.0` `pkg-config --libs gsl` -lSDL2_image -lm -lpng -ljpeg -lSDL2_gfx -lexif
 
 # Source for SDL and GTK compilation
-GTK_SRC= main.c utils/lib_exif.c utils/lib_sdl.c algos/basic.c algos/convert.c algos/color.c algos/blurs.c algos/unsharp_masking.c algos/utility.c algos/whites.c algos/secret_sauce.c
+GTK_SRC= main.c utils/lib_exif.c utils/lib_sdl.c algos/basic.c algos/convert.c algos/color.c algos/blurs.c algos/unsharp_masking.c algos/utility.c algos/whites.c algos/secret_sauce.c algos/color_histogram.c
 
 
 GTK_OBJ=$(GTK_SRC:.c=.o)

@@ -113,7 +113,7 @@ void show_l_histo(SDL_Surface * surface)
             }
         }
     }
-    savePNG("l_histo.PNG", histo);
+    savePNG("./l_histo.PNG", histo);
     SDL_FreeSurface(histo);
 }
 
