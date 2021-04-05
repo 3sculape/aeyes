@@ -44,8 +44,8 @@ typedef struct {
     GtkWidget *w_check_rotation_resize_to_fit;    // Pointer to resize to fit of rotation
     gchar     *image_path;                        // Image path to give to Pre-Processing
     gchar     *save_path;                         // Image path to give to Pre-Processing
-    GtkWidget *w_on_btn_save_clicked;             // Pointer to rhe save button of save window
-    GtkWidget *w_on_btn_cancel_save_clicked;      // Pointer to rhe save button of save window
+    GtkWidget *w_on_btn_save_clicked;             // Pointer to the save button of save window
+    GtkWidget *w_on_btn_cancel_save_clicked;      // Pointer to the save button of save window
 
     GtkWidget *w_wb_spin_btn;                     // Pointer to White Balance Spin Button widget
     GtkWidget *w_tint_spin_btn;                   // Pointer to Tint Spin Button widget
@@ -86,6 +86,7 @@ typedef struct {
     GtkWidget *w_btn_fit_to_scale;                // Pointer to tool bar fit to scale
     GtkWidget *w_btn_median_blur;                 // Pointer to tool bar median blur
     GtkWidget *w_btn_edge_enhance;                // Pointer to tool bar edge enhancement
+    GtkWidget *w_btn_sav;                        // Pointer to the save button of tool bar
 
     GtkWidget *w_btn_apply_grayscale;             // Pointer to apply button of grayscale
     GtkWidget *w_btn_apply_wb;                    // Pointer to apply button of wb
@@ -237,6 +238,8 @@ int main(int argc, char *argv[])
             "btn_edge_enhance"));
     widgets->w_check_rotation_resize_to_fit = GTK_WIDGET(gtk_builder_get_object(builder,
             "check_rotation_resize_to_fit"));
+    widgets->w_btn_sav = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_sav"));
 
             
 
@@ -288,6 +291,7 @@ int main(int argc, char *argv[])
     gtk_widget_set_sensitive(widgets->w_btn_apply_shadows, FALSE);
     gtk_widget_set_sensitive(widgets->w_btn_apply_blacks, FALSE);
     gtk_widget_set_sensitive(widgets->w_btn_apply_saturation, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_sav, FALSE);
 
 
     gtk_builder_connect_signals(builder, widgets);
@@ -450,6 +454,7 @@ void on_btn_open_activate(GtkMenuItem *btn_open, app_widgets *app_wdgts)
             gtk_widget_set_sensitive(app_wdgts->w_btn_apply_shadows, TRUE);
             gtk_widget_set_sensitive(app_wdgts->w_btn_apply_blacks, TRUE);
             gtk_widget_set_sensitive(app_wdgts->w_btn_apply_saturation, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_sav, TRUE);
         }
     }
 
@@ -758,7 +763,7 @@ void on_btn_apply_direct_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 //------------ Resize ------------//
 
-void on_btn_resize_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+/* void on_btn_resize_activate(GtkMenuItem *button, app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_resize);
 }
@@ -785,7 +790,7 @@ void on_btn_apply_resize_clicked(GtkButton *button, app_widgets *app_wdgts)
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_width_resize_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_resize);
-}
+} */
 
 
 //------------ Rotation ------------//
