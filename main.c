@@ -920,6 +920,9 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
 
     //gtk_color_chooser_get_rgba (app_wdgts->w_color_chooser_a_binarization, colora);
     //gtk_color_chooser_get_rgba (app_wdgts->w_color_chooser_b_binarization, colorb);
+    
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_binarization), &colora);
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_binarization), &colorb);
    
     int ra= (int)((colora.red)*255);
     int ga= (int)((colora.green)*255);
