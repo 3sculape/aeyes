@@ -5,6 +5,7 @@
 #include "../utils/lib_sdl.h"
 #include "convert.h"
 #include <SDL2/SDL2_rotozoom.h>
+#include "utility.h"
 
 /*
     All algorithms provided in this header do not
@@ -59,6 +60,14 @@ void saturation(SDL_Surface *surface, double value);
     <value>: the new exposure (L) value
 */
 void exposure(SDL_Surface *surface, double value);
+
+/*
+    Contrast control. Changes the saturation of each pixel to the
+    <value> parameter multiplied with a contrast factor.
+    <surface>: the surface to be processed
+    <value>: the new saturation value
+*/
+void contrast(SDL_Surface *surface, double value);
 
 /*
     Basic image cropping, takes into parameter the source we want to copy from,

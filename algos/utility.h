@@ -15,4 +15,12 @@ void print_matrix(gsl_matrix *m);
 */
 void print_vector(gsl_vector *v);
 
+/*
+    Clamps x between min and max
+    <x>: the value that needs clamping
+    <min>: the clamping lower bound
+    <max>: the clamping upper bound
+*/
+int clamp(int x, int min, int max);
+
 #endif
