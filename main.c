@@ -105,6 +105,10 @@ typedef struct {
     GtkWidget *w_btn_apply_blacks;                // Pointer to apply button of blacks
     GtkWidget *w_btn_apply_saturation;            // Pointer to apply button of saturation
 
+    GtkWidget *w_rvl_hue_hsl;                     // Pointer to hue revealer
+    GtkWidget *w_rvl_saturation_hsl;              // Pointer to saturation revealer
+    GtkWidget *w_rvl_luminance_hsl;               // Pointer to luminance revealer
+
     SDL_Texture *texture;
 
 } app_widgets;
@@ -285,6 +289,17 @@ int main(int argc, char *argv[])
     widgets->w_btn_apply_saturation = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_saturation"));
 
+    widgets->w_rvl_hue_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
+            "rvl_hue_hsl"));
+    widgets->w_rvl_saturation_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
+            "rvl_saturation_hsl"));
+    widgets->w_rvl_luminance_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
+            "rvl_luminance_hsl"));
+
+            
+    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_hue_hsl), TRUE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_saturation_hsl), FALSE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_luminance_hsl), FALSE);
     
 
     widgets->texture = NULL;
@@ -1054,6 +1069,29 @@ void on_btn_close_about_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 
 
+
+// -------------- HSL --------------------- //
+
+void on_btn_hue_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_hue_hsl), TRUE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl), FALSE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl), FALSE);
+}
+
+void on_btn_saturation_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl), TRUE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl), FALSE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_hue_hsl), FALSE);
+}
+
+void on_btn_luminance_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl), TRUE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl), FALSE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_hue_hsl), FALSE);
+}
 
 
 

@@ -23,7 +23,7 @@ void grayscale(SDL_Surface *surface)
     SDL_UnlockSurface(surface);
 }
 
-void binarization(SDL_Surface *surface, char threshold, int ra, int ga, int ba, int rb, int gb, int bb)
+void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, int rb, int gb, int bb)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -41,8 +41,8 @@ void binarization(SDL_Surface *surface, char threshold, int ra, int ga, int ba, 
             if ((r + g + b) / 3 > threshold)
             {
                 r = ra;
-                g = ba;
-                b = ga;
+                g = ga;
+                b = ba;
             }
 
             else
