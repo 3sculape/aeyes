@@ -32,4 +32,17 @@ void tsl_hue(SDL_Surface *surface, double *range, double amount);
 */
 void tsl_sat(SDL_Surface *surface, double *range, double amount);
 
+/*
+    Value modification. Gets all pixels in the range defined by <range>
+    and increases their value by <amount> clamped to [0, 100]
+    <surface>: the surface to be processed
+    <range>: an array of 2 elements
+    <amount>: the amount of value to apply (can be anything)
+    NOTES: 
+        - If range has less than 2 elements, a segfault will occur.
+        - If it has more, the remaining elements will be ignored.
+        - Both values can be equal, hence targeting only a single color.
+*/
+void tsl_val(SDL_Surface *surface, double *range, double amount);
+
 #endif
