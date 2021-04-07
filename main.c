@@ -38,6 +38,7 @@ typedef struct {
     GtkWidget *w_dlg_resize;                      // Pointer to resize dialog box
     GtkWidget *w_dlg_rotation;                    // Pointer to rotation dialog box
     GtkWidget *w_dlg_scale;                       // Pointer to scale dialog box
+    GtkWidget *w_dlg_binarization;                // Pointer to binarization dialog box
 
     GtkWidget *w_image_window;                    // Pointer to image widget
     GtkWidget *w_histo_window;                    // Pointer to histogram widget
@@ -65,6 +66,12 @@ typedef struct {
     GtkWidget *w_width_resize_spin_btn;           // Pointer to new width of resize Spin Button widget
     GtkWidget *w_angle_rotation_spin_btn;         // Pointer to angle of rotation Spin Button widget
     GtkWidget *w_factor_scale_spin_btn;           // Pointer to Scale Spin Button widget
+    GtkWidget *w_threshold_binarization_spin_btn; // Pointer to Binarization Threshold Spin Button widget
+
+    GtkWidget *w_color_btn_a_binarization;        // Pointer to button color a of binarization
+    GtkWidget *w_color_btn_b_binarization;        // Pointer to button color a of binarization
+    //GtkWidget *w_color_chooser_a_binarization;    // Pointer to color chooser of color A of binarization
+    //GtkWidget *w_color_chooser_b_binarization;    // Pointer to color chooser of color B of binarization   
 
     GtkWidget *w_lbl_exif_capture_date;           // Pointer to capture date EXIF
     GtkWidget *w_lbl_exif_capture_time;           // Pointer to capture time EXIF
@@ -152,6 +159,9 @@ int main(int argc, char *argv[])
             "dlg_rotation"));
     widgets->w_dlg_scale = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_scale"));
+    widgets->w_dlg_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_binarization"));
+
 
 
 
@@ -194,8 +204,21 @@ int main(int argc, char *argv[])
             "angle_rotation_spin_btn"));
     widgets->w_factor_scale_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "factor_scale_spin_btn"));
+    widgets->w_threshold_binarization_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "threshold_binarization_spin_btn"));
 
-            
+
+    widgets->w_color_btn_a_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_btn_a_binarization"));
+    widgets->w_color_btn_b_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_btn_b_binarization"));
+
+/*     widgets->w_color_chooser_a_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_chooser_a_binarization"));
+    widgets->w_color_chooser_b_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_chooser_b_binarization")); */
+
+    
     
     widgets->w_lbl_exif_capture_date = GTK_WIDGET(gtk_builder_get_object(builder,
             "lbl_exif_capture_date"));
@@ -869,12 +892,87 @@ void on_btn_apply_scale_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 void on_btn_binarization_activate(GtkMenuItem *button, app_widgets *app_wdgts)
 {
-    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    binarization(surface, 50);
-    update_image(surface, app_wdgts);
-    SDL_FreeSurface(surface);
+    gtk_widget_show(app_wdgts->w_dlg_binarization);
 }
 
+void on_btn_cancel_binarization_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gint reset_value = 127;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn), reset_value);
+
+    gtk_widget_hide(app_wdgts->w_dlg_binarization);
+}
+
+void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gint quantity = 0;
+
+    GdkRGBA colora;
+    
+    GdkRGBA colorb;
+
+    colora.red = 0.5;
+    colora.green = 0.3;
+    colora.blue = 0.1;
+    colorb.red = 0.4;
+    colora.green = 0.9;
+    colora.blue = 0.8;
+
+    //gtk_color_chooser_get_rgba (app_wdgts->w_color_chooser_a_binarization, colora);
+    //gtk_color_chooser_get_rgba (app_wdgts->w_color_chooser_b_binarization, colorb);
+   
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int rb= (int)((colorb.red)*255);
+    int gb= (int)((colorb.green)*255);
+    int bb= (int)((colorb.blue)*255);
+
+    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn));
+    g_print("THRESHOLD: %d\n", quantity);
+
+    g_print("COLOR A :\n");
+    g_print("R: %d\n", ra);
+    g_print("G: %d\n", ga);
+    g_print("B: %d\n", ba);
+
+   g_print("------------\n");
+
+    g_print("COLOR B :\n");
+    g_print("R: %d\n", rb);
+    g_print("G: %d\n", gb);
+    g_print("B: %d\n", bb);
+
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    binarization(surface, (char)quantity, ra, ga, ba, rb, gb, bb);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gint reset_value = 127;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn), reset_value);
+
+    gtk_widget_hide(app_wdgts->w_dlg_binarization);
+}
+
+
+void on_color_btn_a_binarization_color_set(GtkButton *button, app_widgets *app_wdgts)
+{
+    GdkRGBA color;
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), &color);
+    g_print("red: %f\n", color.red);
+    g_print("green: %f\n", color.green);
+    g_print("blue: %f\n", color.blue);
+}
+
+void on_color_btn_b_binarization_color_set(GtkButton *button, app_widgets *app_wdgts)
+{
+    GdkRGBA color;
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), &color);
+    g_print("red: %f\n", color.red);
+    g_print("green: %f\n", color.green);
+    g_print("blue: %f\n", color.blue);
+}
 
 //------------ Negative ------------//
 

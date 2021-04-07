@@ -23,7 +23,7 @@ void grayscale(SDL_Surface *surface)
     SDL_UnlockSurface(surface);
 }
 
-void binarization(SDL_Surface *surface, char threshold)
+void binarization(SDL_Surface *surface, char threshold, int ra, int ga, int ba, int rb, int gb, int bb)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -40,16 +40,16 @@ void binarization(SDL_Surface *surface, char threshold)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
             if ((r + g + b) / 3 > threshold)
             {
-                r = 255;
-                g = 255;
-                b = 255;
+                r = ra;
+                g = ba;
+                b = ga;
             }
 
             else
             {
-                r = 0;
-                g = 0;
-                b = 0;
+                r = rb;
+                g = gb;
+                b = bb;
             }
 
             set_pixel(surface, r, g, b, a, i, j);
