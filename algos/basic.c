@@ -188,6 +188,34 @@ void exposure(SDL_Surface *surface, double value)
 
     SDL_UnlockSurface(surface);
 }
+
+void contrast(SDL_Surface *surface, double value)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in contrast");
+        return;
+    }
+
+    double f = (259 * (value + 255)) / (255 * (259 - value));
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+
+            r = trunc(f * (r - 128) + 128);
+            g = trunc(f * (g - 128) + 128);
+            b = trunc(f * (b - 128) + 128);
+
+            set_pixel(surface, r, g, b, a, i, j);
+        }
+    }
+}
+
 SDL_Surface* image_crop(SDL_Surface* original, size_t x, size_t y, size_t w,
         size_t h)
 {
