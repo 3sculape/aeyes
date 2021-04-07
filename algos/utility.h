@@ -21,6 +21,6 @@ void print_vector(gsl_vector *v);
     <min>: the clamping lower bound
     <max>: the clamping upper bound
 */
-int clamp(int x, int min, int max);
+double clamp(double x, double min, double max);
 
 #endif

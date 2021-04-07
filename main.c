@@ -14,6 +14,7 @@
 #include "algos/whites.h"
 #include "algos/blurs.h"
 #include "algos/secret_sauce.h"
+#include "algos/tsl.h"
 
 
 SDL_Window *sdl_window;

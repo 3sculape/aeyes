@@ -208,6 +208,8 @@ void contrast(SDL_Surface *surface, double value)
             set_pixel(surface, r, g, b, a, i, j);
         }
     }
+
+    SDL_UnlockSurface(surface);
 }
 
 SDL_Surface* image_crop(SDL_Surface* original, size_t x, size_t y, size_t w,

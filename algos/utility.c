@@ -17,7 +17,7 @@ void print_vector(gsl_vector *v)
     printf("\n");
 }
 
-int clamp(int x, int min, int max)
+double clamp(double x, double min, double max)
 {
     if(x < min)
         return min;
