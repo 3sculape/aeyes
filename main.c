@@ -39,6 +39,7 @@ typedef struct {
     GtkWidget *w_dlg_rotation;                    // Pointer to rotation dialog box
     GtkWidget *w_dlg_scale;                       // Pointer to scale dialog box
     GtkWidget *w_dlg_binarization;                // Pointer to binarization dialog box
+    GtkWidget *w_dlg_colorize;                    // Pointer to colorize dialog box
 
     GtkWidget *w_image_window;                    // Pointer to image widget
     GtkWidget *w_histo_window;                    // Pointer to histogram widget
@@ -70,8 +71,7 @@ typedef struct {
 
     GtkWidget *w_color_btn_a_binarization;        // Pointer to button color a of binarization
     GtkWidget *w_color_btn_b_binarization;        // Pointer to button color a of binarization
-    //GtkWidget *w_color_chooser_a_binarization;    // Pointer to color chooser of color A of binarization
-    //GtkWidget *w_color_chooser_b_binarization;    // Pointer to color chooser of color B of binarization   
+    GtkWidget *w_color_btn_colorize;              // Pointer to button color of colorize  
 
     GtkWidget *w_lbl_exif_capture_date;           // Pointer to capture date EXIF
     GtkWidget *w_lbl_exif_capture_time;           // Pointer to capture time EXIF
@@ -165,7 +165,8 @@ int main(int argc, char *argv[])
             "dlg_scale"));
     widgets->w_dlg_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_binarization"));
-
+    widgets->w_dlg_colorize = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_colorize"));
 
 
 
@@ -216,6 +217,8 @@ int main(int argc, char *argv[])
             "color_btn_a_binarization"));
     widgets->w_color_btn_b_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_b_binarization"));
+    widgets->w_color_btn_colorize = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_btn_colorize"));
 
 /*     widgets->w_color_chooser_a_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_chooser_a_binarization"));
@@ -973,7 +976,7 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     gtk_widget_hide(app_wdgts->w_dlg_binarization);
 }
 
-
+/* 
 void on_color_btn_a_binarization_color_set(GtkButton *button, app_widgets *app_wdgts)
 {
     GdkRGBA color;
@@ -990,7 +993,52 @@ void on_color_btn_b_binarization_color_set(GtkButton *button, app_widgets *app_w
     g_print("red: %f\n", color.red);
     g_print("green: %f\n", color.green);
     g_print("blue: %f\n", color.blue);
+} */
+
+
+//------------ Colorize ------------//
+
+void on_btn_colorize_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_colorize);
 }
+
+void on_btn_cancel_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_colorize);
+}
+
+void on_btn_apply_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    /* grayscale(surface);
+    update_image(surface, app_wdgts); */
+
+    GdkRGBA color;
+
+    color.red = 0.5;
+    color.green = 0.3;
+    color.blue = 0.1;
+
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_colorize), &color);
+
+    int r= (int)((color.red)*255);
+    int g= (int)((color.green)*255);
+    int b= (int)((color.blue)*255);
+
+    g_print("------------\n");
+
+    g_print("COLOR :\n");
+    g_print("R: %d\n", r);
+    g_print("G: %d\n", g);
+    g_print("B: %d\n", b);
+
+    colorize(surface, r, g, b);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+    gtk_widget_hide(app_wdgts->w_dlg_colorize);
+}
+
 
 //------------ Negative ------------//
 

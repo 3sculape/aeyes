@@ -30,6 +30,14 @@ void grayscale(SDL_Surface *surface);
 void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, int rb, int gb, int bb);
 
 /*
+    Simple thresholding of the image. Each pixel strictly above
+    the threshold is set to white, and the rest to black
+    <surface>: the surface to be processed
+    <threshold>: the threshold for binarization
+*/
+void colorize(SDL_Surface *surface, int ra, int ga, int ba);
+
+/*
     Negative of the image. For each pixel, substract its current
     red value from 255 to obtain its new red value, and repeat for
     all colors.
