@@ -10,6 +10,7 @@ void blacks(SDL_Surface *surface, double factor)
 
     double hsv[3];
     Uint8 rgb[3];
+    double smooth;
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
@@ -22,20 +23,18 @@ void blacks(SDL_Surface *surface, double factor)
             rgb_to_hsv(r, g, b, hsv);
             if (hsv[2] < 10)
             {
-                hsv[2] += factor * (hsv[2] / 20);
+                hsv[2] += (factor / 50) * hsv[2];
             }
 
-            else if (hsv[2] < 20)
+            else
             {
-                double smooth = (20 - hsv[2]) / 10;
-                hsv[2] += factor * smooth * (hsv[2] / 20);
+                double x = (hsv[2] - 10) * (4.0 / 10.0);
+                smooth = fabs(gsl_ran_ugaussian_pdf(x));
+                printf("%f -> %f: %f\n", hsv[2], x, smooth * 2.5);
+                hsv[2] += (factor / 50) * (smooth * 2.5) * hsv[2];
             }
 
-            if (hsv[2] < 0)
-                hsv[2] = 0;
-            if (hsv[2] > 100)
-                hsv[2] = 100;
-
+            clamp(hsv[2], 0, 100);
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);

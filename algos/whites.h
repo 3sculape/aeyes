@@ -2,8 +2,10 @@
 #define WHITES_H
 #include <SDL2/SDL.h>
 #include <err.h>
+#include <gsl/gsl_randist.h>
 #include "../utils/lib_sdl.h"
 #include "convert.h"
+#include "utility.h"
 
 /*
     Changes the lightness of the darkest pixels

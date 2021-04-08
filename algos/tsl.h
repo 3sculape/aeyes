@@ -2,6 +2,7 @@
 #define TSL_H
 #include <err.h>
 #include <SDL2/SDL.h>
+#include <gsl/gsl_randist.h>
 #include "../utils/lib_sdl.h"
 #include "convert.h"
 #include "utility.h"
