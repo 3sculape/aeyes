@@ -44,6 +44,7 @@ typedef struct {
     GtkWidget *w_image_window;                    // Pointer to image widget
     GtkWidget *w_histo_window;                    // Pointer to histogram widget
     GtkWidget *w_check_rotation_resize_to_fit;    // Pointer to resize to fit of rotation
+    GtkWidget *w_check_colorize_preserve_luminosity; // Pointer to keep luminance in colorization
     gchar     *image_path;                        // Image path to give to Pre-Processing
     gchar     *save_path;                         // Image path to give to Pre-Processing
     GtkWidget *w_on_btn_save_clicked;             // Pointer to the save button of save window
@@ -268,6 +269,10 @@ int main(int argc, char *argv[])
             "btn_edge_enhance"));
     widgets->w_check_rotation_resize_to_fit = GTK_WIDGET(gtk_builder_get_object(builder,
             "check_rotation_resize_to_fit"));
+    widgets->w_check_colorize_preserve_luminosity = GTK_WIDGET(gtk_builder_get_object(builder,
+            "check_colorize_preserve_luminosity"));
+
+            
     widgets->w_btn_sav = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_sav"));
 
@@ -1026,14 +1031,17 @@ void on_btn_apply_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
     int g= (int)((color.green)*255);
     int b= (int)((color.blue)*255);
 
-    g_print("------------\n");
+    int keep_luminance = 0;
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_check_colorize_preserve_luminosity)
+    )))
+    {
+        keep_luminance = 1;
+    }
+    
+    g_print("KEEP LUMINANCE: %d\n", keep_luminance);
 
-    g_print("COLOR :\n");
-    g_print("R: %d\n", r);
-    g_print("G: %d\n", g);
-    g_print("B: %d\n", b);
-
-    colorize(surface, r, g, b);
+    colorize(surface, r, g, b, keep_luminance);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
     gtk_widget_hide(app_wdgts->w_dlg_colorize);

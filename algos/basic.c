@@ -59,7 +59,7 @@ void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, i
     SDL_UnlockSurface(surface);
 }
 
-void colorize(SDL_Surface *surface, int ra, int ga, int ba)
+void colorize(SDL_Surface *surface, int ra, int ga, int ba, int keep_luminance)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -68,7 +68,7 @@ void colorize(SDL_Surface *surface, int ra, int ga, int ba)
     }
 
     double hsv_input[3];
-    rgb_to_hsv(ra, ga, ba, hsv_input);
+    rgb_to_hsl(ra, ga, ba, hsv_input);
 
     for (int i = 0; i < surface -> w; i++)
     {
@@ -80,13 +80,26 @@ void colorize(SDL_Surface *surface, int ra, int ga, int ba)
             
             Uint8 rgb[3];   
             double hsv2[3];
-            rgb_to_hsv(r, g, b, hsv2);
+            rgb_to_hsl(r, g, b, hsv2);
 
             hsv2[0] = hsv_input[0];
             hsv2[1] = hsv_input[1];
-            hsv2[2] = hsv2[2]/100 * hsv_input[2];
 
-            hsv_to_rgb(hsv2[0], hsv2[1], hsv2[2], rgb);
+            if (keep_luminance)
+            {
+                hsv2[2] = hsv2[2]/50 * hsv_input[2];
+                if (hsv2[2] > 100)
+                {
+                    hsv2[2] = 100;
+                }
+            }
+
+            else
+            {
+                hsv2[2] = hsv2[2]/100 * hsv_input[2];
+            }
+        
+            hsl_to_rgb(hsv2[0], hsv2[1], hsv2[2], rgb);
 
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
         }

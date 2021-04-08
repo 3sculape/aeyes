@@ -35,7 +35,7 @@ void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, i
     <surface>: the surface to be processed
     <threshold>: the threshold for binarization
 */
-void colorize(SDL_Surface *surface, int ra, int ga, int ba);
+void colorize(SDL_Surface *surface, int ra, int ga, int ba, int keep_luminance);
 
 /*
     Negative of the image. For each pixel, substract its current
