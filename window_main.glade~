@@ -12,170 +12,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkDialog" id="dlg_colorize">
-    <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Rotation</property>
-    <property name="resizable">False</property>
-    <property name="type_hint">dialog</property>
-    <property name="deletable">False</property>
-    <property name="transient_for">main_window</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="margin_bottom">20</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="btn_cancel_colorize">
-                <property name="label" translatable="yes">Cancel</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_btn_cancel_colorize_clicked" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="btn_apply_colorize">
-                <property name="label" translatable="yes">Apply</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_btn_apply_colorize_clicked" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="width_request">420</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">70</property>
-            <property name="margin_bottom">70</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_bottom">20</property>
-                <property name="label" translatable="yes">Colorize</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="margin_top">15</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Color</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="color_btn_colorize">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="rgba">rgb(0,0,0)</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="margin_top">15</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Preserve Luminosity</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkCheckButton" id="check_colorize_preserve_luminosity">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_check_colorize_preserve_luminosity_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkFileFilter" id="filefilter1">
     <patterns>
       <pattern>*.png</pattern>
@@ -185,6 +21,102 @@
       <pattern>*.JPEG</pattern>
       <pattern>*.PNG</pattern>
     </patterns>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_blue">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_bluegreen">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_green">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_magenta">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_orange">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_purple">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_red">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="hue_adjustment_yellow">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_blue">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_bluegreen">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_green">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_magenta">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_orange">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_purple">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_red">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_yellow">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="pixels_adjustments_new_height">
     <property name="upper">8000</property>
@@ -196,10 +128,64 @@
     <property name="step_increment">1</property>
     <property name="page_increment">100</property>
   </object>
+  <object class="GtkAdjustment" id="sat_adjustment_blue">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_bluegreen">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_green">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_magenta">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_orange">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_purple">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_red">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_yellow">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="size_adjustment_direct_blur">
     <property name="lower">3</property>
     <property name="upper">100</property>
     <property name="value">3</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="size_adjustment_fast_blur">
+    <property name="lower">2</property>
+    <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -271,12 +257,6 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="strength_adjustment_wb">
-    <property name="lower">-100</property>
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="strength_adjustment_whites">
     <property name="lower">-100</property>
     <property name="upper">100</property>
     <property name="step_increment">1</property>
@@ -546,6 +526,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Fast Blur</property>
+                        <signal name="activate" handler="on_btn_fast_blur_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -1134,7 +1115,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="margin_top">10</property>
-                                    <property name="spacing">12</property>
+                                    <property name="spacing">8</property>
                                     <child>
                                       <object class="GtkButton" id="btn_hue_hsl">
                                         <property name="label" translatable="yes">Hue</property>
@@ -1152,6 +1133,17 @@
                                       </packing>
                                     </child>
                                     <child>
+                                      <object class="GtkSeparator">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
                                       <object class="GtkButton" id="btn_saturation_hsl">
                                         <property name="label" translatable="yes">Saturation</property>
                                         <property name="visible">True</property>
@@ -1163,7 +1155,19 @@
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">True</property>
-                                        <property name="position">1</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSeparator">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="orientation">vertical</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">3</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -1178,7 +1182,7 @@
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">True</property>
-                                        <property name="position">2</property>
+                                        <property name="position">4</property>
                                       </packing>
                                     </child>
                                   </object>
@@ -1215,7 +1219,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Reds</property>
+                                                    <property name="label" translatable="yes">Red</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#c51d53725372"/>
                                                     </attributes>
@@ -1227,12 +1231,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn1">
+                                                  <object class="GtkSpinButton" id="h_red_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">55</property>
+                                                    <property name="margin_left">60</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_red</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1241,7 +1246,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure1">
+                                                  <object class="GtkButton" id="btn_apply_h_red">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1249,6 +1254,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_red_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1274,7 +1280,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Oranges</property>
+                                                    <property name="label" translatable="yes">Orange</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#bfff7ea23fff"/>
                                                     </attributes>
@@ -1286,12 +1292,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn2">
+                                                  <object class="GtkSpinButton" id="h_orange_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">32</property>
+                                                    <property name="margin_left">37</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_orange</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1300,7 +1307,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure2">
+                                                  <object class="GtkButton" id="btn_apply_h_orange">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1308,6 +1315,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_orange_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1345,12 +1353,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn3">
+                                                  <object class="GtkSpinButton" id="h_yellow_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">45</property>
+                                                    <property name="margin_left">43</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_yellow</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1359,7 +1368,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure3">
+                                                  <object class="GtkButton" id="btn_apply_h_yellow">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1367,6 +1376,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_yellow_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1404,12 +1414,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn4">
+                                                  <object class="GtkSpinButton" id="h_green_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">48</property>
+                                                    <property name="margin_left">46</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_green</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1418,7 +1429,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure4">
+                                                  <object class="GtkButton" id="btn_apply_h_green">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1426,6 +1437,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_green_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1451,9 +1463,9 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Blue</property>
+                                                    <property name="label" translatable="yes">Blue-Green</property>
                                                     <attributes>
-                                                      <attribute name="foreground" value="#3fff91b3bfff"/>
+                                                      <attribute name="foreground" value="#5b59b92bad31"/>
                                                     </attributes>
                                                   </object>
                                                   <packing>
@@ -1463,12 +1475,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn5">
+                                                  <object class="GtkSpinButton" id="h_bluegreen_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">59</property>
+                                                    <property name="margin_left">13</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_bluegreen</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1477,7 +1490,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure5">
+                                                  <object class="GtkButton" id="btn_apply_h_bluegreen">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1485,6 +1498,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_bluegreen_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1498,6 +1512,189 @@
                                                 <property name="expand">False</property>
                                                 <property name="fill">True</property>
                                                 <property name="position">4</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Blue</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#3fff91b3bfff"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="h_blue_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">56</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_blue</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_h_blue">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_blue_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">5</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Purple</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#753e4f91a81a"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="h_purple_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">41</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_purple</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_h_purple">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_purple_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">6</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Magenta</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#afc857e4aa2c"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="h_magenta_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">26</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">hue_adjustment_magenta</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_h_magenta">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_h_magenta_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">7</property>
                                               </packing>
                                             </child>
                                           </object>
@@ -1531,7 +1728,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Reds</property>
+                                                    <property name="label" translatable="yes">Red</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#c51d53725372"/>
                                                     </attributes>
@@ -1543,12 +1740,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn11">
+                                                  <object class="GtkSpinButton" id="s_red_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">52</property>
+                                                    <property name="margin_left">59</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_red</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1557,7 +1755,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure11">
+                                                  <object class="GtkButton" id="btn_apply_s_red">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1565,6 +1763,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_red_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1590,7 +1789,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Oranges</property>
+                                                    <property name="label" translatable="yes">Orange</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#bfff7ea23fff"/>
                                                     </attributes>
@@ -1602,12 +1801,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn12">
+                                                  <object class="GtkSpinButton" id="s_orange_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">29</property>
+                                                    <property name="margin_left">36</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_orange</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1616,7 +1816,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure12">
+                                                  <object class="GtkButton" id="btn_apply_s_orange">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1624,6 +1824,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_orange_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1649,7 +1850,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Yellows</property>
+                                                    <property name="label" translatable="yes">Yellow</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#bfff9f513fff"/>
                                                     </attributes>
@@ -1661,12 +1862,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn13">
+                                                  <object class="GtkSpinButton" id="s_yellow_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">35</property>
+                                                    <property name="margin_left">42</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_yellow</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1675,7 +1877,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure13">
+                                                  <object class="GtkButton" id="btn_apply_s_yellow">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1683,6 +1885,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_yellow_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1708,7 +1911,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Greens</property>
+                                                    <property name="label" translatable="yes">Green</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#91b3bfff3fff"/>
                                                     </attributes>
@@ -1720,12 +1923,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn14">
+                                                  <object class="GtkSpinButton" id="s_green_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">38</property>
+                                                    <property name="margin_left">45</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_green</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1734,7 +1938,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure14">
+                                                  <object class="GtkButton" id="btn_apply_s_green">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1742,6 +1946,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_green_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1767,9 +1972,9 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Blues</property>
+                                                    <property name="label" translatable="yes">Blue-Green</property>
                                                     <attributes>
-                                                      <attribute name="foreground" value="#3fff91b3bfff"/>
+                                                      <attribute name="foreground" value="#5b59b92bad31"/>
                                                     </attributes>
                                                   </object>
                                                   <packing>
@@ -1779,12 +1984,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn15">
+                                                  <object class="GtkSpinButton" id="s_bluegreen_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">49</property>
+                                                    <property name="margin_left">12</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_bluegreen</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1793,7 +1999,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure15">
+                                                  <object class="GtkButton" id="btn_apply_s_bluegreen">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1801,6 +2007,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_bluegreen_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1814,6 +2021,189 @@
                                                 <property name="expand">False</property>
                                                 <property name="fill">True</property>
                                                 <property name="position">4</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Blue</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#3fff91b3bfff"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="s_blue_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">56</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_blue</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_s_blue">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_blue_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">5</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Purple</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#753e4f91a81a"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="s_purple_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">41</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_purple</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_s_purple">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_purple_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">6</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Magenta</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#afc857e4aa2c"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="s_magenta_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">26</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">sat_adjustment_magenta</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_s_magenta">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_s_magenta_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">7</property>
                                               </packing>
                                             </child>
                                           </object>
@@ -1847,7 +2237,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Reds</property>
+                                                    <property name="label" translatable="yes">Red</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#c51d53725372"/>
                                                     </attributes>
@@ -1859,12 +2249,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn6">
+                                                  <object class="GtkSpinButton" id="l_red_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">52</property>
+                                                    <property name="margin_left">59</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_red</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1873,7 +2264,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure6">
+                                                  <object class="GtkButton" id="btn_apply_l_red">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1881,6 +2272,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_red_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1906,7 +2298,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Oranges</property>
+                                                    <property name="label" translatable="yes">Orange</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#bfff7ea23fff"/>
                                                     </attributes>
@@ -1918,12 +2310,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn7">
+                                                  <object class="GtkSpinButton" id="l_orange_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">29</property>
+                                                    <property name="margin_left">36</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_orange</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1932,7 +2325,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure7">
+                                                  <object class="GtkButton" id="btn_apply_l_orange">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1940,6 +2333,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_orange_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1965,7 +2359,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Yellows</property>
+                                                    <property name="label" translatable="yes">Yellow</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#bfff9f513fff"/>
                                                     </attributes>
@@ -1977,12 +2371,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn8">
+                                                  <object class="GtkSpinButton" id="l_yellow_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">35</property>
+                                                    <property name="margin_left">42</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_yellow</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -1991,7 +2386,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure8">
+                                                  <object class="GtkButton" id="btn_apply_l_yellow">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -1999,6 +2394,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_yellow_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -2024,7 +2420,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Greens</property>
+                                                    <property name="label" translatable="yes">Green</property>
                                                     <attributes>
                                                       <attribute name="foreground" value="#91b3bfff3fff"/>
                                                     </attributes>
@@ -2036,12 +2432,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn9">
+                                                  <object class="GtkSpinButton" id="l_green_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">38</property>
+                                                    <property name="margin_left">45</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_green</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -2050,7 +2447,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure9">
+                                                  <object class="GtkButton" id="btn_apply_l_green">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -2058,6 +2455,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_green_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -2083,9 +2481,9 @@
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
                                                     <property name="margin_left">10</property>
-                                                    <property name="label" translatable="yes">Blues</property>
+                                                    <property name="label" translatable="yes">Blue-Green</property>
                                                     <attributes>
-                                                      <attribute name="foreground" value="#3fff91b3bfff"/>
+                                                      <attribute name="foreground" value="#5b59b92bad31"/>
                                                     </attributes>
                                                   </object>
                                                   <packing>
@@ -2095,12 +2493,13 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkSpinButton" id="exposure_spin_btn10">
+                                                  <object class="GtkSpinButton" id="l_bluegreen_spin_btn">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="margin_left">49</property>
+                                                    <property name="margin_left">12</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_bluegreen</property>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -2109,7 +2508,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkButton" id="btn_apply_exposure10">
+                                                  <object class="GtkButton" id="btn_apply_l_bluegreen">
                                                     <property name="label" translatable="yes">Apply</property>
                                                     <property name="height_request">30</property>
                                                     <property name="visible">True</property>
@@ -2117,6 +2516,7 @@
                                                     <property name="receives_default">True</property>
                                                     <property name="valign">center</property>
                                                     <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_bluegreen_clicked" swapped="no"/>
                                                   </object>
                                                   <packing>
                                                     <property name="expand">False</property>
@@ -2130,6 +2530,189 @@
                                                 <property name="expand">False</property>
                                                 <property name="fill">True</property>
                                                 <property name="position">4</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Blue</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#3fff91b3bfff"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="l_blue_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">56</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_blue</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_l_blue">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_blue_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">5</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Purple</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#753e4f91a81a"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="l_purple_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">41</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_purple</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_l_purple">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_purple_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">6</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="margin_top">10</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="margin_left">10</property>
+                                                    <property name="label" translatable="yes">Magenta</property>
+                                                    <attributes>
+                                                      <attribute name="foreground" value="#afc857e4aa2c"/>
+                                                    </attributes>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="l_magenta_spin_btn">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="margin_left">26</property>
+                                                    <property name="margin_right">5</property>
+                                                    <property name="text" translatable="yes">0</property>
+                                                    <property name="adjustment">lum_adjustment_magenta</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkButton" id="btn_apply_l_magenta">
+                                                    <property name="label" translatable="yes">Apply</property>
+                                                    <property name="height_request">30</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">True</property>
+                                                    <property name="valign">center</property>
+                                                    <property name="margin_right">10</property>
+                                                    <signal name="clicked" handler="on_btn_apply_l_magenta_clicked" swapped="no"/>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">7</property>
                                               </packing>
                                             </child>
                                           </object>
@@ -2178,11 +2761,374 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkExpander">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
                             <property name="margin_top">10</property>
-                            <property name="label" translatable="yes">Light</property>
+                            <property name="expanded">True</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">10</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="margin_left">10</property>
+                                        <property name="label" translatable="yes">Contrast</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="contrast_spin_btn">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="margin_left">29</property>
+                                        <property name="margin_right">5</property>
+                                        <property name="text" translatable="yes">0</property>
+                                        <property name="adjustment">strength_adjustment_contrast</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btn_apply_contrast">
+                                        <property name="label" translatable="yes">Apply</property>
+                                        <property name="height_request">30</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin_right">10</property>
+                                        <signal name="clicked" handler="on_btn_apply_contrast_clicked" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">10</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="margin_left">10</property>
+                                        <property name="label" translatable="yes">Exposure</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="exposure_spin_btn">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="margin_left">25</property>
+                                        <property name="margin_right">5</property>
+                                        <property name="text" translatable="yes">0</property>
+                                        <property name="adjustment">strength_adjustment_exposure</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btn_apply_exposure">
+                                        <property name="label" translatable="yes">Apply</property>
+                                        <property name="height_request">30</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin_right">10</property>
+                                        <signal name="clicked" handler="on_btn_apply_exposure_clicked" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">10</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="margin_left">10</property>
+                                        <property name="label" translatable="yes">Whites</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="whites_spin_btn">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="margin_left">41</property>
+                                        <property name="margin_right">5</property>
+                                        <property name="text" translatable="yes">0</property>
+                                        <property name="adjustment">strength_adjustment_whites</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btn_apply_whites">
+                                        <property name="label" translatable="yes">Apply</property>
+                                        <property name="height_request">30</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin_right">10</property>
+                                        <signal name="clicked" handler="on_btn_apply_whites_clicked" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">10</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="margin_left">10</property>
+                                        <property name="label" translatable="yes">Highlights</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="highlights_spin_btn">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="margin_left">21</property>
+                                        <property name="margin_right">5</property>
+                                        <property name="text" translatable="yes">0</property>
+                                        <property name="adjustment">strength_adjustment_highlights</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btn_apply_highlights">
+                                        <property name="label" translatable="yes">Apply</property>
+                                        <property name="height_request">30</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin_right">10</property>
+                                        <signal name="clicked" handler="on_btn_apply_highlights_clicked" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">10</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="margin_left">10</property>
+                                        <property name="label" translatable="yes">Shadows</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="shadows_spin_btn">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="margin_left">29</property>
+                                        <property name="margin_right">5</property>
+                                        <property name="text" translatable="yes">0</property>
+                                        <property name="adjustment">strength_adjustment_shadows</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btn_apply_shadows">
+                                        <property name="label" translatable="yes">Apply</property>
+                                        <property name="height_request">30</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin_right">10</property>
+                                        <signal name="clicked" handler="on_btn_apply_shadows_clicked" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">10</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="margin_left">10</property>
+                                        <property name="label" translatable="yes">Blacks</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="blacks_spin_btn">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="margin_left">45</property>
+                                        <property name="margin_right">5</property>
+                                        <property name="text" translatable="yes">0</property>
+                                        <property name="adjustment">strength_adjustment_blacks</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btn_apply_blacks">
+                                        <property name="label" translatable="yes">Apply</property>
+                                        <property name="height_request">30</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin_right">10</property>
+                                        <signal name="clicked" handler="on_btn_apply_blacks_clicked" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">5</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                            <child type="label">
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="margin_left">10</property>
+                                <property name="label" translatable="yes">Light Control</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -2191,358 +3137,10 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">10</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="margin_left">10</property>
-                                <property name="label" translatable="yes">Contrast</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSpinButton" id="contrast_spin_btn">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="margin_left">24</property>
-                                <property name="margin_right">10</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="adjustment">strength_adjustment_contrast</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_apply_contrast">
-                                <property name="label" translatable="yes">Apply</property>
-                                <property name="height_request">30</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="valign">center</property>
-                                <property name="margin_right">10</property>
-                                <signal name="clicked" handler="on_btn_apply_contrast_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="pack_type">end</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">16</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">10</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="margin_left">10</property>
-                                <property name="label" translatable="yes">Exposure</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSpinButton" id="exposure_spin_btn">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="margin_left">20</property>
-                                <property name="margin_right">5</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="adjustment">strength_adjustment_exposure</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_apply_exposure">
-                                <property name="label" translatable="yes">Apply</property>
-                                <property name="height_request">30</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="valign">center</property>
-                                <property name="margin_right">10</property>
-                                <signal name="clicked" handler="on_btn_apply_exposure_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="pack_type">end</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">17</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">10</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="margin_left">10</property>
-                                <property name="label" translatable="yes">Whites</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSpinButton" id="whites_spin_btn">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="margin_left">36</property>
-                                <property name="margin_right">5</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="adjustment">strength_adjustment_whites</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_apply_whites">
-                                <property name="label" translatable="yes">Apply</property>
-                                <property name="height_request">30</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="valign">center</property>
-                                <property name="margin_right">10</property>
-                                <signal name="clicked" handler="on_btn_apply_whites_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="pack_type">end</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">18</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">10</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="margin_left">10</property>
-                                <property name="label" translatable="yes">Highlights</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSpinButton" id="highlights_spin_btn">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="margin_left">16</property>
-                                <property name="margin_right">5</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="adjustment">strength_adjustment_highlights</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_apply_highlights">
-                                <property name="label" translatable="yes">Apply</property>
-                                <property name="height_request">30</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="valign">center</property>
-                                <property name="margin_right">10</property>
-                                <signal name="clicked" handler="on_btn_apply_highlights_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="pack_type">end</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">19</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">10</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="margin_left">10</property>
-                                <property name="label" translatable="yes">Shadows</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSpinButton" id="shadows_spin_btn">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="margin_left">24</property>
-                                <property name="margin_right">5</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="adjustment">strength_adjustment_shadows</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_apply_shadows">
-                                <property name="label" translatable="yes">Apply</property>
-                                <property name="height_request">30</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="valign">center</property>
-                                <property name="margin_right">10</property>
-                                <signal name="clicked" handler="on_btn_apply_shadows_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="pack_type">end</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">20</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">10</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="margin_left">10</property>
-                                <property name="label" translatable="yes">Blacks</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSpinButton" id="blacks_spin_btn">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="margin_left">40</property>
-                                <property name="margin_right">5</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="adjustment">strength_adjustment_blacks</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_apply_blacks">
-                                <property name="label" translatable="yes">Apply</property>
-                                <property name="height_request">30</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="valign">center</property>
-                                <property name="margin_right">10</property>
-                                <signal name="clicked" handler="on_btn_apply_blacks_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="pack_type">end</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">21</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkSeparator">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_top">15</property>
+                            <property name="margin_top">10</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -2687,6 +3285,7 @@ Clément Zelter
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="btn_close_about">
@@ -2711,6 +3310,173 @@ Clément Zelter
         </child>
         <child>
           <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkDialog" id="dlg_colorize">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Rotation</property>
+    <property name="resizable">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">main_window</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
+            <property name="margin_bottom">20</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_cancel_colorize">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_cancel_colorize_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_apply_colorize">
+                <property name="label" translatable="yes">Apply</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_apply_colorize_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">420</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">70</property>
+            <property name="margin_bottom">70</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_bottom">20</property>
+                <property name="label" translatable="yes">Colorize</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">15</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Color</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="color_btn_colorize">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="rgba">rgb(0,0,0)</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">15</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Preserve Luminosity</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="check_colorize_preserve_luminosity">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_stock">True</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_check_colorize_preserve_luminosity_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
     </child>
@@ -2868,6 +3634,133 @@ Clément Zelter
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkDialog" id="dlg_fast_blur">
+    <property name="name">Gaussian Blur Dialog Box</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Fast Blur</property>
+    <property name="resizable">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">main_window</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
+            <property name="margin_bottom">20</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_cancel_fast_blur">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_cancel_fast_blur_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_apply_fast_blur">
+                <property name="label" translatable="yes">Apply</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_apply_fast_blur_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">420</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">70</property>
+            <property name="margin_bottom">70</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Fast Blur</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">15</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Size</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="size_fast_blur_spin_btn">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="text" translatable="yes">2</property>
+                    <property name="adjustment">size_adjustment_fast_blur</property>
+                    <property name="value">2</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -3215,6 +4108,7 @@ Clément Zelter
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
             <property name="margin_bottom">20</property>
             <property name="layout_style">end</property>
             <child>
@@ -3763,6 +4657,7 @@ Clément Zelter
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
             <property name="margin_bottom">20</property>
             <property name="layout_style">end</property>
             <child>
@@ -3826,6 +4721,7 @@ Clément Zelter
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="margin_top">15</property>
+                <property name="spacing">10</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
@@ -3998,6 +4894,12 @@ Clément Zelter
       </object>
     </child>
   </object>
+  <object class="GtkAdjustment" id="strength_adjustment_whites">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="threshold_adjustment_binarization">
     <property name="upper">255</property>
     <property name="value">127</property>
@@ -4023,6 +4925,7 @@ Clément Zelter
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
             <property name="margin_bottom">20</property>
             <property name="layout_style">end</property>
             <child>

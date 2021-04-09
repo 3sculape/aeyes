@@ -35,6 +35,7 @@ typedef struct {
     GtkWidget *w_dlg_mean_blur;                   // Pointer to mean blur dialog box
     GtkWidget *w_dlg_gaussian_blur;               // Pointer to gaussian blur dialog box
     GtkWidget *w_dlg_direct_blur;                 // Pointer to directional blur dialog box
+    GtkWidget *w_dlg_fast_blur;                   // Pointer to fast blur dialog box
     GtkWidget *w_dlg_resize;                      // Pointer to resize dialog box
     GtkWidget *w_dlg_rotation;                    // Pointer to rotation dialog box
     GtkWidget *w_dlg_scale;                       // Pointer to scale dialog box
@@ -62,6 +63,7 @@ typedef struct {
     GtkWidget *w_strength_sharp_spin_btn;         // Pointer to strength of Sharpening Spin Button widget
     GtkWidget *w_size_mean_blur_spin_btn;         // Pointer to size of mean blur Spin Button widget
     GtkWidget *w_size_gaussian_blur_spin_btn;     // Pointer to size of gaussian blur Spin Button widget
+    GtkWidget *w_size_fast_blur_spin_btn;         // Pointer to size of fast blur Spin Button widget
     GtkWidget *w_angle_direct_blur_spin_btn;      // Pointer to angle of directional blur Spin Button widget
     GtkWidget *w_size_direct_blur_spin_btn;       // Pointer to size of directional blur Spin Button widget
     GtkWidget *w_height_resize_spin_btn;          // Pointer to new height of resize Spin Button widget
@@ -69,6 +71,35 @@ typedef struct {
     GtkWidget *w_angle_rotation_spin_btn;         // Pointer to angle of rotation Spin Button widget
     GtkWidget *w_factor_scale_spin_btn;           // Pointer to Scale Spin Button widget
     GtkWidget *w_threshold_binarization_spin_btn; // Pointer to Binarization Threshold Spin Button widget
+
+
+    GtkWidget *w_h_red_spin_btn;                  // Pointer to hue red Spin Button widget
+    GtkWidget *w_h_orange_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_h_yellow_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_h_green_spin_btn;                // Pointer to hue red Spin Button widget
+    GtkWidget *w_h_bluegreen_spin_btn;            // Pointer to hue red Spin Button widget
+    GtkWidget *w_h_blue_spin_btn;                 // Pointer to hue red Spin Button widget
+    GtkWidget *w_h_purple_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_h_magenta_spin_btn;              // Pointer to hue red Spin Button widget
+
+    GtkWidget *w_s_red_spin_btn;                  // Pointer to hue red Spin Button widget
+    GtkWidget *w_s_orange_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_s_yellow_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_s_green_spin_btn;                // Pointer to hue red Spin Button widget
+    GtkWidget *w_s_bluegreen_spin_btn;            // Pointer to hue red Spin Button widget
+    GtkWidget *w_s_blue_spin_btn;                 // Pointer to hue red Spin Button widget
+    GtkWidget *w_s_purple_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_s_magenta_spin_btn;              // Pointer to hue red Spin Button widget
+
+    GtkWidget *w_l_red_spin_btn;                  // Pointer to hue red Spin Button widget
+    GtkWidget *w_l_orange_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_l_yellow_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_l_green_spin_btn;                // Pointer to hue red Spin Button widget
+    GtkWidget *w_l_bluegreen_spin_btn;            // Pointer to hue red Spin Button widget
+    GtkWidget *w_l_blue_spin_btn;                 // Pointer to hue red Spin Button widget
+    GtkWidget *w_l_purple_spin_btn;               // Pointer to hue red Spin Button widget
+    GtkWidget *w_l_magenta_spin_btn;              // Pointer to hue red Spin Button widget
+
 
     GtkWidget *w_color_btn_a_binarization;        // Pointer to button color a of binarization
     GtkWidget *w_color_btn_b_binarization;        // Pointer to button color a of binarization
@@ -105,6 +136,38 @@ typedef struct {
     GtkWidget *w_btn_apply_shadows;               // Pointer to apply button of shadows
     GtkWidget *w_btn_apply_blacks;                // Pointer to apply button of blacks
     GtkWidget *w_btn_apply_saturation;            // Pointer to apply button of saturation
+    GtkWidget *w_btn_apply_contrast;              // Pointer to apply button of contrast
+
+
+    GtkWidget *w_btn_apply_h_red;                 // Pointer to apply button of hue on red
+    GtkWidget *w_btn_apply_h_orange;              // Pointer to apply button of hue on orange
+    GtkWidget *w_btn_apply_h_yellow;              // Pointer to apply button of hue on yellow
+    GtkWidget *w_btn_apply_h_green;               // Pointer to apply button of hue on green
+    GtkWidget *w_btn_apply_h_bluegreen;           // Pointer to apply button of hue on blue green
+    GtkWidget *w_btn_apply_h_blue;                // Pointer to apply button of hue on blue
+    GtkWidget *w_btn_apply_h_purple;              // Pointer to apply button of hue on purple
+    GtkWidget *w_btn_apply_h_magenta;             // Pointer to apply button of hue on magenta
+
+    GtkWidget *w_btn_apply_s_red;                 // Pointer to apply button of saturation on red
+    GtkWidget *w_btn_apply_s_orange;              // Pointer to apply button of saturation on orange
+    GtkWidget *w_btn_apply_s_yellow;              // Pointer to apply button of saturation on yellow
+    GtkWidget *w_btn_apply_s_green;               // Pointer to apply button of saturation on green
+    GtkWidget *w_btn_apply_s_bluegreen;           // Pointer to apply button of saturation on blue green
+    GtkWidget *w_btn_apply_s_blue;                // Pointer to apply button of saturation on blue
+    GtkWidget *w_btn_apply_s_purple;              // Pointer to apply button of saturation on purple
+    GtkWidget *w_btn_apply_s_magenta;             // Pointer to apply button of saturation on magenta
+
+    GtkWidget *w_btn_apply_l_red;                 // Pointer to apply button of luminance on red
+    GtkWidget *w_btn_apply_l_orange;              // Pointer to apply button of luminance on orange
+    GtkWidget *w_btn_apply_l_yellow;              // Pointer to apply button of luminance on yellow
+    GtkWidget *w_btn_apply_l_green;               // Pointer to apply button of luminance on green
+    GtkWidget *w_btn_apply_l_bluegreen;           // Pointer to apply button of luminance on blue green
+    GtkWidget *w_btn_apply_l_blue;                // Pointer to apply button of luminance on blue
+    GtkWidget *w_btn_apply_l_purple;              // Pointer to apply button of luminance on purple
+    GtkWidget *w_btn_apply_l_magenta;             // Pointer to apply button of luminance on magenta
+
+
+
 
     GtkWidget *w_rvl_hue_hsl;                     // Pointer to hue revealer
     GtkWidget *w_rvl_saturation_hsl;              // Pointer to saturation revealer
@@ -156,6 +219,8 @@ int main(int argc, char *argv[])
             "dlg_mean_blur"));
     widgets->w_dlg_gaussian_blur = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_gaussian_blur"));
+    widgets->w_dlg_fast_blur = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_fast_blur"));
     widgets->w_dlg_direct_blur = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_direct_blur"));
     widgets->w_dlg_resize = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -192,12 +257,68 @@ int main(int argc, char *argv[])
     widgets->w_saturation_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "saturation_spin_btn"));
     
+
+    widgets->w_h_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_red_spin_btn"));
+    widgets->w_h_orange_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_orange_spin_btn"));
+    widgets->w_h_yellow_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_yellow_spin_btn"));
+    widgets->w_h_green_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_green_spin_btn"));
+    widgets->w_h_bluegreen_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_bluegreen_spin_btn"));
+    widgets->w_h_blue_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_blue_spin_btn"));
+    widgets->w_h_purple_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_purple_spin_btn"));
+    widgets->w_h_magenta_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "h_magenta_spin_btn"));
+    
+    widgets->w_s_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_red_spin_btn"));
+    widgets->w_s_orange_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_orange_spin_btn"));
+    widgets->w_s_yellow_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_yellow_spin_btn"));
+    widgets->w_s_green_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_green_spin_btn"));
+    widgets->w_s_bluegreen_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_bluegreen_spin_btn"));
+    widgets->w_s_blue_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_blue_spin_btn"));
+    widgets->w_s_purple_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_purple_spin_btn"));
+    widgets->w_s_magenta_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "s_magenta_spin_btn"));
+    
+    widgets->w_l_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_red_spin_btn"));
+    widgets->w_l_orange_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_orange_spin_btn"));
+    widgets->w_l_yellow_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_yellow_spin_btn"));
+    widgets->w_l_green_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_green_spin_btn"));
+    widgets->w_l_bluegreen_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_bluegreen_spin_btn"));
+    widgets->w_l_blue_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_blue_spin_btn"));
+    widgets->w_l_purple_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_purple_spin_btn"));
+    widgets->w_l_magenta_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "l_magenta_spin_btn"));
+
+    
+    
     widgets->w_strength_sharp_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "strength_sharp_spin_btn"));
     widgets->w_size_mean_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "size_mean_blur_spin_btn"));
     widgets->w_size_gaussian_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "size_gaussian_blur_spin_btn"));
+    widgets->w_size_fast_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "size_fast_blur_spin_btn"));
     widgets->w_angle_direct_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "angle_direct_blur_spin_btn"));
     widgets->w_size_direct_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -296,6 +417,64 @@ int main(int argc, char *argv[])
             "btn_apply_blacks"));
     widgets->w_btn_apply_saturation = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_saturation"));
+    widgets->w_btn_apply_contrast = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_contrast"));
+    
+
+    widgets->w_btn_apply_h_red = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_red"));
+    widgets->w_btn_apply_h_orange = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_orange"));
+    widgets->w_btn_apply_h_yellow = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_yellow"));
+    widgets->w_btn_apply_h_green = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_green"));
+    widgets->w_btn_apply_h_bluegreen = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_bluegreen"));
+    widgets->w_btn_apply_h_blue = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_blue"));
+    widgets->w_btn_apply_h_purple = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_purple"));
+    widgets->w_btn_apply_h_magenta = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_h_magenta"));
+    
+    widgets->w_btn_apply_s_red = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_red"));
+    widgets->w_btn_apply_s_orange = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_orange"));
+    widgets->w_btn_apply_s_yellow = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_yellow"));
+    widgets->w_btn_apply_s_green = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_green"));
+    widgets->w_btn_apply_s_bluegreen = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_bluegreen"));
+    widgets->w_btn_apply_s_blue = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_blue"));
+    widgets->w_btn_apply_s_purple = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_purple"));
+    widgets->w_btn_apply_s_magenta = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_s_magenta"));
+    
+    widgets->w_btn_apply_l_red = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_red"));
+    widgets->w_btn_apply_l_orange = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_orange"));
+    widgets->w_btn_apply_l_yellow = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_yellow"));
+    widgets->w_btn_apply_l_green = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_green"));
+    widgets->w_btn_apply_l_bluegreen = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_bluegreen"));
+    widgets->w_btn_apply_l_blue = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_blue"));
+    widgets->w_btn_apply_l_purple = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_purple"));
+    widgets->w_btn_apply_l_magenta = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_apply_l_magenta"));
+
+    
+
+    
 
     widgets->w_rvl_hue_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
             "rvl_hue_hsl"));
@@ -337,6 +516,36 @@ int main(int argc, char *argv[])
     gtk_widget_set_sensitive(widgets->w_btn_apply_shadows, FALSE);
     gtk_widget_set_sensitive(widgets->w_btn_apply_blacks, FALSE);
     gtk_widget_set_sensitive(widgets->w_btn_apply_saturation, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_contrast, FALSE);
+
+
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_red, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_orange, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_yellow, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_green, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_bluegreen, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_blue, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_purple, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_h_magenta, FALSE);
+
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_red, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_orange, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_yellow, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_green, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_bluegreen, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_blue, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_purple, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_s_magenta, FALSE);
+
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_red, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_orange, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_yellow, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_green, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_bluegreen, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_blue, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_purple, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_apply_l_magenta, FALSE);
+
     gtk_widget_set_sensitive(widgets->w_btn_sav, FALSE);
 
 
@@ -500,6 +709,35 @@ void on_btn_open_activate(GtkMenuItem *btn_open, app_widgets *app_wdgts)
             gtk_widget_set_sensitive(app_wdgts->w_btn_apply_shadows, TRUE);
             gtk_widget_set_sensitive(app_wdgts->w_btn_apply_blacks, TRUE);
             gtk_widget_set_sensitive(app_wdgts->w_btn_apply_saturation, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_contrast, TRUE);
+
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_red, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_orange, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_yellow, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_green, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_bluegreen, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_blue, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_purple, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_h_magenta, TRUE);
+
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_red, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_orange, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_yellow, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_green, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_bluegreen, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_blue, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_purple, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_s_magenta, TRUE);
+
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_red, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_orange, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_yellow, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_green, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_bluegreen, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_blue, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_purple, TRUE);
+            gtk_widget_set_sensitive(app_wdgts->w_btn_apply_l_magenta, TRUE);
+
             gtk_widget_set_sensitive(app_wdgts->w_btn_sav, TRUE);
         }
     }
@@ -807,6 +1045,38 @@ void on_btn_apply_direct_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
 }
 
 
+// ----------- Fast Blur ------------//
+
+void on_btn_fast_blur_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_fast_blur);
+}
+
+void on_btn_cancel_fast_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gint reset_value = 3;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn), reset_value);
+
+    gtk_widget_hide(app_wdgts->w_dlg_fast_blur);
+}
+
+void on_btn_apply_fast_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gint quantity = 3;
+
+    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn));
+
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    fast_gaussian_blur(surface, 20, 5);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gint reset_value = 3;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn), reset_value);
+
+    gtk_widget_hide(app_wdgts->w_dlg_fast_blur);
+}
+
 //------------ Resize ------------//
 
 /* void on_btn_resize_activate(GtkMenuItem *button, app_widgets *app_wdgts)
@@ -931,7 +1201,6 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     gint quantity = 0;
 
     GdkRGBA colora;
-    
     GdkRGBA colorb;
 
     colora.red = 0.5;
@@ -940,9 +1209,6 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     colorb.red = 0.4;
     colora.green = 0.9;
     colora.blue = 0.8;
-
-    //gtk_color_chooser_get_rgba (app_wdgts->w_color_chooser_a_binarization, colora);
-    //gtk_color_chooser_get_rgba (app_wdgts->w_color_chooser_b_binarization, colorb);
     
     gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_binarization), &colora);
     gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_binarization), &colorb);
@@ -956,19 +1222,6 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     int bb= (int)((colorb.blue)*255);
 
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn));
-    g_print("THRESHOLD: %d\n", quantity);
-
-    g_print("COLOR A :\n");
-    g_print("R: %d\n", ra);
-    g_print("G: %d\n", ga);
-    g_print("B: %d\n", ba);
-
-   g_print("------------\n");
-
-    g_print("COLOR B :\n");
-    g_print("R: %d\n", rb);
-    g_print("G: %d\n", gb);
-    g_print("B: %d\n", bb);
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     binarization(surface, (char)quantity, ra, ga, ba, rb, gb, bb);
@@ -981,24 +1234,6 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     gtk_widget_hide(app_wdgts->w_dlg_binarization);
 }
 
-/* 
-void on_color_btn_a_binarization_color_set(GtkButton *button, app_widgets *app_wdgts)
-{
-    GdkRGBA color;
-    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), &color);
-    g_print("red: %f\n", color.red);
-    g_print("green: %f\n", color.green);
-    g_print("blue: %f\n", color.blue);
-}
-
-void on_color_btn_b_binarization_color_set(GtkButton *button, app_widgets *app_wdgts)
-{
-    GdkRGBA color;
-    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), &color);
-    g_print("red: %f\n", color.red);
-    g_print("green: %f\n", color.green);
-    g_print("blue: %f\n", color.blue);
-} */
 
 
 //------------ Colorize ------------//
@@ -1126,7 +1361,7 @@ void on_btn_close_about_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 
 
-// -------------- HSL --------------------- //
+// -------------- HSL Revealers ---------------- //
 
 void on_btn_hue_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
 {
@@ -1173,3 +1408,208 @@ void on_btn_undo_all_activate(GtkMenuItem *button, app_widgets *app_wdgts)
 
 
 
+
+//-----------------------------------------------//
+//-------------------- H S L --------------------//
+//-----------------------------------------------//
+
+
+// ----- HUE -----//
+
+void on_btn_apply_h_red_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_red_spin_btn)));
+
+    g_print("Partial Hue Rotation on Reds with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_h_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_orange_spin_btn)));
+
+    g_print("Partial Hue Rotation on Oranges with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_h_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_yellow_spin_btn)));
+
+    g_print("Partial Hue Rotation on Yellows with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_h_green_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_green_spin_btn)));
+
+    g_print("Partial Hue Rotation on Greens with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_h_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_bluegreen_spin_btn)));
+
+    g_print("Partial Hue Rotation on Blue-Greens with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_h_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_blue_spin_btn)));
+
+    g_print("Partial Hue Rotation on Blues with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_h_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_purple_spin_btn)));
+
+    g_print("Partial Hue Rotation on Purples with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_h_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_h_magenta_spin_btn)));
+
+    g_print("Partial Hue Rotation on Magentas with quantity of: %d\n", quantity);
+}
+
+
+// ----- Saturation -----//
+
+void on_btn_apply_s_red_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_red_spin_btn)));
+
+    g_print("Partial Saturation on Reds with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_s_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_orange_spin_btn)));
+
+    g_print("Partial Saturation on Oranges with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_s_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_yellow_spin_btn)));
+
+    g_print("Partial Saturation on Yellows with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_s_green_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_green_spin_btn)));
+
+    g_print("Partial Saturation on Greens with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_s_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_bluegreen_spin_btn)));
+
+    g_print("Partial Saturation on Blue-Greens with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_s_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_blue_spin_btn)));
+
+    g_print("Partial Saturation on Blues with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_s_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_purple_spin_btn)));
+
+    g_print("Partial Saturation on Purples with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_s_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_s_magenta_spin_btn)));
+
+    g_print("Partial Saturation on Magentas with quantity of: %d\n", quantity);
+}
+
+
+// ----- Luminance -----//
+
+void on_btn_apply_l_red_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_red_spin_btn)));
+
+    g_print("Partial Luminance on Reds with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_l_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_orange_spin_btn)));
+
+    g_print("Partial Luminance on Oranges with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_l_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_yellow_spin_btn)));
+
+    g_print("Partial Luminance on Yellows with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_l_green_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_green_spin_btn)));
+
+    g_print("Partial Luminance on Greens with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_l_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_bluegreen_spin_btn)));
+
+    g_print("Partial Luminance on Blue-Greens with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_l_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_blue_spin_btn)));
+
+    g_print("Partial Luminance on Blues with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_l_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_purple_spin_btn)));
+
+    g_print("Partial Luminance on Purples with quantity of: %d\n", quantity);
+}
+
+void on_btn_apply_l_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_l_magenta_spin_btn)));
+
+    g_print("Partial Luminance on Magentas with quantity of: %d\n", quantity);
+}
