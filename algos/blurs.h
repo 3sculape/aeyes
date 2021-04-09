@@ -20,4 +20,8 @@ void fast_gaussian_blur(SDL_Surface *surface, int x, double sigma);
 // Blur the SDL_Surface *surface with the motion blur.
 // x parameter is the length of the kernel
 void motion_blur(SDL_Surface *surface, int x, double angle);
+
+// Blur the SDL_Surface *surface with the radial blur.
+// x parameter is the length of the kernel
+void radial_blur(SDL_Surface *surface, int x);
 #endif /* BLURS_H */

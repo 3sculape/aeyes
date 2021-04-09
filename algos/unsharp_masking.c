@@ -3,16 +3,8 @@
 #include <err.h>
 #include "unsharp_masking.h"
 #include "blurs.h"
+#include "utility.h"
 
-int clamp(int x, int min, int max)
-{
-    if(x < min)
-        return min;
-    else if(x > max)
-        return max;
-    else
-        return x;
-}
 
 SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
 {

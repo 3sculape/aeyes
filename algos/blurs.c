@@ -2,6 +2,7 @@
 #include "basic.h"
 #include <SDL2/SDL2_rotozoom.h>
 #include "blurs.h"
+#include "utility.h"
 #include <gsl/gsl_matrix.h>
 #include <math.h>
 
@@ -460,6 +461,86 @@ void motion_blur(SDL_Surface *surface, int x, double angle)
     copy_surface(surface2, surface);
 
     free(rect);
+    SDL_FreeSurface(surface2);
+    SDL_UnlockSurface(surface);
+}
+
+double len(int ax, int ay, int bx, int by)
+{
+    return sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+}
+
+void radial_blur(SDL_Surface *surface, int x)
+{
+    if(x % 2 == 0)
+        x += 1;
+    if(SDL_LockSurface(surface) != 0)
+        return;
+    SDL_Surface *surface2 = SDL_CreateRGBSurfaceWithFormat(0,
+            surface->w, surface->h, 32, surface->format->format);
+
+    
+    int midx = surface->w / 2;
+    int midy = surface->h / 2;
+    int ax = midx + (x / 2);
+    int ay = midy;
+    int cx = midx - (x / 2);
+    int cy = midy;
+
+    double amid = len(0, 0, ax - midx, ay - midy);
+    double cmid = len(0, 0, cx - midx, cy - midy);
+    double max = len(0, 0, midx, midy);
+
+    for(int j = 0; j < surface->h; j++)
+    {
+        for(int i = 0; i < surface->w; i++)
+        {
+            double angle;
+            int strength;
+            if(j - midy < 0)
+            {
+                double bmid = len(0, 0, i - midx, j - midy);
+                double ab = len(ax - midx, ay - midy, i - midx, j - midy);
+                angle = acos((bmid * bmid + amid * amid - ab * ab) /
+                        (2 * amid * bmid));
+                strength = (x * bmid) / max;
+            }
+            if(j - midy == 0 && i - midx == 0)
+            {
+                Uint8 r, g, b, a;
+                Uint32 pixel = get_pixel(surface, i, j);
+                SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+                set_pixel(surface2, r, g, b, a, i, j);
+
+                continue;
+            }
+            else
+            {
+                double bmid = len(0, 0, i - midx, j - midy);
+                double cb = len(cx - midx, cy - midy, i - midx, j - midy);
+                angle = acos((bmid * bmid + cmid * cmid - cb * cb) /
+                        (2 * cmid * bmid));
+                strength = (x * bmid) / max;
+            }
+            if(strength < 3)
+            {
+                strength = 3;
+            }
+
+            double cosa = cos(angle);
+            double sina = sin(angle);
+
+            Uint32 *rect = (Uint32 *)malloc(sizeof(Uint32) * (size_t)strength);
+
+            Uint8 r, g, b, a;
+            get_pixel_rect_angle(surface, rect, i, j, strength, cosa, sina);
+            get_average_rect(surface, rect, &r, &g, &b, &a, strength);
+            set_pixel(surface2, r, g, b, a, i ,j);
+            free(rect);
+        }
+    }
+    copy_surface(surface2, surface);
+
     SDL_FreeSurface(surface2);
     SDL_UnlockSurface(surface);
 }

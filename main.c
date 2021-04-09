@@ -678,7 +678,7 @@ void on_btn_apply_mean_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    box_blur(surface, ((int)quantity));
+    radial_blur(surface, ((int)quantity));
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
@@ -711,7 +711,7 @@ void on_btn_apply_gaussian_blur_clicked(GtkButton *button, app_widgets *app_wdgt
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    gaussian_blur(surface, ((int)quantity), 5);
+    fast_gaussian_blur(surface, ((int)quantity), 5);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
