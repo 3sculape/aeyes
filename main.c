@@ -26,7 +26,11 @@ void *gdk_window;
 void *window_id;
 
 
+// ----- USER DATA STRUCT ----- //
+
 typedef struct {
+
+    //--- Dialog Boxes --- //
     GtkWidget *w_dlg_file_choose;                 // Pointer to file chooser dialog box
     GtkWidget *w_dlg_save_choose;                 // Pointer to save file chooser dialog box
     GtkWidget *w_dlg_about;                       // Pointer to the about dialog box
@@ -37,20 +41,35 @@ typedef struct {
     GtkWidget *w_dlg_direct_blur;                 // Pointer to directional blur dialog box
     GtkWidget *w_dlg_fast_blur;                   // Pointer to fast blur dialog box
     GtkWidget *w_dlg_resize;                      // Pointer to resize dialog box
+    GtkWidget *w_dlg_crop;                        // Pointer to crop dialog box
     GtkWidget *w_dlg_rotation;                    // Pointer to rotation dialog box
     GtkWidget *w_dlg_scale;                       // Pointer to scale dialog box
     GtkWidget *w_dlg_binarization;                // Pointer to binarization dialog box
     GtkWidget *w_dlg_colorize;                    // Pointer to colorize dialog box
 
+    //--- Windows --- //
     GtkWidget *w_image_window;                    // Pointer to image widget
     GtkWidget *w_histo_window;                    // Pointer to histogram widget
+
+    //--- Adjustments --- //
+    GtkWidget *w_height_adjustment_crop;          // Pointer to crop height adjustment widget
+    GtkWidget *w_width_adjustment_crop;           // Pointer to crop width adjustment widget
+    GtkWidget *w_x_adjustment_crop;               // Pointer to crop x adjustment widget
+    GtkWidget *w_y_adjustment_crop;               // Pointer to crop y adjustment widget
+
+    //--- Check Buttons --- //
     GtkWidget *w_check_rotation_resize_to_fit;    // Pointer to resize to fit of rotation
     GtkWidget *w_check_colorize_preserve_luminosity; // Pointer to keep luminance in colorization
+
+    //--- Paths --- //
     gchar     *image_path;                        // Image path to give to Pre-Processing
     gchar     *save_path;                         // Image path to give to Pre-Processing
+
+
     GtkWidget *w_on_btn_save_clicked;             // Pointer to the save button of save window
     GtkWidget *w_on_btn_cancel_save_clicked;      // Pointer to the save button of save window
 
+    //--- Spin Buttons --- //
     GtkWidget *w_wb_spin_btn;                     // Pointer to White Balance Spin Button widget
     GtkWidget *w_tint_spin_btn;                   // Pointer to Tint Spin Button widget
     GtkWidget *w_exposure_spin_btn;               // Pointer to Exposure Spin Button widget
@@ -72,7 +91,12 @@ typedef struct {
     GtkWidget *w_factor_scale_spin_btn;           // Pointer to Scale Spin Button widget
     GtkWidget *w_threshold_binarization_spin_btn; // Pointer to Binarization Threshold Spin Button widget
 
+    GtkWidget *w_height_crop_spin_btn;            // Pointer to new height crop Spin Button widget
+    GtkWidget *w_width_crop_spin_btn;             // Pointer to new width crop Spin Button widget
+    GtkWidget *w_x_crop_spin_btn;                 // Pointer to x pixel crop Spin Button widget
+    GtkWidget *w_y_crop_spin_btn;                 // Pointer to y pixel crop Spin Button widget
 
+    //--- HSL Spin Buttons --- //
     GtkWidget *w_h_red_spin_btn;                  // Pointer to hue red Spin Button widget
     GtkWidget *w_h_orange_spin_btn;               // Pointer to hue red Spin Button widget
     GtkWidget *w_h_yellow_spin_btn;               // Pointer to hue red Spin Button widget
@@ -100,11 +124,12 @@ typedef struct {
     GtkWidget *w_l_purple_spin_btn;               // Pointer to hue red Spin Button widget
     GtkWidget *w_l_magenta_spin_btn;              // Pointer to hue red Spin Button widget
 
-
+    //--- Color Buttons --- //
     GtkWidget *w_color_btn_a_binarization;        // Pointer to button color a of binarization
     GtkWidget *w_color_btn_b_binarization;        // Pointer to button color a of binarization
     GtkWidget *w_color_btn_colorize;              // Pointer to button color of colorize  
 
+    //--- EXIF Labels--- //
     GtkWidget *w_lbl_exif_capture_date;           // Pointer to capture date EXIF
     GtkWidget *w_lbl_exif_capture_time;           // Pointer to capture time EXIF
     GtkWidget *w_lbl_exif_size;                   // Pointer to size EXIF
@@ -113,10 +138,12 @@ typedef struct {
     GtkWidget *w_lbl_exif_iso;                    // Pointer to ISO EXIF
     GtkWidget *w_lbl_exif_model;                  // Pointer to camera model EXIF
 
+    //--- Menu Buttons --- //
     GtkWidget *w_menu_edit;                       // Pointer to tool bar menu edit
     GtkWidget *w_menu_view;                       // Pointer to tool bar menu view
     GtkWidget *w_menu_filters;                    // Pointer to tool bar menu filters
 
+    //--- Menu Item Buttons --- //
     GtkWidget *w_btn_new;                         // Pointer to tool bar new file
     GtkWidget *w_btn_save_as;                     // Pointer to tool bar save as
     GtkWidget *w_btn_resize;                      // Pointer to tool bar resize
@@ -127,6 +154,7 @@ typedef struct {
     GtkWidget *w_btn_edge_enhance;                // Pointer to tool bar edge enhancement
     GtkWidget *w_btn_sav;                        // Pointer to the save button of tool bar
 
+    //--- Apply Buttons --- //
     GtkWidget *w_btn_apply_grayscale;             // Pointer to apply button of grayscale
     GtkWidget *w_btn_apply_wb;                    // Pointer to apply button of wb
     GtkWidget *w_btn_apply_tint;                  // Pointer to apply button of tint
@@ -138,7 +166,7 @@ typedef struct {
     GtkWidget *w_btn_apply_saturation;            // Pointer to apply button of saturation
     GtkWidget *w_btn_apply_contrast;              // Pointer to apply button of contrast
 
-
+    //--- HSL Apply Buttons --- //
     GtkWidget *w_btn_apply_h_red;                 // Pointer to apply button of hue on red
     GtkWidget *w_btn_apply_h_orange;              // Pointer to apply button of hue on orange
     GtkWidget *w_btn_apply_h_yellow;              // Pointer to apply button of hue on yellow
@@ -166,9 +194,7 @@ typedef struct {
     GtkWidget *w_btn_apply_l_purple;              // Pointer to apply button of luminance on purple
     GtkWidget *w_btn_apply_l_magenta;             // Pointer to apply button of luminance on magenta
 
-
-
-
+    //--- Revealers --- //
     GtkWidget *w_rvl_hue_hsl;                     // Pointer to hue revealer
     GtkWidget *w_rvl_saturation_hsl;              // Pointer to saturation revealer
     GtkWidget *w_rvl_luminance_hsl;               // Pointer to luminance revealer
@@ -203,6 +229,8 @@ int main(int argc, char *argv[])
     
 
 
+    // ----- USER DATA STRUCT GTK LINKING ----- //
+
     widgets->w_dlg_file_choose = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_file_choose"));
     widgets->w_dlg_save_choose = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -225,6 +253,8 @@ int main(int argc, char *argv[])
             "dlg_direct_blur"));
     widgets->w_dlg_resize = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_resize"));
+    widgets->w_dlg_crop = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_crop"));
     widgets->w_dlg_rotation = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_rotation"));
     widgets->w_dlg_scale = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -256,6 +286,28 @@ int main(int argc, char *argv[])
             "blacks_spin_btn"));
     widgets->w_saturation_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "saturation_spin_btn"));
+    
+    widgets->w_height_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "height_crop_spin_btn"));
+    widgets->w_width_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "width_crop_spin_btn"));
+    widgets->w_x_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "x_crop_spin_btn"));
+    widgets->w_y_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "y_crop_spin_btn"));
+   
+
+
+    widgets->w_height_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
+            "height_adjustment_crop"));
+    widgets->w_width_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
+            "width_adjustment_crop"));
+    widgets->w_x_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
+            "x_adjustment_crop"));
+    widgets->w_y_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
+            "y_adjustment_crop"));
+    
+    
     
 
     widgets->w_h_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -1180,6 +1232,74 @@ void on_btn_apply_scale_clicked(GtkButton *button, app_widgets *app_wdgts)
     gtk_widget_hide(app_wdgts->w_dlg_scale);
 }
 
+// ----------- Crop ------------ //
+
+void on_btn_crop_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    
+
+    gdouble ow = (gdouble)(surface->w);
+    gdouble oh = (gdouble)(surface->h);
+
+    gtk_adjustment_set_upper(GTK_ADJUSTMENT
+        (app_wdgts->w_width_adjustment_crop), ow);
+    gtk_adjustment_set_upper(GTK_ADJUSTMENT
+        (app_wdgts->w_height_adjustment_crop), oh);
+    gtk_adjustment_set_upper(GTK_ADJUSTMENT
+        (app_wdgts->w_x_adjustment_crop), ow);
+    gtk_adjustment_set_upper(GTK_ADJUSTMENT
+        (app_wdgts->w_y_adjustment_crop), oh);
+
+    gtk_widget_show(app_wdgts->w_dlg_crop);
+    SDL_FreeSurface(surface);
+}
+
+void on_btn_cancel_crop_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gdouble reset_value = 0;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_height_crop_spin_btn), reset_value);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_width_crop_spin_btn), reset_value);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_x_crop_spin_btn), reset_value);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_y_crop_spin_btn), reset_value);
+    
+    gtk_widget_hide(app_wdgts->w_dlg_crop);
+}
+
+void on_btn_apply_crop_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    size_t new_x = (size_t)(gtk_spin_button_get_value
+        (GTK_SPIN_BUTTON(app_wdgts->w_x_crop_spin_btn)));
+    size_t new_y = (size_t)(gtk_spin_button_get_value
+        (GTK_SPIN_BUTTON(app_wdgts->w_y_crop_spin_btn)));
+    size_t new_w = (size_t)(gtk_spin_button_get_value
+        (GTK_SPIN_BUTTON(app_wdgts->w_width_crop_spin_btn)));
+    size_t new_h = (size_t)(gtk_spin_button_get_value
+        (GTK_SPIN_BUTTON(app_wdgts->w_height_crop_spin_btn)));
+
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    SDL_Surface *res = image_crop(surface, new_x, new_y, new_w, new_h);
+    update_image(res, app_wdgts);
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(res);
+
+    gdouble reset_value = 0;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_height_crop_spin_btn), reset_value);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_width_crop_spin_btn), reset_value);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_x_crop_spin_btn), reset_value);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON
+        (app_wdgts->w_y_crop_spin_btn), reset_value);
+
+    gtk_widget_hide(app_wdgts->w_dlg_crop);
+}
+
 
 //------------ Binarization ------------//
 
@@ -1613,3 +1733,9 @@ void on_btn_apply_l_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
 
     g_print("Partial Luminance on Magentas with quantity of: %d\n", quantity);
 }
+
+
+
+
+
+
