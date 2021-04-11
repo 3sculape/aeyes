@@ -214,3 +214,22 @@ SDL_Surface* rotate(SDL_Surface* original, double angle)
 {
     return rotozoomSurface(original, angle, 1, 1);
 }
+
+void mirror(SDL_Surface* surface)
+{
+    size_t w = surface->w;
+    size_t h = surface->h;
+    SDL_Surface* tmp = create_surface(surface->w, surface->h);
+    for (size_t i = 0; i < w - 1; i++)
+    {
+        for (size_t j = 0; j < h; j++)
+        {
+            Uint32 pixel = get_pixel(surface, i, j);
+            Uint8 r, g, b, a;
+            SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+            set_pixel(tmp, r, g, b, a, w - i - 1, j);
+        }
+    }
+    copy_surface(tmp, surface);
+    SDL_FreeSurface(tmp);
+}

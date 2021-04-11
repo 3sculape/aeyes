@@ -78,4 +78,6 @@ SDL_Surface* resize(SDL_Surface* original, double factor);
  */
 SDL_Surface* rotate(SDL_Surface* original, double angle);
 
+void mirror(SDL_Surface *surface);
+
 #endif
