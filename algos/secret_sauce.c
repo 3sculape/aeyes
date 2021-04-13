@@ -90,3 +90,66 @@ SDL_Surface* fever_dream(SDL_Surface *surface, double force)
 error: warnx("unsharp mask function fail");
        return NULL;
 }
+
+void conv(SDL_Surface *surface,SDL_Surface* copy
+        ,int x, int y, gsl_matrix* ker)
+{
+    Uint8 nr, ng, nb, a;
+    nr = 0;
+    ng = 0;
+    nb = 0;
+    for (int offsetx = -1; offsetx < 2; offsetx++)
+    {
+        for (int offsety = -1; offsety < 2; offsety++)
+        {
+            Uint8 r, g, b;
+            double kernelvalue = gsl_matrix_get(ker, 1 + offsetx, 1 + offsety);
+            Uint32 pixel = get_pixel(surface, x + offsetx, y + offsety);
+            if (pixel == (Uint32) -1)
+            {
+                warnx("fail pixel");
+                set_pixel(copy, 255, 0, 0, a, x, y);
+                return;
+            }
+            else
+            {
+                SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+                double tmpr = kernelvalue * (double)r;
+                double tmpg = kernelvalue * (double)g;
+                double tmpb = kernelvalue * (double)b;
+                nr += (Uint8)tmpr;
+                ng += (Uint8)tmpg;
+                nb += (Uint8)tmpb;
+            }
+        }
+    }
+    set_pixel(copy, nr, ng, nb, a, x, y);
+}
+
+SDL_Surface* mercury(SDL_Surface *surface)
+{
+    SDL_Surface* copy = create_surface(surface->w, surface->h);
+    copy_surface(surface, copy);
+    gaussian_blur(copy, 5, 5);
+    savePNG("blur.PNG", copy);
+
+    gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
+    gsl_matrix_set(Gx, 0, 0, -1);
+    gsl_matrix_set(Gx, 0, 1, 0);
+    gsl_matrix_set(Gx, 0, 2, 1);
+    gsl_matrix_set(Gx, 1, 0, -2);
+    gsl_matrix_set(Gx, 1, 1, 0);
+    gsl_matrix_set(Gx, 1, 2, 2);
+    gsl_matrix_set(Gx, 2, 0, -1);
+    gsl_matrix_set(Gx, 2, 1, 0);
+    gsl_matrix_set(Gx, 2, 2, 1);
+    SDL_Surface* copyGx = create_surface(surface->w, surface->h);
+    for(int i = 0; i < copy->w; i++)
+    {
+        for (int j = 0; j < copy -> h; j++)
+        {
+            conv(copy, copyGx, i, j, Gx);
+        }
+    }
+    return copyGx;
+}
