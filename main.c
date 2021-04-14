@@ -656,8 +656,10 @@ void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
     SDL_DestroyTexture(app_wdgts->texture);
     app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
-    show_l_histo(surface);
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+    //show_l_histo(surface);
+    //gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+    histo_color(surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
 }
 
 
@@ -711,8 +713,10 @@ void on_btn_open_activate(GtkMenuItem *btn_open, app_widgets *app_wdgts)
             
 
 
-            show_l_histo(surface);
-            gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+            //show_l_histo(surface);
+            //gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+            histo_color(surface);
+            gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
 
             SDL_FreeSurface(surface);
 
@@ -1518,8 +1522,8 @@ void on_btn_undo_all_activate(GtkMenuItem *button, app_widgets *app_wdgts)
     SDL_Surface *surface = load(app_wdgts->image_path);
     app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
 
-    show_l_histo(surface);
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+    histo_color(surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
     
     SDL_FreeSurface(surface);
 }
