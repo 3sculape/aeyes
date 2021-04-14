@@ -19,7 +19,6 @@ void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
             Uint32 pixel = get_pixel(surface, x + offsety, y + offsetx);
             if (pixel == (Uint32) -1)
             {
-                //warnx("fail pixel");
                 set_pixel(copy, 0, 0, 0, a, x, y);
                 return;
             }
@@ -44,7 +43,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     copy_surface(surface, copy);
     // Preprocessing (noise reduction)
     grayscale(copy);
-    gaussian_blur(copy, 3, 3);
+    gaussian_blur(copy, 5, 5);
 
     // Definition of Gradient kernels
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
@@ -89,12 +88,15 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     savePNG("gx.PNG", copyGx);
     savePNG("gy.PNG", copyGy);
 
-    // Computing sqrt(Gx² + Gy²)
-    for(int i = 0; i < canny -> w; i++)
+    // Computing sqrt(Gx² + Gy²) and Theta = arctan(Gy/Gx)
+    gsl_matrix* theta = gsl_matrix_calloc(surface->w - 1, surface->h - 1);
+    for(int i = 1; i < canny -> w - 1; i++)
     {
-        for (int j = 0; j < canny -> h; j++)
+        if (i == 2)
+            break;
+        for (int j = 1; j < canny -> h - 1; j++)
         {
-            Uint8 r, g, b, a;
+            Uint8 a;
             Uint8 xr, xg, xb;
             Uint8 yr, yg, yb;
             Uint32 pixelx = get_pixel(copyGx, i, j);
@@ -106,12 +108,42 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             double ng = gsl_hypot((double)xg, (double)yg);
             double nb = gsl_hypot((double)xb, (double)yb);
             set_pixel(canny, (Uint8)nr, (Uint8)ng, (Uint8)nb, a, i, j);
+            double tmpx = (double)xr;
+            double tmpy = (double)yr;
+            gsl_matrix_set(theta, i, j, atan((tmpy / tmpx)));
+        }
+    }
+
+    for (int i = 1; i < canny->w - 1; i++)
+    {
+        for (int j = 1; j < canny->h - 1; j++)
+        {
+            Uint8 qr, qg, qb;
+            Uint8 rr, rg, rb;
+            if (theta[i-1, j-1] < 22.5 ||
+                    (theta[i-1, j-1] >=157.5 && theta[i-1, j-1] <= 180))
+            {
+
+            }
+            else if (theta[i-1, j-1] >= 22.5 && theta[i-1, j-1] < 67.5)
+            {
+
+            }
+            else if (theta[i-1, j-1] >= 67.5  && theta[i-1, j-1] <= 112.5)
+            {
+
+            }
+            else if (theta[i-1, j-1] < 112.5 || && theta[i-1, j-1] <= 157.5)
+            {
+
+            }
         }
     }
 
     // Memory cleanup
     gsl_matrix_free(Gx);
     gsl_matrix_free(Gy);
+    gsl_matrix_free(theta);
     SDL_FreeSurface(copy);
     SDL_FreeSurface(copyGx);
     SDL_FreeSurface(copyGy);
