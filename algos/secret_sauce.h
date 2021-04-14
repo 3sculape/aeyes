@@ -20,6 +20,6 @@ void deep_fry(SDL_Surface *surface, Uint8 *reference);
 SDL_Surface* fever_dream(SDL_Surface *surface, double force);
 
 // Just call it
-SDL_Surface* mercury(SDL_Surface *surface);
+void mercury(SDL_Surface *surface);
 
 #endif

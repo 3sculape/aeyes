@@ -107,7 +107,6 @@ void conv(SDL_Surface *surface,SDL_Surface* copy
             Uint32 pixel = get_pixel(surface, x + offsetx, y + offsety);
             if (pixel == (Uint32) -1)
             {
-                warnx("fail pixel");
                 set_pixel(copy, 255, 0, 0, a, x, y);
                 return;
             }
@@ -126,7 +125,7 @@ void conv(SDL_Surface *surface,SDL_Surface* copy
     set_pixel(copy, nr, ng, nb, a, x, y);
 }
 
-SDL_Surface* mercury(SDL_Surface *surface)
+void mercury(SDL_Surface *surface)
 {
     SDL_Surface* copy = create_surface(surface->w, surface->h);
     copy_surface(surface, copy);
@@ -151,5 +150,8 @@ SDL_Surface* mercury(SDL_Surface *surface)
             conv(copy, copyGx, i, j, Gx);
         }
     }
-    return copyGx;
+    copy_surface(copyGx, surface);
+    gsl_matrix_free(Gx);
+    SDL_FreeSurface(copy);
+    SDL_FreeSurface(copyGx);
 }
