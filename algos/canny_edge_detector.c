@@ -19,6 +19,7 @@ void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
             Uint32 pixel = get_pixel(surface, x + offsety, y + offsetx);
             if (pixel == (Uint32) -1)
             {
+                //warnx("fail pixel");
                 set_pixel(copy, 0, 0, 0, a, x, y);
                 return;
             }
@@ -38,12 +39,12 @@ void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
 SDL_Surface* canny_fnc(SDL_Surface *surface)
 {
     // Defining temporary surfaces to work on
-    SDL_Surface* copy = create_surface(surface->w, surface->h);
     SDL_Surface* canny = create_surface(surface->w, surface->h);
+    SDL_Surface* copy = create_surface(surface->w, surface->h);
     copy_surface(surface, copy);
     // Preprocessing (noise reduction)
     grayscale(copy);
-    gaussian_blur(copy, 5, 5);
+    gaussian_blur(copy, 3, 3);
 
     // Definition of Gradient kernels
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
@@ -88,15 +89,14 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     savePNG("gx.PNG", copyGx);
     savePNG("gy.PNG", copyGy);
 
-    // Computing sqrt(Gx² + Gy²) and Theta = arctan(Gy/Gx)
+    SDL_Surface* hypot = create_surface(surface->w, surface->h);
     gsl_matrix* theta = gsl_matrix_calloc(surface->w - 1, surface->h - 1);
-    for(int i = 1; i < canny -> w - 1; i++)
+    // Computing sqrt(Gx² + Gy²) and theta(y,x) = atan(y/x)
+    for(int i = 1; i < hypot -> w - 1; i++)
     {
-        if (i == 2)
-            break;
-        for (int j = 1; j < canny -> h - 1; j++)
+        for (int j = 1; j < hypot -> h - 1; j++)
         {
-            Uint8 a;
+            Uint8 a; //r, g, b;
             Uint8 xr, xg, xb;
             Uint8 yr, yg, yb;
             Uint32 pixelx = get_pixel(copyGx, i, j);
@@ -107,39 +107,70 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             double nr = gsl_hypot((double)xr, (double)yr);
             double ng = gsl_hypot((double)xg, (double)yg);
             double nb = gsl_hypot((double)xb, (double)yb);
-            set_pixel(canny, (Uint8)nr, (Uint8)ng, (Uint8)nb, a, i, j);
+            set_pixel(hypot, (Uint8)nr, (Uint8)ng, (Uint8)nb, a, i, j);
             double tmpx = (double)xr;
             double tmpy = (double)yr;
-            gsl_matrix_set(theta, i, j, atan((tmpy / tmpx)));
+            // if atan y / x doesn't work, go for atan2(y, x);
+            gsl_matrix_set(theta, i - 1, j - 1, atan((tmpy / tmpx)));
         }
     }
-
-    for (int i = 1; i < canny->w - 1; i++)
+    savePNG("hypot.PNG", hypot);
+    SDL_Surface* nonmax = create_surface(surface->w, surface->h);
+    for (int i = 1; i < hypot->w - 1; i++)
     {
-        for (int j = 1; j < canny->h - 1; j++)
+        for (int j = 1; j < hypot->h - 1; j++)
         {
             Uint8 qr, qg, qb;
             Uint8 rr, rg, rb;
-            if (theta[i-1, j-1] < 22.5 ||
-                    (theta[i-1, j-1] >=157.5 && theta[i-1, j-1] <= 180))
+            Uint32 q = 0;
+            Uint32 r = 0;
+            double intensity = gsl_matrix_get(theta, i-1, j-1);
+            if (intensity < 22.5 || (intensity >=157.5 && intensity <= 180))
             {
-
+                if (intensity >= 0)
+                {
+                    q = get_pixel(hypot, i, j + 1);
+                    r = get_pixel(hypot, i, j - 1);
+                }
             }
-            else if (theta[i-1, j-1] >= 22.5 && theta[i-1, j-1] < 67.5)
+            else if (intensity >= 22.5 && intensity < 67.5)
             {
-
+                q = get_pixel(hypot, i + 1, j - 1);
+                r = get_pixel(hypot, i - 1, j + 1);
             }
-            else if (theta[i-1, j-1] >= 67.5  && theta[i-1, j-1] <= 112.5)
+            else if (intensity >= 67.5  && intensity < 112.5)
             {
-
+                q = get_pixel(hypot, i + 1, j);
+                r = get_pixel(hypot, i - 1, j);
             }
-            else if (theta[i-1, j-1] < 112.5 || && theta[i-1, j-1] <= 157.5)
+            else if (intensity >= 112.5 && intensity < 157.5)
             {
-
+                q = get_pixel(hypot, i - 1, j - 1);
+                r = get_pixel(hypot, i + 1, j + 1);
+            }
+            else
+            {
+                //printf("Intensity fail\n");
+                continue;
+            }
+            Uint32 pixel = get_pixel(hypot, i, j);
+            Uint8 re, g, b;
+            SDL_GetRGB(pixel, hypot -> format, &re, &g, &b);
+            SDL_GetRGB(q, hypot->format, &qr, &qg, &qb);
+            SDL_GetRGB(r, hypot->format, &rr, &rg, &rb);
+            if (re >= qr && re >= rr)
+            {
+                //printf("setting max intensity\n");
+                set_pixel(nonmax, re, g, b, 1, i, j);
+            }
+            else
+            {
+                //printf("setting black pixel\n");
+                set_pixel(nonmax, 0, 0, 0, 1, i, j);
             }
         }
     }
-
+    savePNG("nonmax.PNG", nonmax);
     // Memory cleanup
     gsl_matrix_free(Gx);
     gsl_matrix_free(Gy);
@@ -147,5 +178,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     SDL_FreeSurface(copy);
     SDL_FreeSurface(copyGx);
     SDL_FreeSurface(copyGy);
+    SDL_FreeSurface(hypot);
+    SDL_FreeSurface(nonmax);
     return canny;
 }
