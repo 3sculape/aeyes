@@ -21,18 +21,10 @@ void blacks(SDL_Surface *surface, double factor)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             rgb_to_hsv(r, g, b, hsv);
-            if (hsv[2] < 10)
-            {
-                hsv[2] += (factor / 40) * hsv[2];
-            }
 
-            else
-            {
-                double x = (hsv[2] - 10) * (4.0 / 10.0);
-                smooth = fabs(gsl_ran_ugaussian_pdf(x));
-                // printf("%f -> %f: %f\n", hsv[2], x, smooth * 2.5);
-                hsv[2] += (factor / 40) * (smooth * 2.5) * hsv[2];
-            }
+            double x = hsv[2] * (4.0 / 10.0);
+            smooth = fabs(gsl_ran_ugaussian_pdf(x / 2));
+            hsv[2] += (factor / 10) * (smooth * 2.5) * hsv[2];
 
             hsv[2] = clamp(hsv[2], 0, 100);
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
@@ -54,6 +46,7 @@ void shadows(SDL_Surface *surface, double factor)
 
     double hsv[3];
     Uint8 rgb[3];
+    double smooth;
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
@@ -64,21 +57,12 @@ void shadows(SDL_Surface *surface, double factor)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             rgb_to_hsv(r, g, b, hsv);
-            if (hsv[2] < 15)
-            {
-                hsv[2] += factor * (hsv[2] / 20);
-            }
 
-            else if (hsv[2] < 30)
-            {
-                double smooth = (30 - hsv[2]) / 15;
-                hsv[2] += factor * smooth * (hsv[2] / 20);
-            }
+            double x = hsv[2] * (4.0 / 10.0);
+            smooth = fabs(gsl_ran_ugaussian_pdf(x / 3));
+            hsv[2] += (factor / 50) * (smooth * 2.5) * hsv[2];
 
-            if (hsv[2] < 0)
-                hsv[2] = 0;
-            if (hsv[2] > 100)
-                hsv[2] = 100;
+            hsv[2] = clamp(hsv[2], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -99,6 +83,7 @@ void highlights(SDL_Surface *surface, double factor)
 
     double hsv[3];
     Uint8 rgb[3];
+    double smooth;
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
@@ -109,21 +94,12 @@ void highlights(SDL_Surface *surface, double factor)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             rgb_to_hsv(r, g, b, hsv);
-            if (hsv[2] > 85)
-            {
-                hsv[2] += factor * (hsv[2] / 20);
-            }
 
-            else if (hsv[2] > 70)
-            {
-                double smooth = (30 - (100 - hsv[2])) / 15;
-                hsv[2] += factor * smooth * (hsv[2] / 20);
-            }
+            double x = (100 - hsv[2]) * (4.0 / 10.0);
+            smooth = fabs(gsl_ran_ugaussian_pdf(x / 3));
+            hsv[2] += (factor / 10) * (smooth * 2.5) * (100 - hsv[2]);
 
-            if (hsv[2] < 0)
-                hsv[2] = 0;
-            if (hsv[2] > 100)
-                hsv[2] = 100;
+            hsv[2] = clamp(hsv[2], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -144,6 +120,7 @@ void whites(SDL_Surface *surface, double factor)
 
     double hsv[3];
     Uint8 rgb[3];
+    double smooth;
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
@@ -154,21 +131,12 @@ void whites(SDL_Surface *surface, double factor)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             rgb_to_hsv(r, g, b, hsv);
-            if (hsv[2] > 90)
-            {
-                hsv[2] += factor * (hsv[2] / 20);
-            }
 
-            else if (hsv[2] > 80)
-            {
-                double smooth = (20 - (100 - hsv[2])) / 10;
-                hsv[2] += factor * smooth * (hsv[2] / 20);
-            }
+            double x = (100 - hsv[2]) * (4.0 / 10.0);
+            smooth = fabs(gsl_ran_ugaussian_pdf(x / 2));
+            hsv[2] += (factor / 10) * (smooth * 2.5) * (100 - hsv[2]);
 
-            if (hsv[2] < 0)
-                hsv[2] = 0;
-            if (hsv[2] > 100)
-                hsv[2] = 100;
+            hsv[2] = clamp(hsv[2], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
