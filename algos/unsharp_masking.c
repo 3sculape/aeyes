@@ -3,16 +3,7 @@
 #include <err.h>
 #include "unsharp_masking.h"
 #include "blurs.h"
-
-int clamp(int x, int min, int max)
-{
-    if(x < min)
-        return min;
-    else if(x > max)
-        return max;
-    else
-        return x;
-}
+#include "utility.h"
 
 SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
 {
@@ -26,7 +17,7 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
     copy_surface(surface, org);
     if (org == NULL)
         goto error;
-    gaussian_blur(org, 5, 5);
+    gaussian_blur(org, 5);
 
     for (int i = 0; i < surface->w; i++)
     {

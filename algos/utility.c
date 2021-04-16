@@ -16,3 +16,13 @@ void print_vector(gsl_vector *v)
         printf("%f ", gsl_vector_get(v, i));
     printf("\n");
 }
+
+int clamp(int x, int min, int max)
+{
+    if(x < min)
+        return min;
+    else if(x > max)
+        return max;
+    else
+        return x;
+}

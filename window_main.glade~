@@ -210,15 +210,15 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="start_pixel_global_trailing_adjustment">
-    <property name="upper">8000</property>
+  <object class="GtkAdjustment" id="size_adjustment_radial_blur">
+    <property name="lower">3</property>
+    <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkDialog" id="dlg_global_trailing">
-    <property name="name">Global Trailing</property>
+  <object class="GtkDialog" id="dlg_radial_blur">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Global Trailing</property>
+    <property name="title" translatable="yes">Radial Blur</property>
     <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
@@ -237,12 +237,12 @@
             <property name="margin_bottom">20</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="btn_cancel_global_trailing">
+              <object class="GtkButton" id="btn_cancel_radial_blur">
                 <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_btn_cancel_global_trailing_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_btn_cancel_radial_blur_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -251,12 +251,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="btn_apply_global_trailing">
+              <object class="GtkButton" id="btn_apply_radial_blur">
                 <property name="label" translatable="yes">Apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_btn_apply_global_trailing_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_btn_apply_radial_blur_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -283,7 +283,7 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Global Trailing</property>
+                <property name="label" translatable="yes">Radial Blur</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
@@ -299,13 +299,13 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
-                <property name="margin_top">40</property>
-                <property name="spacing">20</property>
+                <property name="margin_top">15</property>
+                <property name="spacing">10</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Orientation</property>
+                    <property name="label" translatable="yes">Size</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -314,36 +314,17 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="global_trailing_vertical_rd_btn">
-                    <property name="label" translatable="yes">Vertical</property>
+                  <object class="GtkSpinButton" id="size_radial_blur_spin_btn">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_global_trailing_vertical_rd_btn_toggled" swapped="no"/>
+                    <property name="text" translatable="yes">3</property>
+                    <property name="adjustment">size_adjustment_radial_blur</property>
+                    <property name="value">3</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="global_trailing_horizontal_rd_btn">
-                    <property name="label" translatable="yes">Horizontal</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
-                    <property name="group">global_trailing_vertical_rd_btn</property>
-                    <signal name="toggled" handler="on_global_trailing_horizontal_rd_btn_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -351,74 +332,6 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="margin_top">15</property>
-                <property name="spacing">20</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Start Pixel</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSpinButton" id="start_pixel_global_trailing_spin_btn">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="text" translatable="yes">0</property>
-                    <property name="adjustment">start_pixel_global_trailing_adjustment</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="margin_top">10</property>
-                <property name="spacing">20</property>
-                <child>
-                  <object class="GtkCheckButton" id="global_trailing_inverse_check_btn">
-                    <property name="label" translatable="yes">Inverse Direction</property>
-                    <property name="name">global_trailing_inverse_check_btn</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="draw_indicator">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -430,6 +343,11 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="start_pixel_global_trailing_adjustment">
+    <property name="upper">8000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="strength_adjustment_blacks">
     <property name="lower">-100</property>
@@ -598,6 +516,22 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Undo All</property>
                         <signal name="activate" handler="on_btn_undo_all_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_undo">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Undo</property>
+                        <signal name="activate" handler="on_btn_undo_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_redo">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Redo</property>
+                        <signal name="activate" handler="on_btn_redo_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -780,6 +714,14 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="btn_radial_blur">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Radial Blur</property>
+                        <signal name="activate" handler="on_btn_radial_blur_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -808,6 +750,20 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="btn_global_trailing">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Global Trailing</property>
+                        <signal name="activate" handler="on_btn_global_trailing_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="btn_deep_fry">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -824,11 +780,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="btn_global_trailing">
+                      <object class="GtkMenuItem" id="btn_mercury">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Chambre Rouge</property>
-                        <signal name="activate" handler="on_btn_global_trailing_activate" swapped="no"/>
+                        <property name="label" translatable="yes">Mercury</property>
+                        <signal name="activate" handler="on_btn_mercury_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -4218,6 +4174,222 @@ Clément Zelter
       </object>
     </child>
   </object>
+  <object class="GtkDialog" id="dlg_global_trailing">
+    <property name="name">Global Trailing</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Global Trailing</property>
+    <property name="resizable">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">main_window</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="margin_bottom">20</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_cancel_global_trailing">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_cancel_global_trailing_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_apply_global_trailing">
+                <property name="label" translatable="yes">Apply</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_apply_global_trailing_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">420</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">70</property>
+            <property name="margin_bottom">70</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Global Trailing</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">40</property>
+                <property name="spacing">20</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Orientation</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="global_trailing_vertical_rd_btn">
+                    <property name="label" translatable="yes">Vertical</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_global_trailing_vertical_rd_btn_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="global_trailing_horizontal_rd_btn">
+                    <property name="label" translatable="yes">Horizontal</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                    <property name="group">global_trailing_vertical_rd_btn</property>
+                    <signal name="toggled" handler="on_global_trailing_horizontal_rd_btn_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">15</property>
+                <property name="spacing">20</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Start Pixel</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="start_pixel_global_trailing_spin_btn">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="text" translatable="yes">0</property>
+                    <property name="adjustment">start_pixel_global_trailing_adjustment</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">10</property>
+                <property name="spacing">20</property>
+                <child>
+                  <object class="GtkCheckButton" id="global_trailing_inverse_check_btn">
+                    <property name="label" translatable="yes">Inverse Direction</property>
+                    <property name="name">global_trailing_inverse_check_btn</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkDialog" id="dlg_mean_blur">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Mean Blur</property>
@@ -4449,7 +4621,8 @@ Clément Zelter
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="text" translatable="yes">0</property>
-                    <property name="adjustment">strength_adjustment_sharpening</property>
+                    <property name="adjustment">size_adjustment_median_blur</property>
+                    <property name="value">3</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
