@@ -5,6 +5,7 @@
 #include <gdk/gdkx.h>
 #include <stdio.h>
 #include "utils/lib_sdl.h"
+#include "utils/stack.h"
 #include "algos/basic.h"
 #include "algos/convert.h"
 #include "algos/color.h"
@@ -24,7 +25,8 @@ GError* error;
 GtkDrawingArea *gtk_da;
 void *gdk_window;
 void *window_id;
-
+stack *undo_stack;
+stack *redo_stack;
 
 typedef struct {
     GtkWidget *w_dlg_file_choose;                 // Pointer to file chooser dialog box
@@ -105,7 +107,6 @@ typedef struct {
 
 
 int main(int argc, char *argv[])
-
 {
     GtkBuilder *builder;
     GtkWidget *window;
@@ -264,6 +265,10 @@ int main(int argc, char *argv[])
 
 
     widgets->texture = NULL;
+    undo_stack = malloc(sizeof(stack));
+    redo_stack = malloc(sizeof(stack));
+    init_stack(undo_stack);
+    init_stack(redo_stack);
 
 
     gtk_widget_set_sensitive(widgets->w_menu_edit, FALSE);
@@ -308,6 +313,8 @@ int main(int argc, char *argv[])
 
 
 
+void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts);
+void on_btn_undo_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts);
 
 
 
@@ -321,6 +328,10 @@ int main(int argc, char *argv[])
 
 gboolean on_quit()
 {
+    clear_stack_text(undo_stack);
+    clear_stack_text(redo_stack);
+    free(undo_stack);
+    free(redo_stack);
     quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
     return True;
@@ -328,6 +339,10 @@ gboolean on_quit()
 
 gboolean on_btn_quit_activate()
 {
+    clear_stack_text(undo_stack);
+    clear_stack_text(redo_stack);
+    free(undo_stack);
+    free(redo_stack);
     quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
     return True;
@@ -335,6 +350,10 @@ gboolean on_btn_quit_activate()
 
 void on_window_main_destroy()
 {
+    clear_stack_text(undo_stack);
+    clear_stack_text(redo_stack);
+    free(undo_stack);
+    free(redo_stack);
     quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
 }
@@ -345,7 +364,8 @@ void on_window_main_destroy()
 void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
 {
     savePNG("./tmp.png", surface);
-    SDL_DestroyTexture(app_wdgts->texture);
+    push_stack(undo_stack, app_wdgts->texture);
+    clear_stack_text(redo_stack);
     app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
     show_l_histo(surface);
@@ -674,8 +694,8 @@ void on_btn_apply_mean_blur_clicked(GtkButton *button __attribute__((unused)), a
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    box_blur(surface, ((int)quantity));
-    update_image(surface, app_wdgts);
+    on_btn_redo_activate(NULL, app_wdgts);
+    //update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
     gint reset_value = 3;
@@ -707,11 +727,11 @@ void on_btn_apply_gaussian_blur_clicked(GtkButton *button __attribute__((unused)
     quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    fast_gaussian_blur(surface, ((int)quantity));
-    update_image(surface, app_wdgts);
+    on_btn_undo_activate(NULL, app_wdgts);
+    //update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
-    gint reset_value = 2;
+    gint reset_value = 3;
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_gaussian_blur);
@@ -957,7 +977,32 @@ void on_btn_undo_all_activate(GtkMenuItem *button __attribute__((unused)), app_w
     SDL_FreeSurface(surface);
 }
 
+void on_btn_undo_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    if(stack_isempty(undo_stack))
+        return;
+    SDL_Texture *texture = pop_stack(undo_stack);
+    push_stack(redo_stack, app_wdgts->texture);
+    app_wdgts->texture = texture;
+    SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+    savePNG("./tmp.png", surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+    show_l_histo(surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+    SDL_FreeSurface(surface);
+}
 
-
-
-
+void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    if(stack_isempty(redo_stack))
+        return;
+    SDL_Texture *texture = pop_stack(redo_stack);
+    push_stack(undo_stack, app_wdgts->texture);
+    app_wdgts->texture = texture;
+    SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+    savePNG("./tmp.png", surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+    show_l_histo(surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+    SDL_FreeSurface(surface);
+}
