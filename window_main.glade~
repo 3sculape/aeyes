@@ -808,14 +808,6 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="btn_global_trailing">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Global Trailing</property>
-                        <signal name="activate" handler="on_btn_global_trailing_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkMenuItem" id="btn_deep_fry">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -829,6 +821,14 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Fever Dream</property>
                         <signal name="activate" handler="on_btn_fever_dream_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_global_trailing">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Chambre Rouge</property>
+                        <signal name="activate" handler="on_btn_global_trailing_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>

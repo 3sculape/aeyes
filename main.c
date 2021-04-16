@@ -14,6 +14,7 @@
 #include "algos/whites.h"
 #include "algos/blurs.h"
 #include "algos/secret_sauce.h"
+#include "algos/trailing.h"
 
 
 SDL_Window *sdl_window;
@@ -46,6 +47,7 @@ typedef struct {
     GtkWidget *w_dlg_scale;                       // Pointer to scale dialog box
     GtkWidget *w_dlg_binarization;                // Pointer to binarization dialog box
     GtkWidget *w_dlg_colorize;                    // Pointer to colorize dialog box
+    GtkWidget *w_dlg_global_trailing;             // Pointer to Global Trailing dialog box
 
     //--- Windows --- //
     GtkWidget *w_image_window;                    // Pointer to image widget
@@ -56,10 +58,12 @@ typedef struct {
     GtkWidget *w_width_adjustment_crop;           // Pointer to crop width adjustment widget
     GtkWidget *w_x_adjustment_crop;               // Pointer to crop x adjustment widget
     GtkWidget *w_y_adjustment_crop;               // Pointer to crop y adjustment widget
+    GtkWidget *w_start_pixel_global_trailing_adjustment; // Pointer to global trailing adjustment widget
 
     //--- Check Buttons --- //
     GtkWidget *w_check_rotation_resize_to_fit;    // Pointer to resize to fit of rotation
     GtkWidget *w_check_colorize_preserve_luminosity; // Pointer to keep luminance in colorization
+    GtkWidget *w_global_trailing_inverse_check_btn; // Pointer to global trailing inverse direction check button
 
     //--- Paths --- //
     gchar     *image_path;                        // Image path to give to Pre-Processing
@@ -90,6 +94,7 @@ typedef struct {
     GtkWidget *w_angle_rotation_spin_btn;         // Pointer to angle of rotation Spin Button widget
     GtkWidget *w_factor_scale_spin_btn;           // Pointer to Scale Spin Button widget
     GtkWidget *w_threshold_binarization_spin_btn; // Pointer to Binarization Threshold Spin Button widget
+    GtkWidget *w_start_pixel_global_trailing_spin_btn; // Pointer to start pixel of global trailing
 
     GtkWidget *w_height_crop_spin_btn;            // Pointer to new height crop Spin Button widget
     GtkWidget *w_width_crop_spin_btn;             // Pointer to new width crop Spin Button widget
@@ -199,6 +204,11 @@ typedef struct {
     GtkWidget *w_rvl_saturation_hsl;              // Pointer to saturation revealer
     GtkWidget *w_rvl_luminance_hsl;               // Pointer to luminance revealer
 
+
+    //--- Radio Buttons ---//
+    GtkWidget *w_global_trailing_vertical_rd_btn; // Pointer to radio button vertical global trailing
+    GtkWidget *w_global_trailing_horizontal_rd_btn; // Pointer to radio button horizontal global trailing
+
     SDL_Texture *texture;
 
 } app_widgets;
@@ -263,6 +273,10 @@ int main(int argc, char *argv[])
             "dlg_binarization"));
     widgets->w_dlg_colorize = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_colorize"));
+    widgets->w_dlg_global_trailing = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_global_trailing"));
+
+            
 
 
 
@@ -286,6 +300,10 @@ int main(int argc, char *argv[])
             "blacks_spin_btn"));
     widgets->w_saturation_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "saturation_spin_btn"));
+    widgets->w_start_pixel_global_trailing_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "start_pixel_global_trailing_spin_btn"));
+
+            
     
     widgets->w_height_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "height_crop_spin_btn"));
@@ -306,8 +324,9 @@ int main(int argc, char *argv[])
             "x_adjustment_crop"));
     widgets->w_y_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
             "y_adjustment_crop"));
-    
-    
+    widgets->w_start_pixel_global_trailing_adjustment = GTK_WIDGET(gtk_builder_get_object(builder,
+            "start_pixel_global_trailing_adjustment"));
+            
     
 
     widgets->w_h_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -440,11 +459,17 @@ int main(int argc, char *argv[])
             "btn_median_blur"));
     widgets->w_btn_edge_enhance = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_edge_enhance"));
+
+
+
     widgets->w_check_rotation_resize_to_fit = GTK_WIDGET(gtk_builder_get_object(builder,
             "check_rotation_resize_to_fit"));
     widgets->w_check_colorize_preserve_luminosity = GTK_WIDGET(gtk_builder_get_object(builder,
             "check_colorize_preserve_luminosity"));
+    widgets->w_global_trailing_inverse_check_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "global_trailing_inverse_check_btn"));
 
+            
             
     widgets->w_btn_sav = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_sav"));
@@ -534,6 +559,13 @@ int main(int argc, char *argv[])
             "rvl_saturation_hsl"));
     widgets->w_rvl_luminance_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
             "rvl_luminance_hsl"));
+    
+
+    widgets->w_global_trailing_vertical_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "global_trailing_vertical_rd_btn"));
+    widgets->w_global_trailing_horizontal_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "global_trailing_horizontal_rd_btn"));
+
 
             
     gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_hue_hsl), TRUE);
@@ -1455,20 +1487,98 @@ void on_btn_fever_dream_activate(GtkMenuItem *button, app_widgets *app_wdgts)
 }
 
 
-//------------ Red Chamber ------------//
+//------------ Global Trailing ------------//
 
-void on_btn_chambre_rouge_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+void on_btn_global_trailing_activate(GtkMenuItem *button, app_widgets *app_wdgts)
 {
-    Uint8 reference[3] = {200, 60, 20};
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    deep_fry(surface, reference);
-    deep_fry(surface, reference);
-    deep_fry(surface, reference);
-    deep_fry(surface, reference);
-    update_image(surface, app_wdgts);
+
+    gdouble ow = (gdouble)(surface->w);
+
+    gtk_adjustment_set_upper(GTK_ADJUSTMENT
+        (app_wdgts->w_start_pixel_global_trailing_adjustment), ow);
+    
+    
     SDL_FreeSurface(surface);
+
+    gtk_widget_show(app_wdgts->w_dlg_global_trailing);
 }
 
+
+void on_btn_cancel_global_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_global_trailing);
+}
+
+void on_btn_apply_global_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gint start_pixel = 0;
+    start_pixel = gtk_spin_button_get_value_as_int
+        (GTK_SPIN_BUTTON(app_wdgts->w_start_pixel_global_trailing_spin_btn));
+
+    int inverse = 0;
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_global_trailing_inverse_check_btn)
+    )))
+    {
+        inverse = 1;
+    }
+    
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_global_trailing_vertical_rd_btn)
+    )))
+    {
+        global_trailing_v(surface, (int)start_pixel, inverse);
+    }
+
+    else
+    {
+        global_trailing_h(surface, (int)start_pixel, inverse);
+    }
+    
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gtk_widget_hide(app_wdgts->w_dlg_global_trailing);
+}
+
+void on_global_trailing_vertical_rd_btn_toggled(GtkRadioButton *button, app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    
+    gdouble ow = (gdouble)(surface->w);
+    gdouble oh = (gdouble)(surface->h);
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_global_trailing_vertical_rd_btn)
+    )))
+    {
+        gtk_adjustment_set_upper(GTK_ADJUSTMENT
+        (app_wdgts->w_start_pixel_global_trailing_adjustment), ow);
+        if (gtk_spin_button_get_value_as_int
+        (GTK_SPIN_BUTTON(app_wdgts->w_start_pixel_global_trailing_spin_btn)) > ow)
+        {
+            gtk_spin_button_set_value(GTK_SPIN_BUTTON
+            (app_wdgts->w_start_pixel_global_trailing_spin_btn), ow);
+        }
+    }
+    else
+    {
+        gtk_adjustment_set_upper(GTK_ADJUSTMENT
+        (app_wdgts->w_start_pixel_global_trailing_adjustment), oh);
+        if (gtk_spin_button_get_value_as_int
+        (GTK_SPIN_BUTTON(app_wdgts->w_start_pixel_global_trailing_spin_btn)) > oh)
+        {
+            gtk_spin_button_set_value(GTK_SPIN_BUTTON
+            (app_wdgts->w_start_pixel_global_trailing_spin_btn), oh);
+        }
+    }
+    
+    SDL_FreeSurface(surface);
+    
+}
 
 //------------ About ------------//
 
