@@ -44,7 +44,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     copy_surface(surface, copy);
     // Preprocessing (noise reduction)
     grayscale(copy);
-    gaussian_blur(copy, 3, 3);
+    gaussian_blur(copy, 5, 5);
+    savePNG("blur.PNG", copy);
 
     // Definition of Gradient kernels
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
@@ -111,11 +112,12 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             double tmpx = (double)xr;
             double tmpy = (double)yr;
             // if atan y / x doesn't work, go for atan2(y, x);
-            gsl_matrix_set(theta, i - 1, j - 1, atan((tmpy / tmpx)));
+            gsl_matrix_set(theta, i - 1, j - 1, atan2(tmpy , tmpx));
         }
     }
     savePNG("hypot.PNG", hypot);
     SDL_Surface* nonmax = create_surface(surface->w, surface->h);
+    Uint8 maxp = 0;
     for (int i = 1; i < hypot->w - 1; i++)
     {
         for (int j = 1; j < hypot->h - 1; j++)
@@ -160,6 +162,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             SDL_GetRGB(r, hypot->format, &rr, &rg, &rb);
             if (re >= qr && re >= rr)
             {
+                if (re > maxp)
+                    maxp = re;
                 //printf("setting max intensity\n");
                 set_pixel(nonmax, re, g, b, 1, i, j);
             }
@@ -171,6 +175,33 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
         }
     }
     savePNG("nonmax.PNG", nonmax);
+
+    const double maxratio = 0.5;
+    const double lowratio = 0.3;
+
+    Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
+    Uint8 lowthreshold = (Uint8)((double)highthreshold * lowratio);
+
+    SDL_Surface* dualthresh = create_surface(surface->w, surface->h);
+
+    for(int i = 0; i < nonmax->w; i++)
+    {
+        for(int j = 0; j < nonmax->h; j++)
+        {
+            Uint8 r, g, b;
+            Uint32 pixel = get_pixel(nonmax, i, j);
+            SDL_GetRGB(pixel, nonmax->format, &r, &g, &b);
+            if (r >= highthreshold)
+                set_pixel(dualthresh, 255, 255, 255, 1, i, j);
+            else if (r < lowthreshold)
+                set_pixel(dualthresh, 0, 0, 0, 1, i, j);
+            else
+                set_pixel(dualthresh, r, g, b, 1, i, j);
+        }
+    }
+
+    savePNG("dualthresh.PNG", dualthresh);
+
     // Memory cleanup
     gsl_matrix_free(Gx);
     gsl_matrix_free(Gy);
@@ -179,6 +210,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     SDL_FreeSurface(copyGx);
     SDL_FreeSurface(copyGy);
     SDL_FreeSurface(hypot);
+    SDL_FreeSurface(dualthresh);
     SDL_FreeSurface(nonmax);
     return canny;
 }
