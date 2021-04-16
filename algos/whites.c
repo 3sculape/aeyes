@@ -23,18 +23,18 @@ void blacks(SDL_Surface *surface, double factor)
             rgb_to_hsv(r, g, b, hsv);
             if (hsv[2] < 10)
             {
-                hsv[2] += (factor / 50) * hsv[2];
+                hsv[2] += (factor / 40) * hsv[2];
             }
 
             else
             {
                 double x = (hsv[2] - 10) * (4.0 / 10.0);
                 smooth = fabs(gsl_ran_ugaussian_pdf(x));
-                printf("%f -> %f: %f\n", hsv[2], x, smooth * 2.5);
-                hsv[2] += (factor / 50) * (smooth * 2.5) * hsv[2];
+                // printf("%f -> %f: %f\n", hsv[2], x, smooth * 2.5);
+                hsv[2] += (factor / 40) * (smooth * 2.5) * hsv[2];
             }
 
-            clamp(hsv[2], 0, 100);
+            hsv[2] = clamp(hsv[2], 0, 100);
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
