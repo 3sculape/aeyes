@@ -20,12 +20,10 @@ void tsl_hue(SDL_Surface *surface, double *range, double amount)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             rgb_to_hsv(r, g, b, hsv);
-            if (hsv[0] > range[0] && hsv[0] < range[1])
-            {
-                double x = hsv[0] * (4.0 / 30.0);
-                smooth = fabs(gsl_ran_ugaussian_pdf(x / 2));
-                hsv[0] = fmod((hsv[0] + amount * smooth), 360);
-            }
+
+            double x = (hsv[0] - 30) * (4.0 / 30.0);
+            smooth = gsl_ran_ugaussian_pdf(x);
+            hsv[0] = fmod((hsv[0] + amount * smooth), 360);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);

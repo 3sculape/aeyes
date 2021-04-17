@@ -12,7 +12,8 @@
     with the functions below.
     Each range is ?? degrees wide.
 */
-enum color {RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PURPLE};
+enum color {RED = 0, ORANGE = 30, YELLOW = 60, GREEN = 90, TEAL = 165,
+BLUE = 215, PURPLE = 270, MAGENTA = 300};
 
 /*
     A typedef is used so that the function can recieve colors
