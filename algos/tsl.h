@@ -8,6 +8,19 @@
 #include "utility.h"
 
 /*
+    This enum defines the different color ranges that can be used
+    with the functions below.
+    Each range is ?? degrees wide.
+*/
+enum color {RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PURPLE};
+
+/*
+    A typedef is used so that the function can recieve colors
+    directly without specifying the enum type.
+*/
+typedef enum color color_t;
+
+/*
     Hue rotation. Gets all pixels in the range defined by <range>
     and increases their hue by <amount> modulo 360
     <surface>: the surface to be processed
