@@ -142,3 +142,35 @@ void tint(SDL_Surface *surface, double factor)
 
     SDL_UnlockSurface(surface);
 }
+
+
+void apply_lut(SDL_Surface *surface, SDL_Surface *lut)
+{
+    int image_h = surface->h;
+    int image_w = surface->w;
+    Uint8 s_r, s_g, s_b, s_a;
+    Uint32 source_pixel;
+    Uint8 l_r, l_g, l_b, l_a;
+    Uint32 lut_pixel;
+    Uint32 lut_x, lut_y;
+
+    for (int j = 0; j < image_h; j++)
+    {
+        for (int i = 0; i < image_w; i++)
+        {
+            source_pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(source_pixel, surface->format, &s_r, &s_g, &s_b, &s_a);
+            s_r /= 4;
+            s_g /= 4;
+            s_b /= 4;
+            lut_x = ((s_b%8)*64) + s_r;
+            lut_y = ((s_b/8)*64) + s_g;
+
+            lut_pixel = get_pixel(lut, lut_x, lut_y);
+            SDL_GetRGBA(lut_pixel, lut->format, &l_r, &l_g, &l_b, &l_a);
+            set_pixel(surface, l_r, l_g, l_b, s_a, i, j);
+        }
+        
+    }
+    
+}

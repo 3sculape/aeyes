@@ -43,4 +43,13 @@ void white_balance(SDL_Surface *surface, double factor);
 */
 void tint(SDL_Surface *surface, double factor);
 
+/*
+    Takes a 512*512 LUT image under PNG format
+    and apply the color correction given by the LUT
+    to the surface
+    <surface>: the surface to be processed
+    <lut>: the lut surface to be processed
+*/
+void apply_lut(SDL_Surface *surface, SDL_Surface *lut);
+
 #endif

@@ -24,9 +24,7 @@ void* pop_stack(stack* s);
  * a pointer to the data that we want to push
  * We consider that the data is mallocd outside of the function
  */
-void push_stack(stack* s, stack* new_el);
-
-stack* element_from_data(void* data);
+void push_stack(stack* s, void* data);
 
 // Simple print of each element for debugging purposes
 void print_stack(stack* s);
@@ -36,6 +34,7 @@ size_t stack_len(stack* s);
 // Frees every element in the stack to prevent the spicy memleaks
 // Sentinel must be freed by the programmer
 void clear_stack(stack* s);
+void clear_stack_text(stack* s);
 
 int stack_isempty(stack* s);
 

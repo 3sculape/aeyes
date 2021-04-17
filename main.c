@@ -5,6 +5,7 @@
 #include <gdk/gdkx.h>
 #include <stdio.h>
 #include "utils/lib_sdl.h"
+#include "utils/stack.h"
 #include "algos/basic.h"
 #include "algos/convert.h"
 #include "algos/color.h"
@@ -25,7 +26,8 @@ GError* error;
 GtkDrawingArea *gtk_da;
 void *gdk_window;
 void *window_id;
-
+stack *undo_stack;
+stack *redo_stack;
 
 // ----- USER DATA STRUCT ----- //
 
@@ -35,6 +37,7 @@ typedef struct {
     GtkWidget *w_dlg_file_choose;                 // Pointer to file chooser dialog box
     GtkWidget *w_dlg_save_choose;                 // Pointer to save file chooser dialog box
     GtkWidget *w_dlg_about;                       // Pointer to the about dialog box
+    GtkWidget *w_dlg_lut_choose;                  // Pointer to lut chooser dialog box
 
     GtkWidget *w_dlg_sharpen;                     // Pointer to sharpening dialog box
     GtkWidget *w_dlg_mean_blur;                   // Pointer to mean blur dialog box
@@ -72,6 +75,7 @@ typedef struct {
     //--- Paths --- //
     gchar     *image_path;                        // Image path to give to Pre-Processing
     gchar     *save_path;                         // Image path to give to Pre-Processing
+    gchar     *lut_path;                          // Image path to give to LUT Apply function
 
 
     GtkWidget *w_on_btn_save_clicked;             // Pointer to the save button of save window
@@ -92,7 +96,7 @@ typedef struct {
     GtkWidget *w_size_median_blur_spin_btn;       // Pointer to size of mean blur Spin Button widget
     GtkWidget *w_size_gaussian_blur_spin_btn;     // Pointer to size of gaussian blur Spin Button widget
     GtkWidget *w_size_fast_blur_spin_btn;         // Pointer to size of fast blur Spin Button widget
-    GtkWidget *w_size_radial_blur_spin_btn;       // Pointer to radial blur spin button widget 
+    GtkWidget *w_size_radial_blur_spin_btn;       // Pointer to radial blur spin button widget
     GtkWidget *w_angle_direct_blur_spin_btn;      // Pointer to angle of directional blur Spin Button widget
     GtkWidget *w_size_direct_blur_spin_btn;       // Pointer to size of directional blur Spin Button widget
     GtkWidget *w_height_resize_spin_btn;          // Pointer to new height of resize Spin Button widget
@@ -139,7 +143,7 @@ typedef struct {
     //--- Color Buttons --- //
     GtkWidget *w_color_btn_a_binarization;        // Pointer to button color a of binarization
     GtkWidget *w_color_btn_b_binarization;        // Pointer to button color a of binarization
-    GtkWidget *w_color_btn_colorize;              // Pointer to button color of colorize  
+    GtkWidget *w_color_btn_colorize;              // Pointer to button color of colorize
 
     //--- EXIF Labels--- //
     GtkWidget *w_lbl_exif_capture_date;           // Pointer to capture date EXIF
@@ -225,7 +229,6 @@ typedef struct {
 
 
 int main(int argc, char *argv[])
-
 {
     GtkBuilder *builder;
     GtkWidget *window;
@@ -257,6 +260,9 @@ int main(int argc, char *argv[])
             "dlg_about"));
     widgets->w_on_btn_save_clicked = GTK_WIDGET(gtk_builder_get_object(builder,
             "on_btn_save_clicked"));
+    widgets->w_dlg_lut_choose = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_lut_choose"));
+
 
 
     widgets->w_dlg_sharpen = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -290,7 +296,7 @@ int main(int argc, char *argv[])
     widgets->w_dlg_edge_trailing = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_edge_trailing"));
 
-            
+
 
 
 
@@ -314,14 +320,14 @@ int main(int argc, char *argv[])
             "blacks_spin_btn"));
     widgets->w_saturation_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "saturation_spin_btn"));
-    widgets->w_start_pixel_global_trailing_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "start_pixel_global_trailing_spin_btn"));
-    widgets->w_strength_edge_trailing_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "strength_edge_trailing_spin_btn"));
+    widgets->w_start_pixel_global_trailing_spin_btn = 
+            GTK_WIDGET(gtk_builder_get_object(builder,
+                "start_pixel_global_trailing_spin_btn"));
+    widgets->w_strength_edge_trailing_spin_btn = 
+            GTK_WIDGET(gtk_builder_get_object(builder,
+                "strength_edge_trailing_spin_btn"));
 
 
-            
-    
     widgets->w_height_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "height_crop_spin_btn"));
     widgets->w_width_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -330,21 +336,24 @@ int main(int argc, char *argv[])
             "x_crop_spin_btn"));
     widgets->w_y_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "y_crop_spin_btn"));
-   
 
 
-    widgets->w_height_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
+
+    widgets->w_height_adjustment_crop =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "height_adjustment_crop"));
-    widgets->w_width_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_width_adjustment_crop =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "width_adjustment_crop"));
     widgets->w_x_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
             "x_adjustment_crop"));
     widgets->w_y_adjustment_crop = GTK_WIDGET(gtk_builder_get_object(builder,
             "y_adjustment_crop"));
-    widgets->w_start_pixel_global_trailing_adjustment = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_start_pixel_global_trailing_adjustment =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "start_pixel_global_trailing_adjustment"));
-            
-    
+
+
 
     widgets->w_h_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "h_red_spin_btn"));
@@ -362,7 +371,7 @@ int main(int argc, char *argv[])
             "h_purple_spin_btn"));
     widgets->w_h_magenta_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "h_magenta_spin_btn"));
-    
+
     widgets->w_s_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "s_red_spin_btn"));
     widgets->w_s_orange_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -379,7 +388,7 @@ int main(int argc, char *argv[])
             "s_purple_spin_btn"));
     widgets->w_s_magenta_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "s_magenta_spin_btn"));
-    
+
     widgets->w_l_red_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "l_red_spin_btn"));
     widgets->w_l_orange_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -397,39 +406,52 @@ int main(int argc, char *argv[])
     widgets->w_l_magenta_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "l_magenta_spin_btn"));
 
-    
-    
-    widgets->w_strength_sharp_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "strength_sharp_spin_btn"));
-    widgets->w_size_mean_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "size_mean_blur_spin_btn"));
-    widgets->w_size_median_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "size_median_blur_spin_btn"));
-    widgets->w_size_gaussian_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "size_gaussian_blur_spin_btn"));
-    widgets->w_size_radial_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "size_radial_blur_spin_btn"));
-    widgets->w_size_fast_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "size_fast_blur_spin_btn"));
-    widgets->w_angle_direct_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "angle_direct_blur_spin_btn"));
-    widgets->w_size_direct_blur_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "size_direct_blur_spin_btn"));
-    widgets->w_height_resize_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "height_resize_spin_btn"));
-    widgets->w_width_resize_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
-            "width_resize_spin_btn"));
-    widgets->w_angle_rotation_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+
+
+    widgets->w_strength_sharp_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder, "strength_sharp_spin_btn"));
+    widgets->w_size_mean_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder, "size_mean_blur_spin_btn"));
+    widgets->w_size_median_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                    "size_median_blur_spin_btn"));
+    widgets->w_size_gaussian_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                    "size_gaussian_blur_spin_btn"));
+    widgets->w_size_radial_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                    "size_radial_blur_spin_btn"));
+    widgets->w_size_fast_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                    "size_fast_blur_spin_btn"));
+    widgets->w_angle_direct_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                "angle_direct_blur_spin_btn"));
+    widgets->w_size_direct_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                "size_direct_blur_spin_btn"));
+    widgets->w_height_resize_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                "height_resize_spin_btn"));
+    widgets->w_width_resize_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                "width_resize_spin_btn"));
+    widgets->w_angle_rotation_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "angle_rotation_spin_btn"));
-    widgets->w_factor_scale_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_factor_scale_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "factor_scale_spin_btn"));
-    widgets->w_threshold_binarization_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_threshold_binarization_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "threshold_binarization_spin_btn"));
 
 
-    widgets->w_color_btn_a_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_color_btn_a_binarization =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_a_binarization"));
-    widgets->w_color_btn_b_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_color_btn_b_binarization =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_b_binarization"));
     widgets->w_color_btn_colorize = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_colorize"));
@@ -439,22 +461,22 @@ int main(int argc, char *argv[])
     widgets->w_color_chooser_b_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_chooser_b_binarization")); */
 
-    
-    
-    widgets->w_lbl_exif_capture_date = GTK_WIDGET(gtk_builder_get_object(builder,
-            "lbl_exif_capture_date"));
-    widgets->w_lbl_exif_capture_time = GTK_WIDGET(gtk_builder_get_object(builder,
-            "lbl_exif_capture_time"));
-    widgets->w_lbl_exif_size = GTK_WIDGET(gtk_builder_get_object(builder,
-            "lbl_exif_size"));
-    widgets->w_lbl_exif_exposure = GTK_WIDGET(gtk_builder_get_object(builder,
-            "lbl_exif_exposure"));
-    widgets->w_lbl_exif_focal_length = GTK_WIDGET(gtk_builder_get_object(builder,
-            "lbl_exif_focal_length"));
-    widgets->w_lbl_exif_iso = GTK_WIDGET(gtk_builder_get_object(builder,
-            "lbl_exif_iso"));
-    widgets->w_lbl_exif_model = GTK_WIDGET(gtk_builder_get_object(builder,
-            "lbl_exif_model"));
+
+
+    widgets->w_lbl_exif_capture_date =
+        GTK_WIDGET(gtk_builder_get_object(builder, "lbl_exif_capture_date"));
+    widgets->w_lbl_exif_capture_time =
+        GTK_WIDGET(gtk_builder_get_object(builder, "lbl_exif_capture_time"));
+    widgets->w_lbl_exif_size =
+        GTK_WIDGET(gtk_builder_get_object(builder, "lbl_exif_size"));
+    widgets->w_lbl_exif_exposure =
+        GTK_WIDGET(gtk_builder_get_object(builder, "lbl_exif_exposure"));
+    widgets->w_lbl_exif_focal_length =
+        GTK_WIDGET(gtk_builder_get_object(builder, "lbl_exif_focal_length"));
+    widgets->w_lbl_exif_iso =
+        GTK_WIDGET(gtk_builder_get_object(builder, "lbl_exif_iso"));
+    widgets->w_lbl_exif_model =
+        GTK_WIDGET(gtk_builder_get_object(builder, "lbl_exif_model"));
 
 
     widgets->w_menu_edit = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -483,15 +505,19 @@ int main(int argc, char *argv[])
 
 
 
-    widgets->w_check_rotation_resize_to_fit = GTK_WIDGET(gtk_builder_get_object(builder,
-            "check_rotation_resize_to_fit"));
-    widgets->w_check_colorize_preserve_luminosity = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_check_rotation_resize_to_fit =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+                    "check_rotation_resize_to_fit"));
+    widgets->w_check_colorize_preserve_luminosity =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "check_colorize_preserve_luminosity"));
-    widgets->w_global_trailing_inverse_check_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_global_trailing_inverse_check_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "global_trailing_inverse_check_btn"));
 
-            
-            
+
+
+
     widgets->w_btn_sav = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_sav"));
 
@@ -517,7 +543,7 @@ int main(int argc, char *argv[])
             "btn_apply_saturation"));
     widgets->w_btn_apply_contrast = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_contrast"));
-    
+
 
     widgets->w_btn_apply_h_red = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_h_red"));
@@ -527,7 +553,8 @@ int main(int argc, char *argv[])
             "btn_apply_h_yellow"));
     widgets->w_btn_apply_h_green = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_h_green"));
-    widgets->w_btn_apply_h_bluegreen = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_btn_apply_h_bluegreen =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_h_bluegreen"));
     widgets->w_btn_apply_h_blue = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_h_blue"));
@@ -535,7 +562,7 @@ int main(int argc, char *argv[])
             "btn_apply_h_purple"));
     widgets->w_btn_apply_h_magenta = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_h_magenta"));
-    
+
     widgets->w_btn_apply_s_red = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_s_red"));
     widgets->w_btn_apply_s_orange = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -544,7 +571,8 @@ int main(int argc, char *argv[])
             "btn_apply_s_yellow"));
     widgets->w_btn_apply_s_green = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_s_green"));
-    widgets->w_btn_apply_s_bluegreen = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_btn_apply_s_bluegreen =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_s_bluegreen"));
     widgets->w_btn_apply_s_blue = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_s_blue"));
@@ -552,7 +580,7 @@ int main(int argc, char *argv[])
             "btn_apply_s_purple"));
     widgets->w_btn_apply_s_magenta = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_s_magenta"));
-    
+
     widgets->w_btn_apply_l_red = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_l_red"));
     widgets->w_btn_apply_l_orange = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -561,7 +589,8 @@ int main(int argc, char *argv[])
             "btn_apply_l_yellow"));
     widgets->w_btn_apply_l_green = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_l_green"));
-    widgets->w_btn_apply_l_bluegreen = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_btn_apply_l_bluegreen =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_l_bluegreen"));
     widgets->w_btn_apply_l_blue = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_l_blue"));
@@ -570,7 +599,7 @@ int main(int argc, char *argv[])
     widgets->w_btn_apply_l_magenta = GTK_WIDGET(gtk_builder_get_object(builder,
             "btn_apply_l_magenta"));
 
-    
+
 
 
 
@@ -580,24 +609,32 @@ int main(int argc, char *argv[])
             "rvl_saturation_hsl"));
     widgets->w_rvl_luminance_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
             "rvl_luminance_hsl"));
-    
 
-    widgets->w_global_trailing_vertical_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+
+    widgets->w_global_trailing_vertical_rd_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "global_trailing_vertical_rd_btn"));
-    widgets->w_global_trailing_horizontal_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+    widgets->w_global_trailing_horizontal_rd_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
             "global_trailing_horizontal_rd_btn"));
     widgets->w_edge_trailing_soufflerie_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "edge_trailing_soufflerie_rd_btn"));
     widgets->w_edge_trailing_zigzag_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "edge_trailing_zigzag_rd_btn"));  
 
-            
+
     gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_hue_hsl), TRUE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_saturation_hsl), FALSE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_luminance_hsl), FALSE);
-    
+    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_saturation_hsl),
+            FALSE);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_luminance_hsl),
+            FALSE);
+
 
     widgets->texture = NULL;
+    undo_stack = malloc(sizeof(stack));
+    redo_stack = malloc(sizeof(stack));
+    init_stack(undo_stack);
+    init_stack(redo_stack);
 
 
     gtk_widget_set_sensitive(widgets->w_menu_edit, FALSE);
@@ -684,6 +721,10 @@ int main(int argc, char *argv[])
 
 gboolean on_quit()
 {
+    clear_stack_text(undo_stack);
+    clear_stack_text(redo_stack);
+    free(undo_stack);
+    free(redo_stack);
     quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
     return True;
@@ -691,6 +732,10 @@ gboolean on_quit()
 
 gboolean on_btn_quit_activate()
 {
+    clear_stack_text(undo_stack);
+    clear_stack_text(redo_stack);
+    free(undo_stack);
+    free(redo_stack);
     quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
     return True;
@@ -698,6 +743,10 @@ gboolean on_btn_quit_activate()
 
 void on_window_main_destroy()
 {
+    clear_stack_text(undo_stack);
+    clear_stack_text(redo_stack);
+    free(undo_stack);
+    free(redo_stack);
     quit(sdl_window, sdl_renderer, texture);
     gtk_main_quit();
 }
@@ -708,17 +757,20 @@ void on_window_main_destroy()
 void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
 {
     savePNG("./tmp.png", surface);
-    SDL_DestroyTexture(app_wdgts->texture);
+    push_stack(undo_stack, app_wdgts->texture);
+    clear_stack_text(redo_stack);
     app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
     //show_l_histo(surface);
     //gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
     histo_color(surface);
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
+            "./new_histo.PNG");
 }
 
 
-void on_btn_refresh_texture_activate(GtkMenuItem *btn_open __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_refresh_texture_activate(GtkMenuItem *btn_open
+        __attribute__((unused)), app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     update_image(surface, app_wdgts);
@@ -747,7 +799,8 @@ void put_string1(char string[], char dest[])
 // ------------------- LOAD --------------------- //
 // ---------------------------------------------- //
 
-void on_btn_open_activate(GtkMenuItem *btn_open __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_open_activate(GtkMenuItem *btn_open __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     // Show the "Open Image" dialog box
     gtk_widget_show(app_wdgts->w_dlg_file_choose);
@@ -771,7 +824,8 @@ void on_btn_open_activate(GtkMenuItem *btn_open __attribute__((unused)), app_wid
             //show_l_histo(surface);
             //gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
             histo_color(surface);
-            gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+            gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
+                    "./new_histo.PNG");
 
             SDL_FreeSurface(surface);
 
@@ -795,12 +849,16 @@ void on_btn_open_activate(GtkMenuItem *btn_open __attribute__((unused)), app_wid
             gchar model_str[1024] = {0};    // buffer for model string
             put_string1(list_exif.camera_model, model_str);
 
-            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_capture_time), time_str);
+            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_capture_time),
+                    time_str);
             gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_size), size_str);
-            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_exposure), exposure_str);
-            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_focal_length), focal_str);
+            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_exposure),
+                    exposure_str);
+            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_focal_length),
+                    focal_str);
             gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_iso), iso_str);
-            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_model), model_str);
+            gtk_label_set_text(GTK_LABEL(app_wdgts->w_lbl_exif_model),
+                    model_str);
 
             exif_destroy(&list_exif);
 
@@ -860,7 +918,8 @@ void on_btn_open_activate(GtkMenuItem *btn_open __attribute__((unused)), app_wid
 // ----------------- SAVE ----------------------- //
 // ---------------------------------------------- //
 
-void on_btn_save_activate(GtkMenuItem *btn_open __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_save_activate(GtkMenuItem *btn_open __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     // Show the "Open Image" dialog box
     gtk_widget_show(app_wdgts->w_dlg_save_choose);
@@ -875,7 +934,8 @@ void on_btn_save_activate(GtkMenuItem *btn_open __attribute__((unused)), app_wid
                     GTK_FILE_CHOOSER(app_wdgts->w_dlg_save_choose));
         if (app_wdgts->save_path != NULL)
         {
-            SDL_Surface *result = texture_to_surface(app_wdgts->texture, sdl_renderer);
+            SDL_Surface *result = texture_to_surface(app_wdgts->texture,
+                    sdl_renderer);
             savePNG(app_wdgts->save_path, result);
 
             SDL_FreeSurface(result);
@@ -888,7 +948,8 @@ void on_btn_save_activate(GtkMenuItem *btn_open __attribute__((unused)), app_wid
     gtk_widget_hide(app_wdgts->w_dlg_save_choose);
 } */
 
-void on_btn_cancel_save_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_save_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_hide(app_wdgts->w_dlg_save_choose);
 }
@@ -910,22 +971,26 @@ void on_btn_cancel_save_clicked(GtkButton *button __attribute__((unused)), app_w
 // --------------- SIDE MENU FUNCTIONS -------------- //
 // -------------------------------------------------- //
 
-void on_btn_apply_wb_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_wb_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_wb_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_wb_spin_btn));
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     white_balance(surface, ((double)quantity)/100);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_tint_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_tint_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_tint_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_tint_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     tint(surface, ((double)quantity)/100);
@@ -933,11 +998,13 @@ void on_btn_apply_tint_clicked(GtkButton *button __attribute__((unused)), app_wi
     SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_exposure_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_exposure_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_exposure_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_exposure_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     exposure(surface, ((double)quantity));
@@ -945,11 +1012,13 @@ void on_btn_apply_exposure_clicked(GtkButton *button __attribute__((unused)), ap
     SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_whites_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_whites_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_whites_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_whites_spin_btn));
 
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
@@ -958,11 +1027,13 @@ void on_btn_apply_whites_clicked(GtkButton *button __attribute__((unused)), app_
     SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_highlights_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_highlights_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_highlights_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_highlights_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     highlights(surface, ((double)quantity));
@@ -970,11 +1041,13 @@ void on_btn_apply_highlights_clicked(GtkButton *button __attribute__((unused)), 
     SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_shadows_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_shadows_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_shadows_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_shadows_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     shadows(surface, ((double)quantity));
@@ -982,11 +1055,13 @@ void on_btn_apply_shadows_clicked(GtkButton *button __attribute__((unused)), app
     SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_blacks_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_blacks_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_blacks_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_blacks_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     blacks(surface, ((double)quantity));
@@ -994,11 +1069,13 @@ void on_btn_apply_blacks_clicked(GtkButton *button __attribute__((unused)), app_
     SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_saturation_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_saturation_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_saturation_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_saturation_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     saturation(surface, ((double)quantity));
@@ -1016,24 +1093,29 @@ void on_btn_apply_saturation_clicked(GtkButton *button __attribute__((unused)), 
 
 //------------ Sharpen ------------//
 
-void on_btn_sharpen_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_sharpen_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_sharpen);
 }
 
-void on_btn_cancel_sharpening_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_sharpening_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint reset_value = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_sharpen);
 }
 
-void on_btn_apply_sharpening_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_sharpening_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     SDL_Surface *res = sharpen(surface, ((double)quantity)/100, 50);
@@ -1042,7 +1124,8 @@ void on_btn_apply_sharpening_clicked(GtkButton *button __attribute__((unused)), 
     SDL_FreeSurface(res);
 
     gint reset_value = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_sharpen);
 }
@@ -1050,32 +1133,38 @@ void on_btn_apply_sharpening_clicked(GtkButton *button __attribute__((unused)), 
 
 //------------ Mean Blur ------------//
 
-void on_btn_mean_blur_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_mean_blur_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_mean_blur);
 }
 
-void on_btn_cancel_mean_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_mean_blur_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_mean_blur);
 }
 
-void on_btn_apply_mean_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_mean_blur_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    box_blur(surface, ((int)quantity));
+    box_blur(surface, (int)quantity);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_mean_blur_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_mean_blur);
 }
@@ -1083,24 +1172,30 @@ void on_btn_apply_mean_blur_clicked(GtkButton *button __attribute__((unused)), a
 
 //------------ Median Blur ------------//
 
-void on_btn_median_blur_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_median_blur_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_median_blur);
 }
 
-void on_btn_cancel_median_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_median_blur_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_median_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_median_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_median_blur);
 }
 
-void on_btn_apply_median_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_median_blur_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_median_blur_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_median_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     median_blur(surface, ((int)quantity));
@@ -1108,7 +1203,9 @@ void on_btn_apply_median_blur_clicked(GtkButton *button __attribute__((unused)),
     SDL_FreeSurface(surface);
 
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_median_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_median_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_median_blur);
 }
@@ -1116,24 +1213,31 @@ void on_btn_apply_median_blur_clicked(GtkButton *button __attribute__((unused)),
 
 //------------ Gaussian Blur ------------//
 
-void on_btn_gaussian_blur_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_gaussian_blur_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_gaussian_blur);
 }
 
-void on_btn_cancel_gaussian_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_gaussian_blur_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gint reset_value = 2;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_gaussian_blur);
 }
 
-void on_btn_apply_gaussian_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_gaussian_blur_clicked(
+        GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     gaussian_blur(surface, ((int)quantity));
@@ -1141,7 +1245,9 @@ void on_btn_apply_gaussian_blur_clicked(GtkButton *button __attribute__((unused)
     SDL_FreeSurface(surface);
 
     gint reset_value = 2;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_gaussian_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_gaussian_blur);
 }
@@ -1149,28 +1255,37 @@ void on_btn_apply_gaussian_blur_clicked(GtkButton *button __attribute__((unused)
 
 //------------ Directional Blur ------------//
 
-void on_btn_direct_blur_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_direct_blur_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_direct_blur);
 }
 
-void on_btn_cancel_direct_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_direct_blur_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gint reset_value = 3;
     gint reset_value_angle = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_angle_direct_blur_spin_btn), reset_value_angle);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_direct_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_angle_direct_blur_spin_btn),
+            reset_value_angle);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_direct_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_direct_blur);
 }
 
-void on_btn_apply_direct_blur_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_direct_blur_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint angle_quantity = 0;
     gint strength_quantity = 0;
 
-    angle_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_angle_direct_blur_spin_btn));
-    strength_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_direct_blur_spin_btn));
+    angle_quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_angle_direct_blur_spin_btn));
+    strength_quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_direct_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     motion_blur(surface, (int)strength_quantity, (double)angle_quantity);
@@ -1179,8 +1294,12 @@ void on_btn_apply_direct_blur_clicked(GtkButton *button __attribute__((unused)),
 
     gint reset_value = 3;
     gint reset_value_angle = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_angle_direct_blur_spin_btn), reset_value_angle);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_direct_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_angle_direct_blur_spin_btn),
+            reset_value_angle);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_direct_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_direct_blur);
 }
@@ -1188,24 +1307,29 @@ void on_btn_apply_direct_blur_clicked(GtkButton *button __attribute__((unused)),
 
 // ----------- Fast Blur ------------//
 
-void on_btn_fast_blur_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+void on_btn_fast_blur_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_fast_blur);
 }
 
-void on_btn_cancel_fast_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_cancel_fast_blur_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_fast_blur);
 }
 
-void on_btn_apply_fast_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_fast_blur_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 3;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     fast_gaussian_blur(surface, ((int)quantity));
@@ -1213,7 +1337,8 @@ void on_btn_apply_fast_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
     SDL_FreeSurface(surface);
 
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_fast_blur_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_fast_blur);
 }
@@ -1221,24 +1346,30 @@ void on_btn_apply_fast_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 // ----------- Radial Blur ------------//
 
-void on_btn_radial_blur_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+void on_btn_radial_blur_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_radial_blur);
 }
 
-void on_btn_cancel_radial_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_cancel_radial_blur_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_radial_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_radial_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_radial_blur);
 }
 
-void on_btn_apply_radial_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_radial_blur_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 3;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_size_radial_blur_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_radial_blur_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     radial_blur(surface, ((int)quantity));
@@ -1246,7 +1377,9 @@ void on_btn_apply_radial_blur_clicked(GtkButton *button, app_widgets *app_wdgts)
     SDL_FreeSurface(surface);
 
     gint reset_value = 3;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_size_radial_blur_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_size_radial_blur_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_radial_blur);
 }
@@ -1285,24 +1418,29 @@ void on_btn_apply_resize_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 //------------ Rotation ------------//
 
-void on_btn_rotation_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_rotation_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_rotation);
 }
 
-void on_btn_cancel_rotation_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_rotation_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint reset_value = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_angle_rotation_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_angle_rotation_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_rotation);
 }
 
-void on_btn_apply_rotation_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_rotation_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_angle_rotation_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_angle_rotation_spin_btn));
 
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
@@ -1313,7 +1451,8 @@ void on_btn_apply_rotation_clicked(GtkButton *button __attribute__((unused)), ap
 
 
     gdouble reset_value = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_angle_rotation_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_angle_rotation_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_rotation);
 }
@@ -1321,24 +1460,29 @@ void on_btn_apply_rotation_clicked(GtkButton *button __attribute__((unused)), ap
 
 //------------ Scale ------------//
 
-void on_btn_scale_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_scale_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_scale);
 }
 
-void on_btn_cancel_scale_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_cancel_scale_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gdouble reset_value = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_factor_scale_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_factor_scale_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_scale);
 }
 
-void on_btn_apply_scale_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_scale_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gdouble quantity = 0;
 
-    quantity = gtk_spin_button_get_value(GTK_SPIN_BUTTON(app_wdgts->w_factor_scale_spin_btn));
+    quantity = gtk_spin_button_get_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_factor_scale_spin_btn));
 
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
@@ -1349,17 +1493,19 @@ void on_btn_apply_scale_clicked(GtkButton *button __attribute__((unused)), app_w
 
 
     gdouble reset_value = 0;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_factor_scale_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_factor_scale_spin_btn), reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_scale);
 }
 
 // ----------- Crop ------------ //
 
-void on_btn_crop_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+void on_btn_crop_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    
+
 
     gdouble ow = (gdouble)(surface->w);
     gdouble oh = (gdouble)(surface->h);
@@ -1377,7 +1523,8 @@ void on_btn_crop_activate(GtkMenuItem *button, app_widgets *app_wdgts)
     SDL_FreeSurface(surface);
 }
 
-void on_btn_cancel_crop_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_cancel_crop_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gdouble reset_value = 0;
     gtk_spin_button_set_value(GTK_SPIN_BUTTON
@@ -1388,11 +1535,12 @@ void on_btn_cancel_crop_clicked(GtkButton *button, app_widgets *app_wdgts)
         (app_wdgts->w_x_crop_spin_btn), reset_value);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON
         (app_wdgts->w_y_crop_spin_btn), reset_value);
-    
+
     gtk_widget_hide(app_wdgts->w_dlg_crop);
 }
 
-void on_btn_apply_crop_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_crop_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     size_t new_x = (size_t)(gtk_spin_button_get_value
         (GTK_SPIN_BUTTON(app_wdgts->w_x_crop_spin_btn)));
@@ -1425,20 +1573,25 @@ void on_btn_apply_crop_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 //------------ Binarization ------------//
 
-void on_btn_binarization_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_binarization_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_binarization);
 }
 
-void on_btn_cancel_binarization_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_cancel_binarization_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gint reset_value = 127;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_binarization);
 }
 
-void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_binarization_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gint quantity = 0;
 
@@ -1451,10 +1604,12 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     colorb.red = 0.4;
     colora.green = 0.9;
     colora.blue = 0.8;
-    
-    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_binarization), &colora);
-    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_binarization), &colorb);
-   
+
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_binarization), &colora);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_binarization), &colorb);
+
     int ra= (int)((colora.red)*255);
     int ga= (int)((colora.green)*255);
     int ba= (int)((colora.blue)*255);
@@ -1463,7 +1618,8 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     int gb= (int)((colorb.green)*255);
     int bb= (int)((colorb.blue)*255);
 
-    quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn));
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     binarization(surface, (char)quantity, ra, ga, ba, rb, gb, bb);
@@ -1471,7 +1627,9 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
     SDL_FreeSurface(surface);
 
     gint reset_value = 127;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn), reset_value);
+    gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn),
+            reset_value);
 
     gtk_widget_hide(app_wdgts->w_dlg_binarization);
 }
@@ -1480,17 +1638,20 @@ void on_btn_apply_binarization_clicked(GtkButton *button, app_widgets *app_wdgts
 
 //------------ Colorize ------------//
 
-void on_btn_colorize_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+void on_btn_colorize_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_colorize);
 }
 
-void on_btn_cancel_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_cancel_colorize_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_hide(app_wdgts->w_dlg_colorize);
 }
 
-void on_btn_apply_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_colorize_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     /* grayscale(surface);
@@ -1502,7 +1663,8 @@ void on_btn_apply_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
     color.green = 0.3;
     color.blue = 0.1;
 
-    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_colorize), &color);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_colorize), &color);
 
     int r= (int)((color.red)*255);
     int g= (int)((color.green)*255);
@@ -1515,7 +1677,7 @@ void on_btn_apply_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
     {
         keep_luminance = 1;
     }
-    
+
     g_print("KEEP LUMINANCE: %d\n", keep_luminance);
 
     colorize(surface, r, g, b, keep_luminance);
@@ -1527,7 +1689,8 @@ void on_btn_apply_colorize_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 //------------ Negative ------------//
 
-void on_btn_negative_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_negative_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     negative(surface);
@@ -1538,7 +1701,8 @@ void on_btn_negative_activate(GtkMenuItem *button __attribute__((unused)), app_w
 
 //------------ Grayscale ------------//
 
-void on_btn_apply_grayscale_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_apply_grayscale_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     grayscale(surface);
@@ -1550,7 +1714,8 @@ void on_btn_apply_grayscale_clicked(GtkButton *button __attribute__((unused)), a
 
 //------------ Deep Fry ------------//
 
-void on_btn_deep_fry_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_deep_fry_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     Uint8 reference[3] = {200, 60, 20};
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
@@ -1562,7 +1727,8 @@ void on_btn_deep_fry_activate(GtkMenuItem *button __attribute__((unused)), app_w
 
 //------------ Fever Dream ------------//
 
-void on_btn_fever_dream_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_fever_dream_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     double strength = 6.66;
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
@@ -1575,7 +1741,8 @@ void on_btn_fever_dream_activate(GtkMenuItem *button __attribute__((unused)), ap
 
 //------------ Mercury ------------//
 
-void on_btn_mercury_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_mercury_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     g_print("MERCURY\n");
 }
@@ -1584,7 +1751,8 @@ void on_btn_mercury_activate(GtkMenuItem *button __attribute__((unused)), app_wi
 
 //------------ Global Trailing ------------//
 
-void on_btn_global_trailing_activate(GtkMenuItem *button, app_widgets *app_wdgts)
+void on_btn_global_trailing_activate(
+        GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
 
@@ -1592,20 +1760,22 @@ void on_btn_global_trailing_activate(GtkMenuItem *button, app_widgets *app_wdgts
 
     gtk_adjustment_set_upper(GTK_ADJUSTMENT
         (app_wdgts->w_start_pixel_global_trailing_adjustment), ow);
-    
-    
+
+
     SDL_FreeSurface(surface);
 
     gtk_widget_show(app_wdgts->w_dlg_global_trailing);
 }
 
 
-void on_btn_cancel_global_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_cancel_global_trailing_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gtk_widget_hide(app_wdgts->w_dlg_global_trailing);
 }
 
-void on_btn_apply_global_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_global_trailing_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gint start_pixel = 0;
     start_pixel = gtk_spin_button_get_value_as_int
@@ -1618,7 +1788,7 @@ void on_btn_apply_global_trailing_clicked(GtkButton *button, app_widgets *app_wd
     {
         inverse = 1;
     }
-    
+
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
 
     if ((gtk_toggle_button_get_active  (
@@ -1632,17 +1802,18 @@ void on_btn_apply_global_trailing_clicked(GtkButton *button, app_widgets *app_wd
     {
         global_trailing_h(surface, (int)start_pixel, inverse);
     }
-    
+
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
     gtk_widget_hide(app_wdgts->w_dlg_global_trailing);
 }
 
-void on_global_trailing_vertical_rd_btn_toggled(GtkRadioButton *button, app_widgets *app_wdgts)
+void on_global_trailing_vertical_rd_btn_toggled(
+        GtkRadioButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    
+
     gdouble ow = (gdouble)(surface->w);
     gdouble oh = (gdouble)(surface->h);
 
@@ -1653,7 +1824,7 @@ void on_global_trailing_vertical_rd_btn_toggled(GtkRadioButton *button, app_widg
         gtk_adjustment_set_upper(GTK_ADJUSTMENT
         (app_wdgts->w_start_pixel_global_trailing_adjustment), ow);
         if (gtk_spin_button_get_value_as_int
-        (GTK_SPIN_BUTTON(app_wdgts->w_start_pixel_global_trailing_spin_btn)) > ow)
+        (GTK_SPIN_BUTTON(app_wdgts->w_start_pixel_global_trailing_spin_btn))>ow)
         {
             gtk_spin_button_set_value(GTK_SPIN_BUTTON
             (app_wdgts->w_start_pixel_global_trailing_spin_btn), ow);
@@ -1664,15 +1835,15 @@ void on_global_trailing_vertical_rd_btn_toggled(GtkRadioButton *button, app_widg
         gtk_adjustment_set_upper(GTK_ADJUSTMENT
         (app_wdgts->w_start_pixel_global_trailing_adjustment), oh);
         if (gtk_spin_button_get_value_as_int
-        (GTK_SPIN_BUTTON(app_wdgts->w_start_pixel_global_trailing_spin_btn)) > oh)
+        (GTK_SPIN_BUTTON(app_wdgts->w_start_pixel_global_trailing_spin_btn))>oh)
         {
             gtk_spin_button_set_value(GTK_SPIN_BUTTON
             (app_wdgts->w_start_pixel_global_trailing_spin_btn), oh);
         }
     }
-    
+
     SDL_FreeSurface(surface);
-    
+
 }
 
 //------------ Edge Trailing -------------//
@@ -1748,12 +1919,14 @@ void on_btn_apply_edge_trailing_clicked(GtkButton *button, app_widgets *app_wdgt
 
 //------------ About ------------//
 
-void on_btn_about_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_about_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_about);
 }
 
-void on_btn_close_about_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_close_about_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     gtk_widget_hide(app_wdgts->w_dlg_about);
 }
@@ -1763,25 +1936,37 @@ void on_btn_close_about_clicked(GtkButton *button __attribute__((unused)), app_w
 
 // -------------- HSL Revealers ---------------- //
 
-void on_btn_hue_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_hue_hsl_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_hue_hsl), TRUE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl), FALSE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl), FALSE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_hue_hsl),
+            TRUE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl),
+            FALSE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl),
+            FALSE);
 }
 
-void on_btn_saturation_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_saturation_hsl_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl), TRUE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl), FALSE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_hue_hsl), FALSE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl),
+            TRUE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl),
+            FALSE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_hue_hsl),
+            FALSE);
 }
 
-void on_btn_luminance_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_luminance_hsl_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl), TRUE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl), FALSE);
-    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->w_rvl_hue_hsl), FALSE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_luminance_hsl),
+            TRUE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_saturation_hsl),
+            FALSE);
+    gtk_revealer_set_reveal_child(GTK_REVEALER(app_wdgts->w_rvl_hue_hsl),
+            FALSE);
 }
 
 
@@ -1791,27 +1976,52 @@ void on_btn_luminance_hsl_clicked(GtkButton *button, app_widgets *app_wdgts)
 // ------------------------------------------------ //
 
 
-void on_btn_undo_all_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_undo_all_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), app_wdgts->image_path);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
+            app_wdgts->image_path);
 
     SDL_Surface *surface = load(app_wdgts->image_path);
     app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
 
     histo_color(surface);
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
-    
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
+            "./new_histo.PNG");
+
     SDL_FreeSurface(surface);
 }
 
-void on_btn_undo_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_undo_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
-    g_print("UNDO\n");
+    if(stack_isempty(undo_stack))
+        return;
+    SDL_Texture *texture = pop_stack(undo_stack);
+    push_stack(redo_stack, app_wdgts->texture);
+    app_wdgts->texture = texture;
+    SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+    savePNG("./tmp.png", surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+    histo_color(surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+    SDL_FreeSurface(surface);
 }
 
-void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
-    g_print("REDO\n");
+    if(stack_isempty(redo_stack))
+        return;
+    SDL_Texture *texture = pop_stack(redo_stack);
+    push_stack(undo_stack, app_wdgts->texture);
+    app_wdgts->texture = texture;
+    SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+    savePNG("./tmp.png", surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+    histo_color(surface);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+    SDL_FreeSurface(surface);
 }
 
 
@@ -1825,7 +2035,8 @@ void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)), app_widge
 
 // ----- HUE -----//
 
-void on_btn_apply_h_red_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_red_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_red_spin_btn)));
@@ -1833,7 +2044,8 @@ void on_btn_apply_h_red_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Hue Rotation on Reds with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_h_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_orange_clicked(GtkButton *buttoni __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_orange_spin_btn)));
@@ -1841,7 +2053,8 @@ void on_btn_apply_h_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Hue Rotation on Oranges with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_h_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_yellow_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_yellow_spin_btn)));
@@ -1849,7 +2062,8 @@ void on_btn_apply_h_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Hue Rotation on Yellows with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_h_green_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_green_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_green_spin_btn)));
@@ -1857,15 +2071,18 @@ void on_btn_apply_h_green_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Hue Rotation on Greens with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_h_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_bluegreen_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_bluegreen_spin_btn)));
 
-    g_print("Partial Hue Rotation on Blue-Greens with quantity of: %d\n", quantity);
+    g_print("Partial Hue Rotation on Blue-Greens with quantity of: %d\n",
+            quantity);
 }
 
-void on_btn_apply_h_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_blue_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_blue_spin_btn)));
@@ -1873,7 +2090,8 @@ void on_btn_apply_h_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Hue Rotation on Blues with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_h_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_purple_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_purple_spin_btn)));
@@ -1881,18 +2099,21 @@ void on_btn_apply_h_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Hue Rotation on Purples with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_h_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_h_magenta_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_magenta_spin_btn)));
 
-    g_print("Partial Hue Rotation on Magentas with quantity of: %d\n", quantity);
+    g_print("Partial Hue Rotation on Magentas with quantity of: %d\n",
+            quantity);
 }
 
 
 // ----- Saturation -----//
 
-void on_btn_apply_s_red_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_red_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_red_spin_btn)));
@@ -1900,7 +2121,8 @@ void on_btn_apply_s_red_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Saturation on Reds with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_s_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_orange_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_orange_spin_btn)));
@@ -1908,7 +2130,8 @@ void on_btn_apply_s_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Saturation on Oranges with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_s_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_yellow_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_yellow_spin_btn)));
@@ -1916,7 +2139,8 @@ void on_btn_apply_s_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Saturation on Yellows with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_s_green_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_green_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_green_spin_btn)));
@@ -1924,7 +2148,8 @@ void on_btn_apply_s_green_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Saturation on Greens with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_s_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_bluegreen_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_bluegreen_spin_btn)));
@@ -1932,7 +2157,8 @@ void on_btn_apply_s_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Saturation on Blue-Greens with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_s_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_blue_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_blue_spin_btn)));
@@ -1940,7 +2166,8 @@ void on_btn_apply_s_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Saturation on Blues with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_s_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_purple_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_purple_spin_btn)));
@@ -1948,7 +2175,8 @@ void on_btn_apply_s_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Saturation on Purples with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_s_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_s_magenta_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_magenta_spin_btn)));
@@ -1959,7 +2187,8 @@ void on_btn_apply_s_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 // ----- Luminance -----//
 
-void on_btn_apply_l_red_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_red_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_red_spin_btn)));
@@ -1967,7 +2196,8 @@ void on_btn_apply_l_red_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Luminance on Reds with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_l_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_orange_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_orange_spin_btn)));
@@ -1975,7 +2205,8 @@ void on_btn_apply_l_orange_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Luminance on Oranges with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_l_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_yellow_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_yellow_spin_btn)));
@@ -1983,7 +2214,8 @@ void on_btn_apply_l_yellow_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Luminance on Yellows with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_l_green_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_green_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_green_spin_btn)));
@@ -1991,7 +2223,8 @@ void on_btn_apply_l_green_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Luminance on Greens with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_l_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_bluegreen_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_bluegreen_spin_btn)));
@@ -1999,7 +2232,8 @@ void on_btn_apply_l_bluegreen_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Luminance on Blue-Greens with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_l_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_blue_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_blue_spin_btn)));
@@ -2007,7 +2241,8 @@ void on_btn_apply_l_blue_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Luminance on Blues with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_l_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_purple_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_purple_spin_btn)));
@@ -2015,7 +2250,8 @@ void on_btn_apply_l_purple_clicked(GtkButton *button, app_widgets *app_wdgts)
     g_print("Partial Luminance on Purples with quantity of: %d\n", quantity);
 }
 
-void on_btn_apply_l_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_l_magenta_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_magenta_spin_btn)));
@@ -2026,5 +2262,42 @@ void on_btn_apply_l_magenta_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 
 
+// -------- LUTS --------- //
 
+
+void on_btn_lut_activate(GtkMenuItem *btn_open __attribute__((unused)),
+        app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_lut_choose);
+    if (gtk_dialog_run(GTK_DIALOG(app_wdgts->w_dlg_lut_choose))
+            == GTK_RESPONSE_OK)
+    {
+        // Get the file name from the dialog box
+        app_wdgts->lut_path =
+            gtk_file_chooser_get_filename(
+                    GTK_FILE_CHOOSER(app_wdgts->w_dlg_lut_choose));
+
+        SDL_Surface *lut = load(app_wdgts->lut_path);
+        SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+
+        gdouble lw = (gdouble)(lut->w);
+        gdouble lh = (gdouble)(lut->h);
+
+
+        if (lw == 512)
+        {
+            if (lh == 512)
+            {
+                apply_lut(surface, lut);
+            }
+        }
+        
+
+        update_image(surface, app_wdgts);
+
+        SDL_FreeSurface(surface);
+        SDL_FreeSurface(lut);
+    }
+    gtk_widget_hide(app_wdgts->w_dlg_lut_choose);
+}
 

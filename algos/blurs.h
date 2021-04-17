@@ -13,7 +13,11 @@ void median_blur(SDL_Surface *surface, int x);
 
 // Blur the SDL_Surface *surface with the median blur.
 // x parameter is the size of the kernel
-void fast_median_blur(SDL_Surface *surface, int x);
+void min_blur(SDL_Surface *surface, int x);
+
+// Blur the SDL_Surface *surface with the median blur.
+// x parameter is the size of the kernel
+void max_blur(SDL_Surface *surface, int x);
 
 // Blur the SDL_Surface *surface with the gaussian blur.
 // x parameter is the size of the kernel.

@@ -387,18 +387,44 @@ void init_histo(SDL_Surface *surface, int posy, int x, color_histo_t *h)
         add_pixels(surface, i, posy, x, h);
 }
 
-int median(const int *x, int n)
+int median_histo(const int *x, int n)
 {
     int i;
     for (n /= 2, i = 0; i < 256 && (n -= x[i]) > 0; i++);
     return i;
 }
+int min_histo(const int *x)
+{
+    int i;
+    for(i = 0; i < 256 && x[i] == 0; i++);
+    return i;
+}
+int max_histo(const int *x)
+{
+    int i;
+    for(i = 255; i >= 0 && x[i] == 0; i--);
+    return i;
+}
 
 void median_color(Uint8 *r, Uint8 *g, Uint8 *b, const color_histo_t *h)
 {
-    *r = median(h->r, h->n);
-    *g = median(h->g, h->n);
-    *b = median(h->b, h->n);
+    *r = median_histo(h->r, h->n);
+    *g = median_histo(h->g, h->n);
+    *b = median_histo(h->b, h->n);
+}
+
+void min_color(Uint8 *r, Uint8 *g, Uint8 *b, const color_histo_t *h)
+{
+    *r = min_histo(h->r);
+    *g = min_histo(h->g);
+    *b = min_histo(h->b);
+}
+
+void max_color(Uint8 *r, Uint8 *g, Uint8 *b, const color_histo_t *h)
+{
+    *r = max_histo(h->r);
+    *g = max_histo(h->g);
+    *b = max_histo(h->b);
 }
 
 void box_blur(SDL_Surface *surface, int x)
@@ -452,6 +478,72 @@ void median_blur(SDL_Surface *surface, int x)
             Uint32 pixel = get_pixel(surface, i, j);
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
             median_color(&r, &g, &b, &h);
+            set_pixel(surface2, r, g, b, a, i, j);
+        }
+    }
+    copy_surface(surface2, surface);
+    SDL_FreeSurface(surface2);
+    SDL_UnlockSurface(surface);
+}
+
+void min_blur(SDL_Surface *surface, int x)
+{
+    if(x % 2 == 0)
+        x += 1;
+    if(SDL_LockSurface(surface) != 0)
+        return;
+    SDL_Surface *surface2 = SDL_CreateRGBSurfaceWithFormat(0,
+            surface->w, surface->h, 32, surface->format->format);
+
+    color_histo_t h;
+
+    for(int j = 0; j < surface->h; j++)
+    {
+        for(int i = 0; i < surface->w; i++)
+        {
+            if(i == 0) init_histo(surface, j, x, &h);
+            else
+            {
+                del_pixels(surface, i - (x - 1) / 2 - 1, j, x, &h);
+                add_pixels(surface, i + (x - 1) / 2, j, x, &h);
+            }
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+            min_color(&r, &g, &b, &h);
+            set_pixel(surface2, r, g, b, a, i, j);
+        }
+    }
+    copy_surface(surface2, surface);
+    SDL_FreeSurface(surface2);
+    SDL_UnlockSurface(surface);
+}
+
+void max_blur(SDL_Surface *surface, int x)
+{
+    if(x % 2 == 0)
+        x += 1;
+    if(SDL_LockSurface(surface) != 0)
+        return;
+    SDL_Surface *surface2 = SDL_CreateRGBSurfaceWithFormat(0,
+            surface->w, surface->h, 32, surface->format->format);
+
+    color_histo_t h;
+
+    for(int j = 0; j < surface->h; j++)
+    {
+        for(int i = 0; i < surface->w; i++)
+        {
+            if(i == 0) init_histo(surface, j, x, &h);
+            else
+            {
+                del_pixels(surface, i - (x - 1) / 2 - 1, j, x, &h);
+                add_pixels(surface, i + (x - 1) / 2, j, x, &h);
+            }
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+            max_color(&r, &g, &b, &h);
             set_pixel(surface2, r, g, b, a, i, j);
         }
     }
