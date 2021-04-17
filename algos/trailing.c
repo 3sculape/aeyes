@@ -86,3 +86,121 @@ void global_trailing_h(SDL_Surface *surface, int start_pixel, int inverse)
         }
     }
 }
+
+
+
+void edge_trailing_soufflerie(SDL_Surface *surface, SDL_Surface *edge_map,
+    int kernel_size, int inverse)
+{
+    int image_h = surface->h;
+    int image_w = surface->w;
+    Uint8 source_r, source_g, source_b, source_a;
+    Uint32 source_pixel;
+    Uint8 edge_r, edge_g, edge_b, edge_a;
+    Uint32 edge_pixel;
+
+    if (inverse == 0)
+    {
+        for (int j = 0; j < image_h; j++)
+        {
+            for (int i = 0; i < image_w; i++)
+            {
+                edge_pixel = get_pixel(edge_map, i, j);
+                SDL_GetRGBA(edge_pixel, edge_map->format,
+                    &edge_r, &edge_g, &edge_b, &edge_a);
+                if (edge_r == 255)
+                {
+                    source_pixel = get_pixel(surface, i, j);
+                    SDL_GetRGBA(source_pixel, surface->format,
+                        &source_r, &source_g, &source_b, &source_a);
+                    for (int x = 0; x < kernel_size; x++)
+                    {
+                        set_pixel(surface, source_r, source_g, source_b, source_a,
+                        i + x, j);
+                    }
+                }
+            }
+        }
+    }
+
+    else
+    {
+        for (int j = 0; j < image_h; j++)
+        {
+            for (int i = 0; i < image_w; i++)
+            {
+                edge_pixel = get_pixel(edge_map, i, j);
+                SDL_GetRGBA(edge_pixel, edge_map->format,
+                    &edge_r, &edge_g, &edge_b, &edge_a);
+                if (edge_r == 255)
+                {
+                    source_pixel = get_pixel(surface, i, j);
+                    SDL_GetRGBA(source_pixel, surface->format,
+                        &source_r, &source_g, &source_b, &source_a);
+                    for (int x = 0; x < kernel_size; x++)
+                    {
+                        set_pixel(surface, source_r, source_g, source_b, source_a,
+                        i - x, j);
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+void edge_trailing_zigzag(SDL_Surface *surface, SDL_Surface *edge_map,
+    int kernel_size)
+{
+    int image_h = surface->h;
+    int image_w = surface->w;
+    Uint8 source_r, source_g, source_b, source_a;
+    Uint32 source_pixel;
+    Uint8 edge_r, edge_g, edge_b, edge_a;
+    Uint32 edge_pixel;
+    int random_kernel = kernel_size;
+
+    srand( time( NULL ) );
+
+
+    for (int j = 0; j < image_h; j++)
+    {
+        for (int i = 0; i < image_w; i++)
+        {
+            random_kernel = rand() % kernel_size;
+            edge_pixel = get_pixel(edge_map, i, j);
+            SDL_GetRGBA(edge_pixel, edge_map->format,
+                &edge_r, &edge_g, &edge_b, &edge_a);
+            if (edge_r == 255)
+            {
+                if (i%2 == 0)
+                {
+                    source_pixel = get_pixel(surface, i, j);
+                    SDL_GetRGBA(source_pixel, surface->format,
+                        &source_r, &source_g, &source_b, &source_a);
+                    for (int x = 0; x < random_kernel; x++)
+                    {
+                        set_pixel(surface, source_r, source_g, source_b, source_a,
+                        i + x, j);
+                    }
+                }
+
+                else
+                {
+                    source_pixel = get_pixel(surface, i, j);
+                    SDL_GetRGBA(source_pixel, surface->format,
+                        &source_r, &source_g, &source_b, &source_a);
+                    for (int x = 0; x < random_kernel; x++)
+                    {
+                        set_pixel(surface, source_r, source_g, source_b, source_a,
+                        i - x, j);
+                    }
+                }
+                
+                
+            }
+        }
+    }
+    
+
+}

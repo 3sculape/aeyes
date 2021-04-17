@@ -50,6 +50,7 @@ typedef struct {
     GtkWidget *w_dlg_binarization;                // Pointer to binarization dialog box
     GtkWidget *w_dlg_colorize;                    // Pointer to colorize dialog box
     GtkWidget *w_dlg_global_trailing;             // Pointer to Global Trailing dialog box
+    GtkWidget *w_dlg_edge_trailing;               // Pointer to Edge Trailing dialog box
 
     //--- Windows --- //
     GtkWidget *w_image_window;                    // Pointer to image widget
@@ -66,6 +67,7 @@ typedef struct {
     GtkWidget *w_check_rotation_resize_to_fit;    // Pointer to resize to fit of rotation
     GtkWidget *w_check_colorize_preserve_luminosity; // Pointer to keep luminance in colorization
     GtkWidget *w_global_trailing_inverse_check_btn; // Pointer to global trailing inverse direction check button
+    GtkWidget *w_edge_trailing_inverse_check_btn; // Pointer to inverse edge trailing check button
 
     //--- Paths --- //
     gchar     *image_path;                        // Image path to give to Pre-Processing
@@ -99,6 +101,7 @@ typedef struct {
     GtkWidget *w_factor_scale_spin_btn;           // Pointer to Scale Spin Button widget
     GtkWidget *w_threshold_binarization_spin_btn; // Pointer to Binarization Threshold Spin Button widget
     GtkWidget *w_start_pixel_global_trailing_spin_btn; // Pointer to start pixel of global trailing
+    GtkWidget *w_strength_edge_trailing_spin_btn; // Pointer to strength of edge trailing
 
     GtkWidget *w_height_crop_spin_btn;            // Pointer to new height crop Spin Button widget
     GtkWidget *w_width_crop_spin_btn;             // Pointer to new width crop Spin Button widget
@@ -212,6 +215,8 @@ typedef struct {
     //--- Radio Buttons ---//
     GtkWidget *w_global_trailing_vertical_rd_btn; // Pointer to radio button vertical global trailing
     GtkWidget *w_global_trailing_horizontal_rd_btn; // Pointer to radio button horizontal global trailing
+    GtkWidget *w_edge_trailing_soufflerie_rd_btn; // Pointer to radio button edge trailing soufflerie
+    GtkWidget *w_edge_trailing_zigzag_rd_btn;     // Pointer to radio button edge trailing soufflerie
 
     SDL_Texture *texture;
 
@@ -282,6 +287,8 @@ int main(int argc, char *argv[])
             "dlg_colorize"));
     widgets->w_dlg_global_trailing = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_global_trailing"));
+    widgets->w_dlg_edge_trailing = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_edge_trailing"));
 
             
 
@@ -309,6 +316,9 @@ int main(int argc, char *argv[])
             "saturation_spin_btn"));
     widgets->w_start_pixel_global_trailing_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "start_pixel_global_trailing_spin_btn"));
+    widgets->w_strength_edge_trailing_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "strength_edge_trailing_spin_btn"));
+
 
             
     
@@ -576,7 +586,10 @@ int main(int argc, char *argv[])
             "global_trailing_vertical_rd_btn"));
     widgets->w_global_trailing_horizontal_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "global_trailing_horizontal_rd_btn"));
-
+    widgets->w_edge_trailing_soufflerie_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "edge_trailing_soufflerie_rd_btn"));
+    widgets->w_edge_trailing_zigzag_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "edge_trailing_zigzag_rd_btn"));  
 
             
     gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->w_rvl_hue_hsl), TRUE);
@@ -1661,6 +1674,77 @@ void on_global_trailing_vertical_rd_btn_toggled(GtkRadioButton *button, app_widg
     SDL_FreeSurface(surface);
     
 }
+
+//------------ Edge Trailing -------------//
+
+void on_btn_edge_trailing_activate(GtkMenuItem *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_edge_trailing);
+}
+
+void on_btn_cancel_edge_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_edge_trailing);
+}
+
+void on_btn_apply_edge_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+{
+    SDL_Surface *edge_map = load("./edge_map.png");
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    
+    gdouble ow = (gdouble)(surface->w);
+    gdouble oh = (gdouble)(surface->h);
+
+    int kernel_size = 20;
+
+    kernel_size = gtk_spin_button_get_value_as_int
+        (GTK_SPIN_BUTTON(app_wdgts->w_strength_edge_trailing_spin_btn));
+
+    int inverse = 0;
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_global_trailing_inverse_check_btn)
+    )))
+    {
+        inverse = 1;
+    }
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_edge_trailing_soufflerie_rd_btn)
+    )))
+    {
+        edge_trailing_soufflerie(surface, edge_map, kernel_size, inverse);
+    }
+
+    else
+    {
+        edge_trailing_zigzag(surface, edge_map, kernel_size);
+    }
+
+
+    update_image(surface, app_wdgts);
+
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(edge_map);
+
+    gtk_widget_hide(app_wdgts->w_dlg_edge_trailing);
+}
+
+/* void on_edge_trailing_soufflerie_rd_btn_toggled(GtkRadioButton *button, app_widgets *app_wdgts)
+{
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_edge_trailing_soufflerie_rd_btn)
+    )))
+    {
+        gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(app_wdgts->w_edge_trailing_inverse_check_btn), FALSE);
+    }
+
+    else
+    {
+        gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(app_wdgts->w_edge_trailing_inverse_check_btn), TRUE);
+    }
+    
+} */
+
 
 //------------ About ------------//
 
