@@ -5,7 +5,6 @@
 #include "blurs.h"
 #include "utility.h"
 
-
 SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
 {
     if (surface == NULL)
@@ -18,7 +17,7 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
     copy_surface(surface, org);
     if (org == NULL)
         goto error;
-    gaussian_blur(org, 5, 5);
+    gaussian_blur(org, 5);
 
     for (int i = 0; i < surface->w; i++)
     {
