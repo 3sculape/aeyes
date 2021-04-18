@@ -14,9 +14,9 @@ void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
         for (int offsety = -1; offsety < 2; offsety++)
         {
             Uint8 r, g, b;
-            double kernelvalue = gsl_matrix_get(ker, 1 + offsetx, 1 + offsety);
+            double kernelvalue = gsl_matrix_get(ker, 1 +offsetx,1+offsety);
 
-            Uint32 pixel = get_pixel(surface, x + offsety, y + offsetx);
+            Uint32 pixel = get_pixel(surface,x + offsety,y +offsetx);
             if (pixel == (Uint32) -1)
             {
                 //warnx("fail pixel");
@@ -34,6 +34,29 @@ void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
     }
     nr = fabs(nr);
     set_pixel(copy, (Uint8)nr, (Uint8)nr, (Uint8)nr, a, x, y);
+}
+
+void find_strongest(SDL_Surface* surface, SDL_Surface* result,int posx,int posy)
+{
+    for(int i = -1; i < 2; i++)
+    {
+        for (int j = -1; j < 2; ++j)
+        {
+            Uint8 r, g, b, a;
+            int x = posx + j;
+            int y = posy + i;
+            Uint32 pixel = get_pixel(surface, x, y);
+            if (pixel == (Uint32)-1)
+                continue;
+            SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+            if (r == 255)
+            {
+                set_pixel(result, 255, 255, 255, 1, posx, posy);
+                return;
+            }
+        }
+    }
+    set_pixel(result, 0, 0, 0, 1, posx, posy);
 }
 
 SDL_Surface* canny_fnc(SDL_Surface *surface)
@@ -91,7 +114,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     savePNG("gy.PNG", copyGy);
 
     SDL_Surface* hypot = create_surface(surface->w, surface->h);
-    gsl_matrix* theta = gsl_matrix_calloc(surface->w - 1, surface->h - 1);
+    gsl_matrix* theta = gsl_matrix_calloc(surface->w - 1, surface->h-1);
     // Computing sqrt(Gx² + Gy²) and theta(y,x) = atan(y/x)
     for(int i = 1; i < hypot -> w - 1; i++)
     {
@@ -176,8 +199,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     }
     savePNG("nonmax.PNG", nonmax);
 
-    const double maxratio = 0.5;
-    const double lowratio = 0.3;
+    const double maxratio = 0.3;
+    const double lowratio = 0.1;
 
     Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
     Uint8 lowthreshold = (Uint8)((double)highthreshold * lowratio);
@@ -201,6 +224,11 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     }
 
     savePNG("dualthresh.PNG", dualthresh);
+    for (int i = 0; i < dualthresh->w; ++i) {
+        for (int j = 0; j < dualthresh->h; ++j) {
+            find_strongest(dualthresh, canny, i, j);
+        }
+    }
 
     // Memory cleanup
     gsl_matrix_free(Gx);
