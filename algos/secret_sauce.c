@@ -130,7 +130,6 @@ void mercury(SDL_Surface *surface)
     SDL_Surface* copy = create_surface(surface->w, surface->h);
     copy_surface(surface, copy);
     gaussian_blur(copy, 5, 5);
-    savePNG("blur.PNG", copy);
 
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
     gsl_matrix_set(Gx, 0, 0, -1);
@@ -210,8 +209,6 @@ SDL_Surface* neon(SDL_Surface *surface)
     // Preprocessing (noise reduction)
     gaussian_blur(copy, 5, 5);
 
-    savePNG("copy.PNG",copy);
-
     // Definition of Gradient kernels
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
     gsl_matrix_set(Gx, 0, 0, -1);
@@ -232,7 +229,6 @@ SDL_Surface* neon(SDL_Surface *surface)
             convolve_color(copy, copyGx, i, j, Gx);
         }
     }
-    savePNG("copyGx.PNG",copyGx);
     gsl_matrix* Gy = gsl_matrix_calloc(3, 3);
     gsl_matrix_set(Gy, 0, 0, 1);
     gsl_matrix_set(Gy, 0, 1, 2);
@@ -251,7 +247,6 @@ SDL_Surface* neon(SDL_Surface *surface)
             convolve_color(copy, copyGy, i, j, Gy);
         }
     }
-    savePNG("copyGy.PNG",copyGy);
     SDL_Surface* hypot = create_surface(surface->w, surface->h);
     // Computing sqrt(Gx² + Gy²) and theta(y,x) = atan(y/x)
     for(int i = 1; i < hypot -> w - 1; i++)
@@ -278,4 +273,4 @@ SDL_Surface* neon(SDL_Surface *surface)
     gsl_matrix_free(Gx);
     gsl_matrix_free(Gy);
     return hypot;
-} 
+}

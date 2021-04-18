@@ -36,8 +36,13 @@ void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
     set_pixel(copy, (Uint8)nr, (Uint8)nr, (Uint8)nr, a, x, y);
 }
 
-void find_strongest(SDL_Surface* surface, SDL_Surface* result,int posx,int posy)
+void find_strongest(SDL_Surface* surface, int posx, int posy)
 {
+    Uint8 checkr, checkg, checkb;
+    Uint32 check = get_pixel(surface, posx, posy);
+    SDL_GetRGB(check, surface->format, &checkr, &checkg, &checkb);
+    if (checkr == 0)
+        return;
     for(int i = -1; i < 2; i++)
     {
         for (int j = -1; j < 2; ++j)
@@ -51,12 +56,12 @@ void find_strongest(SDL_Surface* surface, SDL_Surface* result,int posx,int posy)
             SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
             if (r == 255)
             {
-                set_pixel(result, 255, 255, 255, 1, posx, posy);
+                set_pixel(surface, 255, 255, 255, a, posx, posy);
                 return;
             }
         }
     }
-    set_pixel(result, 0, 0, 0, 1, posx, posy);
+    set_pixel(surface, 0, 0, 0, 1, posx, posy);
 }
 
 SDL_Surface* canny_fnc(SDL_Surface *surface)
@@ -67,7 +72,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     copy_surface(surface, copy);
     // Preprocessing (noise reduction)
     grayscale(copy);
-    gaussian_blur(copy, 5, 5);
+    gaussian_blur(copy, 7, 7);
     savePNG("blur.PNG", copy);
 
     // Definition of Gradient kernels
@@ -199,12 +204,13 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     }
     savePNG("nonmax.PNG", nonmax);
 
-    const double maxratio = 0.3;
-    const double lowratio = 0.1;
+    const double maxratio = 0.25;
+    const double lowratio = 0.15;
 
     Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
-    Uint8 lowthreshold = (Uint8)((double)highthreshold * lowratio);
+    Uint8 lowthreshold = (Uint8)((double)maxp * lowratio);
 
+    // Hysterisis
     SDL_Surface* dualthresh = create_surface(surface->w, surface->h);
 
     for(int i = 0; i < nonmax->w; i++)
@@ -215,7 +221,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             Uint32 pixel = get_pixel(nonmax, i, j);
             SDL_GetRGB(pixel, nonmax->format, &r, &g, &b);
             if (r >= highthreshold)
-                set_pixel(dualthresh, 255, 255, 255, 1, i, j);
+                set_pixel(dualthresh, 255, 255,
+                          255, 1, i, j);
             else if (r < lowthreshold)
                 set_pixel(dualthresh, 0, 0, 0, 1, i, j);
             else
@@ -226,10 +233,10 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     savePNG("dualthresh.PNG", dualthresh);
     for (int i = 0; i < dualthresh->w; ++i) {
         for (int j = 0; j < dualthresh->h; ++j) {
-            find_strongest(dualthresh, canny, i, j);
+            find_strongest(dualthresh, i, j);
         }
     }
-
+    copy_surface(dualthresh, canny);
     // Memory cleanup
     gsl_matrix_free(Gx);
     gsl_matrix_free(Gy);
