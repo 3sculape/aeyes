@@ -1,6 +1,6 @@
 #include "tsl.h"
 
-void tsl_hue(SDL_Surface *surface, double *range, double amount)
+void tsl_hue(SDL_Surface *surface, color_t color, double amount)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -21,8 +21,8 @@ void tsl_hue(SDL_Surface *surface, double *range, double amount)
 
             rgb_to_hsv(r, g, b, hsv);
 
-            double x = (hsv[0] - 30) * (4.0 / 30.0);
-            smooth = gsl_ran_ugaussian_pdf(x);
+            double x = (hsv[0] - color) * (4.0 / 30.0);
+            smooth = gsl_ran_ugaussian_pdf(x) * 2.5;
             hsv[0] = fmod((hsv[0] + amount * smooth), 360);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
@@ -33,7 +33,7 @@ void tsl_hue(SDL_Surface *surface, double *range, double amount)
     SDL_UnlockSurface(surface);
 }
 
-void tsl_sat(SDL_Surface *surface, double *range, double amount)
+void tsl_sat(SDL_Surface *surface, color_t color, double amount)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -43,6 +43,7 @@ void tsl_sat(SDL_Surface *surface, double *range, double amount)
 
     double hsv[3];
     Uint8 rgb[3];
+    double smooth;
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
@@ -52,8 +53,10 @@ void tsl_sat(SDL_Surface *surface, double *range, double amount)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             rgb_to_hsv(r, g, b, hsv);
-            if (hsv[0] > range[0] && hsv[0] < range[1])
-                hsv[1] = clamp(hsv[1] + amount, 0, 100);
+
+            double x = (hsv[0] - color) * (4.0 / 30.0);
+            smooth = gsl_ran_ugaussian_pdf(x) * 2.5;
+            hsv[1] = clamp(hsv[1] + amount * smooth, 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
@@ -63,7 +66,7 @@ void tsl_sat(SDL_Surface *surface, double *range, double amount)
     SDL_UnlockSurface(surface);
 }
 
-void tsl_val(SDL_Surface *surface, double *range, double amount)
+void tsl_val(SDL_Surface *surface, color_t color, double amount)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -73,6 +76,7 @@ void tsl_val(SDL_Surface *surface, double *range, double amount)
 
     double hsv[3];
     Uint8 rgb[3];
+    double smooth;
     for (int i = 0; i < surface -> w; i++)
     {
         for (int j = 0; j < surface -> h; j++)
@@ -82,8 +86,10 @@ void tsl_val(SDL_Surface *surface, double *range, double amount)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             rgb_to_hsv(r, g, b, hsv);
-            if (hsv[0] > range[0] && hsv[0] < range[1])
-                hsv[2] = clamp(hsv[2] + amount, 0, 100);
+
+            double x = (hsv[0] - color) * (4.0 / 30.0);
+            smooth = gsl_ran_ugaussian_pdf(x) * 2.5;
+            hsv[2] = clamp(hsv[2] + amount * smooth, 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);

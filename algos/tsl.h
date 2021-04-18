@@ -25,39 +25,27 @@ typedef enum color color_t;
     Hue rotation. Gets all pixels in the range defined by <range>
     and increases their hue by <amount> modulo 360
     <surface>: the surface to be processed
-    <range>: an array of 2 elements
+    <color>: a value as defined in the enum above
     <amount>: the amount of rotation to be applied (can be anything)
-    NOTES: 
-        - If range has less than 2 elements, a segfault will occur.
-        - If it has more, the remaining elements will be ignored.
-        - Both values can be equal, hence targeting only a single color.
 */
-void tsl_hue(SDL_Surface *surface, double *range, double amount);
+void tsl_hue(SDL_Surface *surface, color_t color, double amount);
 
 /*
     Saturation modification. Gets all pixels in the range defined by <range>
     and increases their saturation by <amount> clamped to [0, 100]
     <surface>: the surface to be processed
-    <range>: an array of 2 elements
+    <color>: a value as defined in the enum above
     <amount>: the amount of saturation to apply (can be anything)
-    NOTES: 
-        - If range has less than 2 elements, a segfault will occur.
-        - If it has more, the remaining elements will be ignored.
-        - Both values can be equal, hence targeting only a single color.
 */
-void tsl_sat(SDL_Surface *surface, double *range, double amount);
+void tsl_sat(SDL_Surface *surface, color_t color, double amount);
 
 /*
     Value modification. Gets all pixels in the range defined by <range>
     and increases their value by <amount> clamped to [0, 100]
     <surface>: the surface to be processed
-    <range>: an array of 2 elements
+    <color>: a value as defined in the enum above
     <amount>: the amount of value to apply (can be anything)
-    NOTES: 
-        - If range has less than 2 elements, a segfault will occur.
-        - If it has more, the remaining elements will be ignored.
-        - Both values can be equal, hence targeting only a single color.
 */
-void tsl_val(SDL_Surface *surface, double *range, double amount);
+void tsl_val(SDL_Surface *surface, color_t color, double amount);
 
 #endif

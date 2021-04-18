@@ -1954,16 +1954,22 @@ void on_btn_apply_h_red_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_red_spin_btn)));
 
-    g_print("Partial Hue Rotation on Reds with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, RED, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
-void on_btn_apply_h_orange_clicked(GtkButton *buttoni __attribute__((unused)),
+void on_btn_apply_h_orange_clicked(GtkButton *button __attribute__((unused)),
         app_widgets *app_wdgts)
 {
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_orange_spin_btn)));
 
-    g_print("Partial Hue Rotation on Oranges with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, ORANGE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_h_yellow_clicked(GtkButton *button __attribute__((unused)),
@@ -1972,7 +1978,10 @@ void on_btn_apply_h_yellow_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_yellow_spin_btn)));
 
-    g_print("Partial Hue Rotation on Yellows with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, YELLOW, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_h_green_clicked(GtkButton *button __attribute__((unused)),
@@ -1981,7 +1990,10 @@ void on_btn_apply_h_green_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_green_spin_btn)));
 
-    g_print("Partial Hue Rotation on Greens with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, GREEN, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_h_bluegreen_clicked(GtkButton *button __attribute__((unused)),
@@ -1990,8 +2002,10 @@ void on_btn_apply_h_bluegreen_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_bluegreen_spin_btn)));
 
-    g_print("Partial Hue Rotation on Blue-Greens with quantity of: %d\n",
-            quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, TEAL, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_h_blue_clicked(GtkButton *button __attribute__((unused)),
@@ -2000,7 +2014,10 @@ void on_btn_apply_h_blue_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_blue_spin_btn)));
 
-    g_print("Partial Hue Rotation on Blues with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, BLUE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_h_purple_clicked(GtkButton *button __attribute__((unused)),
@@ -2009,7 +2026,10 @@ void on_btn_apply_h_purple_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_purple_spin_btn)));
 
-    g_print("Partial Hue Rotation on Purples with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, PURPLE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_h_magenta_clicked(GtkButton *button __attribute__((unused)),
@@ -2018,8 +2038,10 @@ void on_btn_apply_h_magenta_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_h_magenta_spin_btn)));
 
-    g_print("Partial Hue Rotation on Magentas with quantity of: %d\n",
-            quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_hue(surface, MAGENTA, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 
@@ -2031,7 +2053,10 @@ void on_btn_apply_s_red_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_red_spin_btn)));
 
-    g_print("Partial Saturation on Reds with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, RED, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_s_orange_clicked(GtkButton *button __attribute__((unused)),
@@ -2040,7 +2065,10 @@ void on_btn_apply_s_orange_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_orange_spin_btn)));
 
-    g_print("Partial Saturation on Oranges with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, ORANGE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_s_yellow_clicked(GtkButton *button __attribute__((unused)),
@@ -2049,7 +2077,10 @@ void on_btn_apply_s_yellow_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_yellow_spin_btn)));
 
-    g_print("Partial Saturation on Yellows with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, YELLOW, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_s_green_clicked(GtkButton *button __attribute__((unused)),
@@ -2058,7 +2089,10 @@ void on_btn_apply_s_green_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_green_spin_btn)));
 
-    g_print("Partial Saturation on Greens with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, GREEN, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_s_bluegreen_clicked(GtkButton *button __attribute__((unused)),
@@ -2067,7 +2101,10 @@ void on_btn_apply_s_bluegreen_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_bluegreen_spin_btn)));
 
-    g_print("Partial Saturation on Blue-Greens with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, TEAL, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_s_blue_clicked(GtkButton *button __attribute__((unused)),
@@ -2076,7 +2113,10 @@ void on_btn_apply_s_blue_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_blue_spin_btn)));
 
-    g_print("Partial Saturation on Blues with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, BLUE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_s_purple_clicked(GtkButton *button __attribute__((unused)),
@@ -2085,7 +2125,10 @@ void on_btn_apply_s_purple_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_purple_spin_btn)));
 
-    g_print("Partial Saturation on Purples with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, PURPLE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_s_magenta_clicked(GtkButton *button __attribute__((unused)),
@@ -2094,7 +2137,10 @@ void on_btn_apply_s_magenta_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_s_magenta_spin_btn)));
 
-    g_print("Partial Saturation on Magentas with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_sat(surface, MAGENTA, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 
@@ -2106,7 +2152,10 @@ void on_btn_apply_l_red_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_red_spin_btn)));
 
-    g_print("Partial Luminance on Reds with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, RED, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_l_orange_clicked(GtkButton *button __attribute__((unused)),
@@ -2115,7 +2164,10 @@ void on_btn_apply_l_orange_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_orange_spin_btn)));
 
-    g_print("Partial Luminance on Oranges with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, ORANGE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_l_yellow_clicked(GtkButton *button __attribute__((unused)),
@@ -2124,7 +2176,10 @@ void on_btn_apply_l_yellow_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_yellow_spin_btn)));
 
-    g_print("Partial Luminance on Yellows with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, YELLOW, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_l_green_clicked(GtkButton *button __attribute__((unused)),
@@ -2133,7 +2188,10 @@ void on_btn_apply_l_green_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_green_spin_btn)));
 
-    g_print("Partial Luminance on Greens with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, GREEN, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_l_bluegreen_clicked(GtkButton *button __attribute__((unused)),
@@ -2142,7 +2200,10 @@ void on_btn_apply_l_bluegreen_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_bluegreen_spin_btn)));
 
-    g_print("Partial Luminance on Blue-Greens with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, TEAL, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_l_blue_clicked(GtkButton *button __attribute__((unused)),
@@ -2151,7 +2212,10 @@ void on_btn_apply_l_blue_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_blue_spin_btn)));
 
-    g_print("Partial Luminance on Blues with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, BLUE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_l_purple_clicked(GtkButton *button __attribute__((unused)),
@@ -2160,7 +2224,10 @@ void on_btn_apply_l_purple_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_purple_spin_btn)));
 
-    g_print("Partial Luminance on Purples with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, PURPLE, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
 
 void on_btn_apply_l_magenta_clicked(GtkButton *button __attribute__((unused)),
@@ -2169,5 +2236,8 @@ void on_btn_apply_l_magenta_clicked(GtkButton *button __attribute__((unused)),
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_l_magenta_spin_btn)));
 
-    g_print("Partial Luminance on Magentas with quantity of: %d\n", quantity);
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    tsl_val(surface, MAGENTA, quantity);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
