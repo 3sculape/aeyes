@@ -52,4 +52,10 @@ void tint(SDL_Surface *surface, double factor);
 */
 void apply_lut(SDL_Surface *surface, SDL_Surface *lut);
 
+
+void update_gradient_preview(int ra, int ga, int ba, int rb, int gb, int bb);
+
+void gradient_colorize(SDL_Surface *surface, 
+        int ra, int ga, int ba, int rb, int gb, int bb);
+
 #endif

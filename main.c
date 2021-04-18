@@ -54,10 +54,12 @@ typedef struct {
     GtkWidget *w_dlg_colorize;                    // Pointer to colorize dialog box
     GtkWidget *w_dlg_global_trailing;             // Pointer to Global Trailing dialog box
     GtkWidget *w_dlg_edge_trailing;               // Pointer to Edge Trailing dialog box
+    GtkWidget *w_dlg_gradient_colorize;           // Pointer to gradient colorize dialog box
 
     //--- Windows --- //
     GtkWidget *w_image_window;                    // Pointer to image widget
     GtkWidget *w_histo_window;                    // Pointer to histogram widget
+    GtkWidget *w_img_gradient_colorize;           // Pointer to gradient image widget
 
     //--- Adjustments --- //
     GtkWidget *w_height_adjustment_crop;          // Pointer to crop height adjustment widget
@@ -144,6 +146,9 @@ typedef struct {
     GtkWidget *w_color_btn_a_binarization;        // Pointer to button color a of binarization
     GtkWidget *w_color_btn_b_binarization;        // Pointer to button color a of binarization
     GtkWidget *w_color_btn_colorize;              // Pointer to button color of colorize
+
+    GtkWidget *w_color_btn_a_gradient;            // Pointer to button color a of gradient colorize
+    GtkWidget *w_color_btn_b_gradient;            // Pointer to button color b of gradient colorize
 
     //--- EXIF Labels--- //
     GtkWidget *w_lbl_exif_capture_date;           // Pointer to capture date EXIF
@@ -295,6 +300,8 @@ int main(int argc, char *argv[])
             "dlg_global_trailing"));
     widgets->w_dlg_edge_trailing = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_edge_trailing"));
+    widgets->w_dlg_gradient_colorize=GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_gradient_colorize"));
 
 
 
@@ -304,6 +311,10 @@ int main(int argc, char *argv[])
             "image_window"));
     widgets->w_histo_window = GTK_WIDGET(gtk_builder_get_object(builder,
             "histo_window"));
+    widgets->w_img_gradient_colorize= GTK_WIDGET(gtk_builder_get_object(builder,
+            "img_gradient_colorize"));
+
+
     widgets->w_wb_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "wb_spin_btn"));
     widgets->w_tint_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -455,6 +466,13 @@ int main(int argc, char *argv[])
             "color_btn_b_binarization"));
     widgets->w_color_btn_colorize = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_colorize"));
+    widgets->w_color_btn_a_gradient = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_btn_a_gradient"));
+    widgets->w_color_btn_b_gradient = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_btn_b_gradient"));
+
+
+            
 
 /*     widgets->w_color_chooser_a_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_chooser_a_binarization"));
@@ -2278,7 +2296,8 @@ void on_btn_lut_activate(GtkMenuItem *btn_open __attribute__((unused)),
                     GTK_FILE_CHOOSER(app_wdgts->w_dlg_lut_choose));
 
         SDL_Surface *lut = load(app_wdgts->lut_path);
-        SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+        SDL_Surface *surface = texture_to_surface(app_wdgts->texture,
+                sdl_renderer);
 
         gdouble lw = (gdouble)(lut->w);
         gdouble lh = (gdouble)(lut->h);
@@ -2301,3 +2320,109 @@ void on_btn_lut_activate(GtkMenuItem *btn_open __attribute__((unused)),
     gtk_widget_hide(app_wdgts->w_dlg_lut_choose);
 }
 
+
+
+// -------- Gradient Colorize --------- //
+
+
+void on_btn_gradient_colorize_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
+        "./gradient.png");
+    gtk_widget_show(app_wdgts->w_dlg_gradient_colorize);
+}
+
+void on_btn_cancel_gradient_colorize_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_gradient_colorize);
+}
+
+void on_btn_apply_gradient_colorize_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    
+    GdkRGBA colora;
+    GdkRGBA colorb;
+
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int rb= (int)((colorb.red)*255);
+    int gb= (int)((colorb.green)*255);
+    int bb= (int)((colorb.blue)*255);
+
+    g_print("R A: %d\n", ra);
+    g_print("G A: %d\n", ga);
+    g_print("B A: %d\n", ba);
+    g_print("R B: %d\n", rb);
+    g_print("G B: %d\n", gb);
+    g_print("B B: %d\n", bb);
+    g_print("-----------------\n");
+
+    grayscale(surface);
+
+    gradient_colorize(surface, ra, ga, ba, rb, gb, bb);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gtk_widget_hide(app_wdgts->w_dlg_gradient_colorize);
+}
+
+
+void on_color_btn_a_gradient_color_set(
+        GtkColorButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    GdkRGBA colora;
+    GdkRGBA colorb;
+
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int rb= (int)((colorb.red)*255);
+    int gb= (int)((colorb.green)*255);
+    int bb= (int)((colorb.blue)*255);
+
+    update_gradient_preview(ra, ga, ba, rb, gb, bb);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
+        "./gradient.png");
+}
+
+void on_color_btn_b_gradient_color_set(
+        GtkColorButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    GdkRGBA colora;
+    GdkRGBA colorb;
+
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int rb= (int)((colorb.red)*255);
+    int gb= (int)((colorb.green)*255);
+    int bb= (int)((colorb.blue)*255);
+
+    update_gradient_preview(ra, ga, ba, rb, gb, bb);
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
+        "./gradient.png");
+}
