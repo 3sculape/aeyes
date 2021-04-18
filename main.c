@@ -1594,6 +1594,22 @@ void on_btn_apply_crop_clicked(GtkButton *button __attribute__((unused)),
 void on_btn_binarization_activate(GtkMenuItem *button __attribute__((unused)),
         app_widgets *app_wdgts)
 {
+    GdkRGBA black;
+    black.red = 0;
+    black.green = 0;
+    black.blue = 0;
+    black.alpha = 1;
+    GdkRGBA white;
+    white.red = 1;
+    white.green = 1;
+    white.blue = 1;
+    white.alpha = 1;
+
+    gtk_color_chooser_set_rgba (
+        GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_binarization), &black);
+    gtk_color_chooser_set_rgba (
+        GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_binarization), &white);
+
     gtk_widget_show(app_wdgts->w_dlg_binarization);
 }
 
@@ -1659,6 +1675,7 @@ void on_btn_apply_binarization_clicked(
 void on_btn_colorize_activate(GtkMenuItem *button __attribute__((unused)),
         app_widgets *app_wdgts)
 {
+
     gtk_widget_show(app_wdgts->w_dlg_colorize);
 }
 
@@ -2329,7 +2346,23 @@ void on_btn_gradient_colorize_activate(GtkMenuItem *btn_open
         __attribute__((unused)), app_widgets *app_wdgts)
 {
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
-        "./gradient.png");
+        "./original_gradient.png");
+
+    GdkRGBA black;
+    black.red = 0;
+    black.green = 0;
+    black.blue = 0;
+    black.alpha = 1;
+    GdkRGBA white;
+    white.red = 1;
+    white.green = 1;
+    white.blue = 1;
+    white.alpha = 1;
+
+    gtk_color_chooser_set_rgba (
+        GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &black);
+    gtk_color_chooser_set_rgba (
+        GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &white);
     gtk_widget_show(app_wdgts->w_dlg_gradient_colorize);
 }
 
