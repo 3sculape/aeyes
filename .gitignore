@@ -6,6 +6,9 @@
 *.bmp
 *.BMP
 
+# CLion stuff
+.idea
+
 # Prerequisites
 *.d
 
