@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "stack.h"
 #include <err.h>
+#include <SDL2/SDL.h>
 
 void init_stack(stack* s)
 {
@@ -23,18 +24,13 @@ void* pop_stack(stack* s)
     return data;
 }
 
-stack* element_from_data(void* data)
-{
-    stack* new_el = malloc(sizeof(stack));
-    new_el->next = NULL;
-    new_el->data = data;
-    return new_el;
-}
-
-void push_stack(stack* s, stack* new_el)
+void push_stack(stack* s, void* data)
 {
     if (s == NULL)
         errx(EXIT_FAILURE, "Push : stack sentinel is NULL");
+    stack* new_el = malloc(sizeof(stack));
+    new_el->next = NULL;
+    new_el->data = data;
     stack* rest_of_list = s->next;
     new_el->next = rest_of_list;
     s->next = new_el;
@@ -75,6 +71,20 @@ void clear_stack(stack* s)
     {
         stack* tmp = head;
         head = head->next;
+        free(tmp->data);
+        free(tmp);
+    }
+    s->next = NULL;
+}
+
+void clear_stack_text(stack* s)
+{
+    stack* head = s->next;
+    while(head != NULL)
+    {
+        stack* tmp = head;
+        head = head->next;
+        SDL_DestroyTexture(tmp->data);
         free(tmp);
     }
     s->next = NULL;

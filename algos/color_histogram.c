@@ -113,7 +113,7 @@ void show_l_histo(SDL_Surface * surface)
             }
         }
     }
-    savePNG("l_histo.PNG", histo);
+    savePNG("./l_histo.PNG", histo);
     SDL_FreeSurface(histo);
 }
 
@@ -262,4 +262,116 @@ SDL_Surface* show_histogram(SDL_Surface *surface)
         }
     }
     return histo;
+}
+
+
+inline int three_max(int a, int b, int c) {
+    if(a <= b) {
+        if(b <= c) return c;
+        return b;
+    }
+    return a <= c? c : a;
+}
+
+int color_get_max(int arr[])
+{
+    int res = arr[0];
+    for(int i = 1; i < 255; i++)
+    {
+        if (arr[i] > res)
+            res = arr[i];
+    }
+    return res;
+}
+
+
+void histo_color(SDL_Surface * surface)
+{
+    SDL_Surface* new_histo = create_surface(256, LEN);
+    int main_w = surface->w;
+    int main_h = surface->h;
+
+    int total_r[256] = {0};
+    int total_g[256] = {0};
+    int total_b[256] = {0};
+
+    for (int i = 0; i < main_w; i++)
+    {
+        for (int j = 0; j < main_h; j++)
+        {
+            Uint32 pixel = get_pixel(surface, i, j);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, surface->format, &r, &g, &b);
+
+            total_r[r] += 1;
+            total_g[g] += 1;
+            total_b[b] += 1;
+        }
+        
+    }
+
+    int max_r = color_get_max(total_r);
+    int max_g = color_get_max(total_g);
+    int max_b = color_get_max(total_b);
+
+    int global_max = three_max(max_r, max_g, max_b);
+
+    float resize_factor = global_max/100;
+
+    int histo_w = 256;
+
+    int col_h_r = 0;
+    int col_h_g = 0;
+    int col_h_b = 0;
+
+    int start_r = 100;
+    int start_g = 100;
+    int start_b = 100;
+
+    for (int x = 0; x < histo_w; x++)
+    {
+        col_h_r = (int)((float)total_r[x]/resize_factor);
+        col_h_g = (int)((float)total_g[x]/resize_factor);
+        col_h_b = (int)((float)total_b[x]/resize_factor);
+
+        start_r = 100;
+        start_g = 100;
+        start_b = 100;
+
+        while (col_h_r != 0)
+        {
+            set_pixel(new_histo, 255, 0, 0, 1, x, start_r);
+            start_r -= 1;
+            col_h_r -= 1;
+        }
+
+        while (col_h_g != 0)
+        {
+            Uint32 red_pixel = get_pixel(new_histo, x, start_g);
+            Uint8 red_r, red_g, red_b;
+            SDL_GetRGB(red_pixel, surface->format, &red_r, &red_g, &red_b);
+
+            set_pixel(new_histo, red_r, red_g + 255, red_b + 0, 1, x, start_g);
+            start_g -= 1;
+            col_h_g -= 1;
+        }
+
+        while (col_h_b != 0)
+        {
+            Uint32 green_pixel = get_pixel(new_histo, x, start_b);
+            Uint8 green_r, green_g, green_b;
+            SDL_GetRGB(green_pixel, surface->format, &green_r,
+                &green_g, &green_b);
+
+            set_pixel(new_histo, green_r, green_g, green_b + 255, 1,
+                x, start_b);
+            
+            start_b -= 1;
+            col_h_b -= 1;
+        }
+        
+    }
+    
+    savePNG("./new_histo.PNG", new_histo);
+    SDL_FreeSurface(new_histo);
 }

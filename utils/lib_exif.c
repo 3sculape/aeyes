@@ -153,7 +153,7 @@ void show_info(char* path, exif* e)
     data = exif_data_new_from_file(path);
     if (data == NULL)
     {
-        warnx("Function fail or unreadable file");
+        warnx("Could not read EXIF Data");
         return;
     }
     get_tag(data, e, EXIF_IFD_0, EXIF_TAG_ARTIST);

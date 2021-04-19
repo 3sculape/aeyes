@@ -15,4 +15,6 @@ void print_matrix(gsl_matrix *m);
 */
 void print_vector(gsl_vector *v);
 
+int clamp(int x, int min, int max);
+
 #endif
