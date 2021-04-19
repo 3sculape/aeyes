@@ -6,6 +6,10 @@
 *.bmp
 *.BMP
 
+# CLion stuff
+.idea
+.DS_Store
+
 # Prerequisites
 *.d
 
