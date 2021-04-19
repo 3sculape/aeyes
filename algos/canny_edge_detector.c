@@ -204,12 +204,11 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     }
     savePNG("nonmax.PNG", nonmax);
 
-    const double maxratio = 0.25;
-    const double lowratio = 0.15;
+    const double maxratio = 0.15;
+    const double lowratio = 0.05;
 
-    Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
-    Uint8 lowthreshold = (Uint8)((double)maxp * lowratio);
-
+    /*Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
+    Uint8 lowthreshold = (Uint8)((double)maxp * lowratio);*/
     // Hysterisis
     SDL_Surface* dualthresh = create_surface(surface->w, surface->h);
 
@@ -220,10 +219,10 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             Uint8 r, g, b;
             Uint32 pixel = get_pixel(nonmax, i, j);
             SDL_GetRGB(pixel, nonmax->format, &r, &g, &b);
-            if (r >= highthreshold)
+            if ((double)r/255.0 > maxratio)
                 set_pixel(dualthresh, 255, 255,
                           255, 1, i, j);
-            else if (r < lowthreshold)
+            else if ((double)r/255.0 < lowratio)
                 set_pixel(dualthresh, 0, 0, 0, 1, i, j);
             else
                 set_pixel(dualthresh, r, g, b, 1, i, j);
