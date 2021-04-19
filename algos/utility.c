@@ -26,3 +26,8 @@ double clamp(double x, double min, double max)
     else
         return x;
 }
+
+double distance(int ax, int ay, int bx, int by)
+{
+    return sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+}

@@ -17,6 +17,7 @@
 #include "algos/secret_sauce.h"
 #include "algos/tsl.h"
 #include "algos/trailing.h"
+#include "algos/vignette.h"
 
 
 SDL_Window *sdl_window;
@@ -1006,7 +1007,7 @@ void on_btn_apply_whites_clicked(GtkButton *button __attribute__((unused)),
 
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    whites(surface, ((double)quantity));
+    whites(surface, (double)quantity);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
