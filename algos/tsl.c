@@ -22,7 +22,7 @@ void tsl_hue(SDL_Surface *surface, color_t color, double amount)
             rgb_to_hsv(r, g, b, hsv);
 
             double x = (hsv[0] - color) * (4.0 / 30.0);
-            smooth = gsl_ran_ugaussian_pdf(x) * 2.5;
+            smooth = gsl_ran_ugaussian_pdf(x / 2) * 2.5;
             hsv[0] = fmod((hsv[0] + amount * smooth), 360);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
@@ -55,7 +55,7 @@ void tsl_sat(SDL_Surface *surface, color_t color, double amount)
             rgb_to_hsv(r, g, b, hsv);
 
             double x = (hsv[0] - color) * (4.0 / 30.0);
-            smooth = gsl_ran_ugaussian_pdf(x) * 2.5;
+            smooth = gsl_ran_ugaussian_pdf(x / 2) * 2.5;
             hsv[1] = clamp(hsv[1] + amount * smooth, 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
@@ -88,7 +88,7 @@ void tsl_val(SDL_Surface *surface, color_t color, double amount)
             rgb_to_hsv(r, g, b, hsv);
 
             double x = (hsv[0] - color) * (4.0 / 30.0);
-            smooth = gsl_ran_ugaussian_pdf(x) * 2.5;
+            smooth = gsl_ran_ugaussian_pdf(x / 2) * 2.5;
             hsv[2] = clamp(hsv[2] + amount * smooth, 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
