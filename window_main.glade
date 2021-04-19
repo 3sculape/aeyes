@@ -687,6 +687,14 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="btn_neon">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Neon Demon</property>
+                        <signal name="activate" handler="on_btn_neon_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>

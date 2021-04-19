@@ -197,8 +197,6 @@ void update_gradient_preview(int ra, int ga, int ba, int rb, int gb, int bb)
         }
         
     }
-
-    printf("vibe check\n");
     
     savePNG("./gradient.png", gradient);
     SDL_FreeSurface(gradient);
@@ -236,7 +234,5 @@ void gradient_colorize(SDL_Surface *surface,
         }
         
     }
-
-    printf("vibe check 2\n");
 
 }

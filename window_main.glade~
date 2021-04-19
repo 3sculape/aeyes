@@ -687,6 +687,14 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="btn_neon">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Neon Demon</property>
+                        <signal name="activate" handler="on_btn_neon_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -4621,10 +4629,12 @@ Clément Zelter
                 <property name="margin_top">15</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkColorButton" id="color_btn_a_gradient">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Color A</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="rgba">rgb(0,0,0)</property>
+                    <signal name="color-set" handler="on_color_btn_a_gradient_color_set" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4633,13 +4643,11 @@ Clément Zelter
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkColorButton" id="color_btn_a_gradient">
+                  <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can_focus">False</property>
                     <property name="margin_right">30</property>
-                    <property name="rgba">rgb(0,0,0)</property>
-                    <signal name="color-set" handler="on_color_btn_a_gradient_color_set" swapped="no"/>
+                    <property name="label" translatable="yes">Color A</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

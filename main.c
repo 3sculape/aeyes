@@ -16,6 +16,7 @@
 #include "algos/blurs.h"
 #include "algos/secret_sauce.h"
 #include "algos/trailing.h"
+#include "algos/canny_edge_detector.h"
 
 
 SDL_Window *sdl_window;
@@ -1779,7 +1780,23 @@ void on_btn_fever_dream_activate(GtkMenuItem *button __attribute__((unused)),
 void on_btn_mercury_activate(GtkMenuItem *button __attribute__((unused)),
         app_widgets *app_wdgts)
 {
-    g_print("MERCURY\n");
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    mercury(surface);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+}
+
+
+//------------ Neon Demon ------------//
+
+void on_btn_neon_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    SDL_Surface *res = neon(surface);
+    update_image(res, app_wdgts);
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(res);
 }
 
 
@@ -1895,8 +1912,8 @@ void on_btn_cancel_edge_trailing_clicked(GtkButton *button, app_widgets *app_wdg
 
 void on_btn_apply_edge_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
 {
-    SDL_Surface *edge_map = load("./edge_map.png");
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    SDL_Surface *edge_map = canny_fnc(surface);
     
     gdouble ow = (gdouble)(surface->w);
     gdouble oh = (gdouble)(surface->h);
@@ -2392,14 +2409,6 @@ void on_btn_apply_gradient_colorize_clicked(
     int rb= (int)((colorb.red)*255);
     int gb= (int)((colorb.green)*255);
     int bb= (int)((colorb.blue)*255);
-
-    g_print("R A: %d\n", ra);
-    g_print("G A: %d\n", ga);
-    g_print("B A: %d\n", ba);
-    g_print("R B: %d\n", rb);
-    g_print("G B: %d\n", gb);
-    g_print("B B: %d\n", bb);
-    g_print("-----------------\n");
 
     grayscale(surface);
 
