@@ -72,7 +72,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     copy_surface(surface, copy);
     // Preprocessing (noise reduction)
     grayscale(copy);
-    gaussian_blur(copy, 7, 7);
+    gaussian_blur(copy, 7);
     savePNG("blur.PNG", copy);
 
     // Definition of Gradient kernels
