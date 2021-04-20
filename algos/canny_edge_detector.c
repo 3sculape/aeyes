@@ -74,7 +74,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     // Preprocessing (noise reduction)
     grayscale(copy);
     gaussian_blur(copy, 7);
-    savePNG("blur.PNG", copy);
+    //savePNG("blur.PNG", copy);
 
     // Definition of Gradient kernels
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
@@ -116,8 +116,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
         }
     }
 
-    savePNG("gx.PNG", copyGx);
-    savePNG("gy.PNG", copyGy);
+    //savePNG("gx.PNG", copyGx);
+    //savePNG("gy.PNG", copyGy);
 
     SDL_Surface* hypot = create_surface(surface->w, surface->h);
     gsl_matrix* theta = gsl_matrix_calloc(surface->w - 1, surface->h-1);
@@ -144,7 +144,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             gsl_matrix_set(theta, i - 1, j - 1, atan2(tmpy , tmpx));
         }
     }
-    savePNG("hypot.PNG", hypot);
+    //savePNG("hypot.PNG", hypot);
     SDL_Surface* nonmax = create_surface(surface->w, surface->h);
     Uint8 maxp = 0;
     for (int i = 1; i < hypot->w - 1; i++)
@@ -203,10 +203,10 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             }
         }
     }
-    savePNG("nonmax.PNG", nonmax);
+    //savePNG("nonmax.PNG", nonmax);
 
-    const double maxratio = 0.15;
-    const double lowratio = 0.05;
+    const double maxratio = 0.25;
+    const double lowratio = 0.15;
 
     /*Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
     Uint8 lowthreshold = (Uint8)((double)maxp * lowratio);*/
@@ -230,7 +230,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
         }
     }
 
-    savePNG("dualthresh.PNG", dualthresh);
+    //savePNG("dualthresh.PNG", dualthresh);
     for (int i = 0; i < dualthresh->w; ++i) {
         for (int j = 0; j < dualthresh->h; ++j) {
             find_strongest(dualthresh, i, j);
