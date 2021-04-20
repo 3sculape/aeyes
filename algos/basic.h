@@ -89,4 +89,6 @@ SDL_Surface* rotate(SDL_Surface* original, double angle);
 // Mirror flip based on axis, xaxis is bool for if flip is on xaxis or nah
 void mirror(SDL_Surface *surface, int xaxis);
 
+void mean(SDL_Surface*);
+
 #endif

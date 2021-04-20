@@ -20,8 +20,9 @@ void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
             if (pixel == (Uint32) -1)
             {
                 //warnx("fail pixel");
-                set_pixel(copy, 0, 0, 0, a, x, y);
-                return;
+                //set_pixel(copy, 0, 0, 0, a, x, y);
+                continue;
+                //return;
             }
             else
             {
