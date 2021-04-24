@@ -31,4 +31,20 @@ double clamp(double x, double min, double max);
 */
 double distance(int ax, int ay, int bx, int by);
 
+/*
+    Linearly interpolate a and b with weight w
+    (higher values of w bias the lerp towards a)
+    <a>: the first point of interpolation
+    <b>: the second point of interpolation
+    <w>: the weight applied to interpolation
+*/
+double lerp(double a, double b, double w);
+
+/*
+    Fade function as defined by Ken Perlin:
+    f(t) = 6t^5 - 15t^4 + 10t^3
+    <t>: the double on which to apply fading
+*/
+double fade(double t);
+
 #endif

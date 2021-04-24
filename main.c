@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <stdio.h>
+#include <time.h>
 #include "utils/lib_sdl.h"
 #include "utils/stack.h"
 #include "algos/basic.h"
@@ -18,7 +19,6 @@
 #include "algos/tsl.h"
 #include "algos/trailing.h"
 #include "algos/vignette.h"
-
 
 SDL_Window *sdl_window;
 SDL_Renderer *sdl_renderer;
@@ -225,6 +225,8 @@ typedef struct {
 
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
+
     GtkBuilder *builder;
     GtkWidget *window;
 

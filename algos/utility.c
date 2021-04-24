@@ -31,3 +31,13 @@ double distance(int ax, int ay, int bx, int by)
 {
     return sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
 }
+
+double lerp(double a, double b, double w)
+{
+    return w * a + (1 - w) * b;
+}
+
+double fade(double t) 
+{
+    return t * t * t * (t * (t * 6 - 15) + 10);
+}
