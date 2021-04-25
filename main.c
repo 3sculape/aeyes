@@ -19,6 +19,7 @@
 #include "algos/tsl.h"
 #include "algos/trailing.h"
 #include "algos/vignette.h"
+#include "algos/noise.h"
 
 SDL_Window *sdl_window;
 SDL_Renderer *sdl_renderer;
@@ -623,7 +624,7 @@ int main(int argc, char *argv[])
     init_stack(undo_stack);
     init_stack(redo_stack);
 
-
+    g_print("%f\n", perlin(0.5, 0.5));
     gtk_widget_set_sensitive(widgets->w_menu_edit, FALSE);
     gtk_widget_set_sensitive(widgets->w_menu_view, FALSE);
     gtk_widget_set_sensitive(widgets->w_menu_filters, FALSE);
