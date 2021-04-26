@@ -285,6 +285,180 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="strength_adjustment_vignette">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkDialog" id="dlg_vignette">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Vignette</property>
+    <property name="resizable">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">main_window</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
+            <property name="margin_bottom">20</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_cancel_vignette">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_cancel_vignette_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_apply_vignette">
+                <property name="label" translatable="yes">Apply</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_apply_vignette_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">420</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">70</property>
+            <property name="margin_bottom">70</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_bottom">20</property>
+                <property name="label" translatable="yes">Vignette</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">15</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Color</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="color_btn_vignette">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="rgba">rgb(0,0,0)</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">15</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Strength</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="strength_vignette_spin_btn">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="max_length">3</property>
+                    <property name="text" translatable="yes">127</property>
+                    <property name="adjustment">strength_adjustment_vignette</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkAdjustment" id="strength_adjustment_wb">
     <property name="lower">-100</property>
     <property name="upper">100</property>
@@ -448,6 +622,14 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="btn_smart_resize">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Smart Resize</property>
+                        <signal name="activate" handler="on_btn_smart_resize_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="btn_rotation">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -556,6 +738,14 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Gradient Colorize</property>
                         <signal name="activate" handler="on_btn_gradient_colorize_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_vignette">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Vignette</property>
+                        <signal name="activate" handler="on_btn_vignette_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -1234,15 +1424,16 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="margin_top">10</property>
-                                    <property name="spacing">8</property>
+                                    <property name="spacing">20</property>
                                     <child>
-                                      <object class="GtkButton" id="btn_hue_hsl">
+                                      <object class="GtkRadioButton" id="btn_hue_hsl">
                                         <property name="label" translatable="yes">Hue</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="receives_default">True</property>
-                                        <property name="margin_left">5</property>
-                                        <property name="relief">none</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="margin_left">20</property>
+                                        <property name="active">True</property>
+                                        <property name="draw_indicator">False</property>
                                         <signal name="clicked" handler="on_btn_hue_hsl_clicked" swapped="no"/>
                                       </object>
                                       <packing>
@@ -1263,12 +1454,14 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="btn_saturation_hsl">
-                                        <property name="label" translatable="yes">Saturation</property>
+                                      <object class="GtkRadioButton" id="btn_saturation_hsl">
+                                        <property name="label" translatable="yes">Sat</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="receives_default">True</property>
-                                        <property name="relief">none</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="active">True</property>
+                                        <property name="draw_indicator">False</property>
+                                        <property name="group">btn_hue_hsl</property>
                                         <signal name="clicked" handler="on_btn_saturation_hsl_clicked" swapped="no"/>
                                       </object>
                                       <packing>
@@ -1290,12 +1483,14 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="btn_luminance_hsl">
-                                        <property name="label" translatable="yes">Luminance</property>
+                                      <object class="GtkRadioButton" id="btn_luminance_hsl">
+                                        <property name="label" translatable="yes">Lum</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="receives_default">True</property>
-                                        <property name="relief">none</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="active">True</property>
+                                        <property name="draw_indicator">False</property>
+                                        <property name="group">btn_hue_hsl</property>
                                         <signal name="clicked" handler="on_btn_luminance_hsl_clicked" swapped="no"/>
                                       </object>
                                       <packing>
@@ -3435,7 +3630,7 @@ Clément Zelter
   </object>
   <object class="GtkDialog" id="dlg_colorize">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Rotation</property>
+    <property name="title" translatable="yes">Colorize</property>
     <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
@@ -3790,6 +3985,7 @@ Clément Zelter
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
             <property name="margin_bottom">20</property>
             <property name="layout_style">end</property>
             <child>
@@ -4118,7 +4314,7 @@ Clément Zelter
   <object class="GtkFileChooserDialog" id="dlg_file_choose">
     <property name="name">File Chooser</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Load Image To Scan</property>
+    <property name="title" translatable="yes">Load Image</property>
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
     <property name="transient_for">main_window</property>
@@ -4328,6 +4524,7 @@ Clément Zelter
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
             <property name="margin_bottom">20</property>
             <property name="layout_style">end</property>
             <child>
@@ -5036,6 +5233,7 @@ Clément Zelter
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
             <property name="margin_bottom">20</property>
             <property name="layout_style">end</property>
             <child>
@@ -5515,7 +5713,7 @@ Clément Zelter
   </object>
   <object class="GtkFileChooserDialog" id="dlg_save_choose">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Save Text File</property>
+    <property name="title" translatable="yes">Save Image</property>
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
     <property name="transient_for">main_window</property>

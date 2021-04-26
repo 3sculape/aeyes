@@ -17,6 +17,7 @@
 #include "algos/secret_sauce.h"
 #include "algos/trailing.h"
 #include "algos/canny_edge_detector.h"
+#include "algos/seam_carving.h"
 
 
 SDL_Window *sdl_window;
@@ -56,6 +57,7 @@ typedef struct {
     GtkWidget *w_dlg_global_trailing;             // Pointer to Global Trailing dialog box
     GtkWidget *w_dlg_edge_trailing;               // Pointer to Edge Trailing dialog box
     GtkWidget *w_dlg_gradient_colorize;           // Pointer to gradient colorize dialog box
+    GtkWidget *w_dlg_vignette;                    // Pointer to vignette dialog box
 
     //--- Windows --- //
     GtkWidget *w_image_window;                    // Pointer to image widget
@@ -109,6 +111,7 @@ typedef struct {
     GtkWidget *w_threshold_binarization_spin_btn; // Pointer to Binarization Threshold Spin Button widget
     GtkWidget *w_start_pixel_global_trailing_spin_btn; // Pointer to start pixel of global trailing
     GtkWidget *w_strength_edge_trailing_spin_btn; // Pointer to strength of edge trailing
+    GtkWidget *w_strength_vignette_spin_btn;      // Pointer ro stregnth of vignette
 
     GtkWidget *w_height_crop_spin_btn;            // Pointer to new height crop Spin Button widget
     GtkWidget *w_width_crop_spin_btn;             // Pointer to new width crop Spin Button widget
@@ -150,6 +153,8 @@ typedef struct {
 
     GtkWidget *w_color_btn_a_gradient;            // Pointer to button color a of gradient colorize
     GtkWidget *w_color_btn_b_gradient;            // Pointer to button color b of gradient colorize
+
+    GtkWidget *w_color_btn_vignette;              // Pointer to button color of vignette
 
     //--- EXIF Labels--- //
     GtkWidget *w_lbl_exif_capture_date;           // Pointer to capture date EXIF
@@ -228,6 +233,13 @@ typedef struct {
     GtkWidget *w_edge_trailing_soufflerie_rd_btn; // Pointer to radio button edge trailing soufflerie
     GtkWidget *w_edge_trailing_zigzag_rd_btn;     // Pointer to radio button edge trailing soufflerie
 
+
+    //--- Toggle Buttons ---//
+
+    GtkWidget *w_btn_hue_hsl;
+    GtkWidget *w_btn_saturation_hsl;
+    GtkWidget *w_btn_luminance_hsl;
+
     SDL_Texture *texture;
 
 } app_widgets;
@@ -303,7 +315,8 @@ int main(int argc, char *argv[])
             "dlg_edge_trailing"));
     widgets->w_dlg_gradient_colorize=GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_gradient_colorize"));
-
+    widgets->w_dlg_vignette=GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_vignette"));
 
 
 
@@ -338,6 +351,9 @@ int main(int argc, char *argv[])
     widgets->w_strength_edge_trailing_spin_btn = 
             GTK_WIDGET(gtk_builder_get_object(builder,
                 "strength_edge_trailing_spin_btn"));
+    widgets->w_strength_vignette_spin_btn = GTK_WIDGET(
+        gtk_builder_get_object(builder,"strength_vignette_spin_btn"));
+    
 
 
     widgets->w_height_crop_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -471,6 +487,8 @@ int main(int argc, char *argv[])
             "color_btn_a_gradient"));
     widgets->w_color_btn_b_gradient = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_b_gradient"));
+    widgets->w_color_btn_vignette = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_btn_vignette"));
 
 
             
@@ -628,6 +646,18 @@ int main(int argc, char *argv[])
             "rvl_saturation_hsl"));
     widgets->w_rvl_luminance_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
             "rvl_luminance_hsl"));
+
+
+
+    widgets->w_btn_hue_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_hue_hsl"));
+    widgets->w_btn_saturation_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_saturation_hsl"));
+    widgets->w_btn_luminance_hsl = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_luminance_hsl"));
+
+    
+    
 
 
     widgets->w_global_trailing_vertical_rd_btn =
@@ -2467,4 +2497,75 @@ void on_color_btn_b_gradient_color_set(
     update_gradient_preview(ra, ga, ba, rb, gb, bb);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
         "./gradient.png");
+}
+
+
+
+
+
+
+// ---------- Seam Carving -------------//
+
+void on_btn_smart_resize_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    SDL_Surface *edge_map = canny_fnc(surface);
+    SDL_Surface *sobel = load("./hypot.PNG");
+    power_map(surface, sobel);
+
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(edge_map);
+    SDL_FreeSurface(sobel);
+}
+
+
+
+// -------- Vignette --------- //
+
+
+void on_btn_vignette_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    GdkRGBA black;
+    black.red = 0;
+    black.green = 0;
+    black.blue = 0;
+    black.alpha = 1;
+
+    gtk_color_chooser_set_rgba (
+        GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_vignette), &black);
+
+    gtk_widget_show(app_wdgts->w_dlg_vignette);
+}
+
+void on_btn_cancel_vignette_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_vignette);
+}
+
+void on_btn_apply_vignette_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    
+    GdkRGBA colora;
+    GdkRGBA colorb;
+
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_vignette), &colora);
+
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int color[3] = {ra, ga, ba};
+
+    //vignette(surface, color);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gtk_widget_hide(app_wdgts->w_dlg_vignette);
 }
