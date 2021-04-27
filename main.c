@@ -58,6 +58,9 @@ typedef struct {
     GtkWidget *w_dlg_edge_trailing;               // Pointer to Edge Trailing dialog box
     GtkWidget *w_dlg_gradient_colorize;           // Pointer to gradient colorize dialog box
     GtkWidget *w_dlg_vignette;                    // Pointer to vignette dialog box
+    GtkWidget *w_dlg_twist;                       // Pointer to twist dialog box
+    GtkWidget *w_dlg_swirl;                       // Pointer to swirl dialog box
+    GtkWidget *w_dlg_surface_blur;                // Pointer to surface blur dialog box
 
     //--- Windows --- //
     GtkWidget *w_image_window;                    // Pointer to image widget
@@ -111,7 +114,11 @@ typedef struct {
     GtkWidget *w_threshold_binarization_spin_btn; // Pointer to Binarization Threshold Spin Button widget
     GtkWidget *w_start_pixel_global_trailing_spin_btn; // Pointer to start pixel of global trailing
     GtkWidget *w_strength_edge_trailing_spin_btn; // Pointer to strength of edge trailing
-    GtkWidget *w_strength_vignette_spin_btn;      // Pointer ro stregnth of vignette
+    GtkWidget *w_strength_vignette_spin_btn;      // Pointer to stregnth of vignette
+    GtkWidget *w_strength_twist_spin_btn;         // Pointer to stregnth of twist
+    GtkWidget *w_strength_swirl_spin_btn;         // Pointer to stregnth of swirl
+    GtkWidget *w_size_surface_blur_spin_btn;      // Pointer to strength of surface blur
+    
 
     GtkWidget *w_height_crop_spin_btn;            // Pointer to new height crop Spin Button widget
     GtkWidget *w_width_crop_spin_btn;             // Pointer to new width crop Spin Button widget
@@ -297,6 +304,9 @@ int main(int argc, char *argv[])
             "dlg_fast_blur"));
     widgets->w_dlg_direct_blur = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_direct_blur"));
+    widgets->w_dlg_surface_blur = GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_surface_blur"));
+    
     widgets->w_dlg_resize = GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_resize"));
     widgets->w_dlg_crop = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -317,6 +327,13 @@ int main(int argc, char *argv[])
             "dlg_gradient_colorize"));
     widgets->w_dlg_vignette=GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_vignette"));
+    widgets->w_dlg_twist=GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_twist"));
+    widgets->w_dlg_swirl=GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_swirl"));
+
+
+            
 
 
 
@@ -473,6 +490,17 @@ int main(int argc, char *argv[])
     widgets->w_threshold_binarization_spin_btn =
         GTK_WIDGET(gtk_builder_get_object(builder,
             "threshold_binarization_spin_btn"));
+    widgets->w_strength_twist_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+            "strength_twist_spin_btn"));
+    widgets->w_strength_swirl_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+            "strength_swirl_spin_btn"));
+    widgets->w_size_surface_blur_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder,
+            "size_surface_blur_spin_btn"));
+
+
 
 
     widgets->w_color_btn_a_binarization =
@@ -2568,4 +2596,135 @@ void on_btn_apply_vignette_clicked(
     SDL_FreeSurface(surface);
 
     gtk_widget_hide(app_wdgts->w_dlg_vignette);
+}
+
+
+
+// -------- Twist --------- //
+
+
+void on_btn_twist_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_twist);
+}
+
+void on_btn_cancel_twist_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_twist);
+}
+
+void on_btn_apply_twist_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+
+    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_strength_twist_spin_btn)));
+
+    double factor = (double)strength/5;
+
+    //twist(surface, factor);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gtk_widget_hide(app_wdgts->w_dlg_twist);
+}
+
+
+
+// -------- Swirl --------- //
+
+
+void on_btn_swirl_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_swirl);
+}
+
+void on_btn_cancel_swirl_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_swirl);
+}
+
+void on_btn_apply_swirl_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+
+    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_strength_swirl_spin_btn)));
+
+    double factor = (double)strength/20;
+
+    //swirl(surface, factor);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gtk_widget_hide(app_wdgts->w_dlg_swirl);
+}
+
+
+
+// -------- Mean --------- //
+
+
+void on_btn_mean_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    //mean(surface);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+}
+
+
+
+// -------- Surface Blur --------- //
+
+
+void on_btn_surface_blur_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_surface_blur);
+}
+
+void on_btn_cancel_surface_blur_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_surface_blur);
+}
+
+void on_btn_apply_surface_blur_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+
+    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_size_surface_blur_spin_btn)));
+
+    //surface_blur(surface, strength);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
+    gtk_widget_hide(app_wdgts->w_dlg_surface_blur);
+}
+
+
+
+// -------- Perlin Noise --------- //
+
+
+void on_btn_noise_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    //noise(surface);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 }
