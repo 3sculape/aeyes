@@ -333,3 +333,8 @@ void mean(SDL_Surface* surface)
     copy_surface(mean, surface);
     SDL_FreeSurface(mean);
 }
+
+void resize_fit_to_scale(SDL_Surface* original, double factor)
+{
+    SDL_Surface *resized = resize(original, factor);
+}
