@@ -1,6 +1,6 @@
 #include "noise.h"
 
-unsigned int hash(unsigned int x, unsigned int y)
+size_t hash(size_t x, size_t y)
 {
     x = (x << 16) | (y & 0xffff);
 
@@ -15,7 +15,7 @@ double grad(size_t corner_x, size_t corner_y, double dist_x, double dist_y)
 {
         double pi_4 = cos(3.14 / 4.0);
 
-        switch (hash(corner_x, corner_y) & 8)
+        switch (hash(corner_x, corner_y) & 7)
         {
             case 0:
                 return +dist_x;
@@ -34,16 +34,15 @@ double grad(size_t corner_x, size_t corner_y, double dist_x, double dist_y)
             case 7:
                 return dist_x * pi_4 - dist_y * pi_4;
             default:
-                warnx("perlin: grad function failed");
+                warnx("Perlin grad function fail");
                 return 0.0;
         }
 }
 
-
 double perlin(double x, double y)
 {
-    size_t X = (size_t)floor(x);
-    size_t Y = (size_t)floor(y);
+    size_t X = (size_t)floor(x) & 255;
+    size_t Y = (size_t)floor(y) & 255;
 
     x -= floor(x);
     y -= floor(y);
@@ -57,4 +56,54 @@ double perlin(double x, double y)
     double v = fade(y);
 
     return lerp(lerp(grad00, grad10, u), lerp(grad01, grad11, u), v);
+}
+
+double octave_perlin(double x, double y, char octaves, double persist)
+{
+    double frequency = 1;
+    double amplitude = 1;
+    double total = 0;
+    double maxval = 0;
+
+    for (int o = 0; o < octaves; o++)
+    {
+        total += perlin(x * frequency, y * frequency) * amplitude;
+        maxval += amplitude;
+        amplitude *= persist;
+        frequency *= 2;
+    }
+
+    return total / maxval;
+}
+
+void noise_apply(SDL_Surface *surface)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in noise_apply");
+        return;
+    }
+
+    double noise;
+    double hsl[3];
+    Uint8 rgb[3];
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+
+            noise = octave_perlin(i / 50.0, j / 50.0, 4, 1);
+            rgb_to_hsl(r, g, b, hsl);
+            hsl[2] += noise * 10.0;
+            clamp(hsl[2], 0, 100);
+            hsl_to_rgb(hsl[0], hsl[1], hsl[2], rgb);
+
+            set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
 }

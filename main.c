@@ -624,7 +624,6 @@ int main(int argc, char *argv[])
     init_stack(undo_stack);
     init_stack(redo_stack);
 
-    g_print("%f\n", perlin(0.5, 0.5));
     gtk_widget_set_sensitive(widgets->w_menu_edit, FALSE);
     gtk_widget_set_sensitive(widgets->w_menu_view, FALSE);
     gtk_widget_set_sensitive(widgets->w_menu_filters, FALSE);
@@ -1693,7 +1692,7 @@ void on_btn_apply_grayscale_clicked(GtkButton *button __attribute__((unused)),
         app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    grayscale(surface);
+    noise_apply(surface);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
