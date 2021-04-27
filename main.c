@@ -14,6 +14,7 @@
 #include "algos/color_histogram.h"
 #include "algos/whites.h"
 #include "algos/blurs.h"
+#include "algos/effects.h"
 #include "algos/secret_sauce.h"
 #include "algos/trailing.h"
 #include "algos/canny_edge_detector.h"
