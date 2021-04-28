@@ -6,6 +6,10 @@
 *.bmp
 *.BMP
 
+# CLion stuff
+.idea
+.DS_Store
+
 # Prerequisites
 *.d
 
@@ -66,3 +70,4 @@ dkms.conf
 *.png
 gtk
 .vscode
+window_main.glade~
