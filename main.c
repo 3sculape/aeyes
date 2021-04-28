@@ -103,6 +103,7 @@ typedef struct {
     GtkWidget *w_shadows_spin_btn;                // Pointer to Shadows Spin Button widget
     GtkWidget *w_blacks_spin_btn;                 // Pointer to Blacks Spin Button widget
     GtkWidget *w_saturation_spin_btn;             // Pointer to Saturation Spin Button widget
+    GtkWidget *w_contrast_spin_btn;               // Pointer to Contrast Spin Button widget
 
     GtkWidget *w_strength_sharp_spin_btn;         // Pointer to strength of Sharpening Spin Button widget
     GtkWidget *w_size_mean_blur_spin_btn;         // Pointer to size of mean blur Spin Button widget
@@ -369,6 +370,8 @@ int main(int argc, char *argv[])
             "blacks_spin_btn"));
     widgets->w_saturation_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "saturation_spin_btn"));
+    widgets->w_contrast_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "contrast_spin_btn"));
     widgets->w_start_pixel_global_trailing_spin_btn = 
             GTK_WIDGET(gtk_builder_get_object(builder,
                 "start_pixel_global_trailing_spin_btn"));
@@ -1166,6 +1169,20 @@ void on_btn_apply_saturation_clicked(GtkButton *button __attribute__((unused)),
     SDL_FreeSurface(surface);
 }
 
+void on_btn_apply_contrast_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
+{
+    gint quantity = 0;
+
+    quantity = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(app_wdgts->w_contrast_spin_btn));
+
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    contrast(surface, ((double)quantity));
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+}
+
 
 
 
@@ -1805,7 +1822,7 @@ void on_btn_apply_grayscale_clicked(GtkButton *button __attribute__((unused)),
         app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    noise_apply(surface);
+    grayscale(surface);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
@@ -2653,20 +2670,19 @@ void on_btn_apply_vignette_clicked(
         GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    
     GdkRGBA colora;
-    GdkRGBA colorb;
 
     gtk_color_chooser_get_rgba(
             GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_vignette), &colora);
 
-    int ra= (int)((colora.red)*255);
-    int ga= (int)((colora.green)*255);
-    int ba= (int)((colora.blue)*255);
+    Uint8 ra = (Uint8)(colora.red * 255);
+    Uint8 ga = (Uint8)(colora.green * 255);
+    Uint8 ba = (Uint8)(colora.blue * 255);
 
-    int color[3] = {ra, ga, ba};
-
-    //vignette(surface, color);
+    Uint8 color[3] = {ra, ga, ba};
+    int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_strength_vignette_spin_btn)));
+    vignette(surface, color, quantity);
 
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
@@ -2701,7 +2717,7 @@ void on_btn_apply_twist_clicked(
 
     double factor = (double)strength/5;
 
-    //twist(surface, factor);
+    twist(surface, factor);
 
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
@@ -2736,7 +2752,7 @@ void on_btn_apply_swirl_clicked(
 
     double factor = (double)strength/20;
 
-    //swirl(surface, factor);
+    swirl(surface, factor);
 
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
@@ -2800,7 +2816,7 @@ void on_btn_noise_activate(GtkMenuItem *btn_open
         __attribute__((unused)), app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    //noise(surface);
+    noise(surface);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }

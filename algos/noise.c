@@ -91,7 +91,7 @@ double octave_perlin(double x, double y, char octaves, double persist, char r)
     return total / maxval;
 }
 
-void noise_apply(SDL_Surface *surface)
+void noise(SDL_Surface *surface)
 {
     if (SDL_LockSurface(surface) != 0)
     {

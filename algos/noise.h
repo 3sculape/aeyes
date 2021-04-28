@@ -19,6 +19,6 @@ double perlin(double x, double y, char r);
     Applies Perlin noise to the luminance of the image
     <surface>: the surface to be processed
 */
-void noise_apply(SDL_Surface *surface);
+void noise(SDL_Surface *surface);
 
 #endif
