@@ -13,7 +13,7 @@
     <x>, <y>.
     <x>, <y>: a pair of coordinates (can be any value)
 */
-double perlin(double x, double y);
+double perlin(double x, double y, char r);
 
 /*
     Applies Perlin noise to the luminance of the image

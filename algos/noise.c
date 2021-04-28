@@ -1,5 +1,14 @@
 #include "noise.h"
 
+size_t inc(size_t x, char r)
+{
+    x++;
+    if (r > 0)
+        x = fmod(x, r);
+
+    return x;
+}
+
 size_t hash(size_t x, size_t y)
 {
     x = (x << 16) | (y & 0xffff);
@@ -39,18 +48,24 @@ double grad(size_t corner_x, size_t corner_y, double dist_x, double dist_y)
         }
 }
 
-double perlin(double x, double y)
+double perlin(double x, double y, char r)
 {
-    size_t X = (size_t)floor(x) & 255;
-    size_t Y = (size_t)floor(y) & 255;
+    if (r > 0)
+    {
+        x = fmod(x, r);
+        y = fmod(y, r);
+    }
+
+    size_t X = (size_t)floor(x);
+    size_t Y = (size_t)floor(y);
 
     x -= floor(x);
     y -= floor(y);
 
     double grad00 = grad(X, Y, x, y);
-    double grad01 = grad(X, Y + 1, x, y - 1.0);
-    double grad10 = grad(X + 1, Y, x - 1.0, y);
-    double grad11 = grad(X + 1, Y + 1, x - 1.0, y - 1.0);
+    double grad01 = grad(X, inc(Y, r), x, y - 1.0);
+    double grad10 = grad(inc(X, r), Y, x - 1.0, y);
+    double grad11 = grad(inc(X, r), inc(Y, r), x - 1.0, y - 1.0);
 
     double u = fade(x);
     double v = fade(y);
@@ -58,7 +73,7 @@ double perlin(double x, double y)
     return (lerp(lerp(grad00, grad10, u), lerp(grad01, grad11, u), v) + 1) / 2;
 }
 
-double octave_perlin(double x, double y, char octaves, double persist)
+double octave_perlin(double x, double y, char octaves, double persist, char r)
 {
     double frequency = 1;
     double amplitude = 1;
@@ -67,7 +82,7 @@ double octave_perlin(double x, double y, char octaves, double persist)
 
     for (int o = 0; o < octaves; o++)
     {
-        total += perlin(x * frequency, y * frequency) * amplitude;
+        total += perlin(x * frequency, y * frequency, r) * amplitude;
         maxval += amplitude;
         amplitude *= persist;
         frequency *= 2;
@@ -95,7 +110,7 @@ void noise_apply(SDL_Surface *surface)
             Uint32 pixel = get_pixel(surface, i, j);
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
-            noise = octave_perlin(i / 50.0, j / 50.0, 4, 1);
+            noise = octave_perlin(i / 50.0, j / 50.0, 4, 1, 255);
             rgb_to_hsv(r, g, b, hsv);
             hsv[2] += noise * 20.0;
             hsv[2] = clamp(hsv[2], 0, 100);
