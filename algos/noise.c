@@ -34,7 +34,7 @@ double grad(size_t corner_x, size_t corner_y, double dist_x, double dist_y)
             case 7:
                 return dist_x * pi_4 - dist_y * pi_4;
             default:
-                warnx("Perlin grad function fail");
+                warnx("grad function fail in noise");
                 return 0.0;
         }
 }
@@ -55,7 +55,7 @@ double perlin(double x, double y)
     double u = fade(x);
     double v = fade(y);
 
-    return lerp(lerp(grad00, grad10, u), lerp(grad01, grad11, u), v);
+    return (lerp(lerp(grad00, grad10, u), lerp(grad01, grad11, u), v) + 1) / 2;
 }
 
 double octave_perlin(double x, double y, char octaves, double persist)
@@ -85,7 +85,7 @@ void noise_apply(SDL_Surface *surface)
     }
 
     double noise;
-    double hsl[3];
+    double hsv[3];
     Uint8 rgb[3];
     for (int i = 0; i < surface -> w; i++)
     {
@@ -96,10 +96,10 @@ void noise_apply(SDL_Surface *surface)
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
 
             noise = octave_perlin(i / 50.0, j / 50.0, 4, 1);
-            rgb_to_hsl(r, g, b, hsl);
-            hsl[2] += noise * 10.0;
-            clamp(hsl[2], 0, 100);
-            hsl_to_rgb(hsl[0], hsl[1], hsl[2], rgb);
+            rgb_to_hsv(r, g, b, hsv);
+            hsv[2] += noise * 20.0;
+            hsv[2] = clamp(hsv[2], 0, 100);
+            hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
         }
