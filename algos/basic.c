@@ -334,7 +334,51 @@ void mean(SDL_Surface* surface)
     SDL_FreeSurface(mean);
 }
 
-void resize_fit_to_scale(SDL_Surface* original, double factor)
+SDL_Surface *resize_fit_to_scale(SDL_Surface* original, double factor)
 {
-    SDL_Surface *resized = resize(original, factor);
+    SDL_Surface *resized = rotate(original, factor);
+    if ((int) factor % 90 == 0)
+        return resized;
+    else
+    {
+        if (resized == NULL)
+            errx(EXIT_FAILURE, "resize was NULL");
+        /*double ratio = 2;
+        SDL_Surface *tmp = resize(resized, ratio);
+        SDL_Surface *fit = crop_from_center(tmp, tmp->w/(size_t)ratio,
+                                            tmp->h/(size_t)ratio);
+        */
+        SDL_Surface *fit = zoom(resized, 2);
+        return fit;
+    }
+}
+
+SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h)
+{
+    size_t center_x = (original->w / 2) - w/2;
+    size_t center_y = (original->h / 2) - h/2;
+    SDL_Surface *cropped = create_surface(w, h);
+    for (size_t i = 0; i < w; i++)
+    {
+        for (size_t j = 0; j < h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(original, i + center_x, j + center_y);
+            SDL_GetRGBA(pixel, original -> format, &r, &g, &b, &a);
+            set_pixel(cropped, r, g, b, a, i, j);
+        }
+    }
+    return cropped;
+}
+
+SDL_Surface* zoom(SDL_Surface* original, double factor)
+{
+    SDL_Surface *tmp = resize(original, factor);
+    printf("factor is %f\n", factor);
+    saveJPG("rotozoom.JPG", tmp);
+    if (factor < 1)
+        return tmp;
+    SDL_Surface *res = crop_from_center(tmp, original->w, original->h);
+    SDL_FreeSurface(tmp);
+    return res;
 }

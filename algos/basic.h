@@ -91,6 +91,14 @@ void mirror(SDL_Surface *surface, int xaxis);
 
 void mean(SDL_Surface* surface);
 
-void resize_fit_to_scale(SDL_Surface* original, double factor);
+// Doesn't work for now
+SDL_Surface *resize_fit_to_scale(SDL_Surface* original, double factor);
+
+SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h);
+
+// Zoom function, calls resize but retrieves the original size of the image,
+// future upgrade -> being able to choose where to zoom in, right now only
+// center of the image, factor > 0
+SDL_Surface* zoom(SDL_Surface* original, double factor);
 
 #endif
