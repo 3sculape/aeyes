@@ -561,6 +561,13 @@ body{
 	animation-fill-mode:forwards;
 }
 
+.alignwrap6{
+	text-align: center;
+	color: white;
+	font-size: 1.3rem;
+	line-height: 4vh;
+}
+
 .elem7{
 	display: none;
 	animation: FadeInUp 700ms ease 1;
