@@ -77,8 +77,8 @@ void colorize(SDL_Surface *surface, int ra, int ga, int ba, int keep_luminance)
             Uint8 r, g, b, a;
             Uint32 pixel = get_pixel(surface, i, j);
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
-            
-            Uint8 rgb[3];   
+
+            Uint8 rgb[3];
             double hsv2[3];
             rgb_to_hsl(r, g, b, hsv2);
 
@@ -98,7 +98,7 @@ void colorize(SDL_Surface *surface, int ra, int ga, int ba, int keep_luminance)
             {
                 hsv2[2] = hsv2[2]/100 * hsv_input[2];
             }
-        
+
             hsl_to_rgb(hsv2[0], hsv2[1], hsv2[2], rgb);
 
             set_pixel(surface, rgb[0], rgb[1], rgb[2], a, i, j);
@@ -322,4 +322,87 @@ void mirror(SDL_Surface* surface, int xaxis)
     }
     copy_surface(tmp, surface);
     SDL_FreeSurface(tmp);
+}
+
+void mean(SDL_Surface* surface)
+{
+    SDL_Surface *mean = create_surface(surface->w, surface->h);
+    long mean_r, mean_g, mean_b;
+    mean_r = 0;
+    mean_g = 0;
+    mean_b = 0;
+    long nb_pixels = surface->w * surface->h;
+    for (int i = 0; i < surface->w; ++i)
+    {
+        for (int j = 0; j < surface->h; ++j)
+        {
+            Uint8 r, g, b;
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGB(pixel, surface->format, &r, &g, &b);
+            mean_r += r;
+            mean_g += g;
+            mean_b += b;
+        }
+    }
+    mean_r /= nb_pixels;
+    mean_g /= nb_pixels;
+    mean_b /= nb_pixels;
+    for (int i = 0; i < mean->w; ++i)
+    {
+        for (int j = 0; j < mean->h; ++j)
+        {
+            set_pixel(mean, mean_r, mean_g, mean_b, 1, i, j);
+        }
+    }
+    copy_surface(mean, surface);
+    SDL_FreeSurface(mean);
+}
+
+SDL_Surface *resize_fit_to_scale(SDL_Surface* original, double factor)
+{
+    SDL_Surface *resized = rotate(original, factor);
+    if ((int) factor % 90 == 0)
+        return resized;
+    else
+    {
+        if (resized == NULL)
+            errx(EXIT_FAILURE, "resize was NULL");
+        /*double ratio = 2;
+        SDL_Surface *tmp = resize(resized, ratio);
+        SDL_Surface *fit = crop_from_center(tmp, tmp->w/(size_t)ratio,
+                                            tmp->h/(size_t)ratio);
+        */
+        SDL_Surface *fit = zoom(resized, 2);
+        return fit;
+    }
+}
+
+SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h)
+{
+    size_t center_x = (original->w / 2) - w/2;
+    size_t center_y = (original->h / 2) - h/2;
+    SDL_Surface *cropped = create_surface(w, h);
+    for (size_t i = 0; i < w; i++)
+    {
+        for (size_t j = 0; j < h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(original, i + center_x, j + center_y);
+            SDL_GetRGBA(pixel, original -> format, &r, &g, &b, &a);
+            set_pixel(cropped, r, g, b, a, i, j);
+        }
+    }
+    return cropped;
+}
+
+SDL_Surface* zoom(SDL_Surface* original, double factor)
+{
+    SDL_Surface *tmp = resize(original, factor);
+    //printf("factor is %f\n", factor);
+    saveJPG("rotozoom.JPG", tmp);
+    if (factor < 1)
+        return tmp;
+    SDL_Surface *res = crop_from_center(tmp, original->w, original->h);
+    SDL_FreeSurface(tmp);
+    return res;
 }
