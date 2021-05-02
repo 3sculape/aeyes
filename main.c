@@ -192,7 +192,9 @@ typedef struct {
     GtkWidget *w_btn_fit_to_scale;                // Pointer to tool bar fit to scale
     GtkWidget *w_btn_median_blur;                 // Pointer to tool bar median blur
     GtkWidget *w_btn_edge_enhance;                // Pointer to tool bar edge enhancement
-    GtkWidget *w_btn_sav;                        // Pointer to the save button of tool bar
+    GtkWidget *w_btn_sav;                         // Pointer to the save button of tool bar
+    GtkWidget *w_btn_smart_resize;                // Pointer to the smart resize button
+    GtkWidget *w_btn_surface_blur;                // Pointer to the surface blur button
 
     //--- Apply Buttons --- //
     GtkWidget *w_btn_apply_grayscale;             // Pointer to apply button of grayscale
@@ -529,6 +531,11 @@ int main(int argc, char *argv[])
             "color_btn_vignette"));
 
 
+    widgets->w_btn_smart_resize = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_smart_resize"));
+    widgets->w_btn_surface_blur = GTK_WIDGET(gtk_builder_get_object(builder,
+            "btn_surface_blur"));
+
             
 
 /*     widgets->w_color_chooser_a_binarization = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -735,6 +742,7 @@ int main(int argc, char *argv[])
     gtk_widget_set_sensitive(widgets->w_btn_fit_to_scale, FALSE);
     gtk_widget_set_sensitive(widgets->w_btn_edge_enhance, FALSE);
     gtk_widget_set_sensitive(widgets->w_check_rotation_resize_to_fit, FALSE);
+    
 
 
     gtk_widget_set_sensitive(widgets->w_btn_apply_grayscale, FALSE);
@@ -778,6 +786,9 @@ int main(int argc, char *argv[])
 
     gtk_widget_set_sensitive(widgets->w_btn_sav, FALSE);
 
+
+    gtk_widget_set_sensitive(widgets->w_btn_smart_resize, FALSE);
+    gtk_widget_set_sensitive(widgets->w_btn_surface_blur, FALSE);
 
     gtk_builder_connect_signals(builder, widgets);
 
@@ -2762,24 +2773,11 @@ void on_btn_apply_swirl_clicked(
 
 
 
-// -------- Mean --------- //
-
-
-void on_btn_mean_activate(GtkMenuItem *btn_open 
-        __attribute__((unused)), app_widgets *app_wdgts)
-{
-    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    //mean(surface);
-    update_image(surface, app_wdgts);
-    SDL_FreeSurface(surface);
-}
-
-
 
 // -------- Surface Blur --------- //
 
 
-void on_btn_surface_blur_activate(GtkMenuItem *btn_open 
+/* void on_btn_surface_blur_activate(GtkMenuItem *btn_open 
         __attribute__((unused)), app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_surface_blur);
@@ -2799,14 +2797,30 @@ void on_btn_apply_surface_blur_clicked(
     int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_size_surface_blur_spin_btn)));
 
-    //surface_blur(surface, strength);
+    SDL_Surface *canny = canny_fnc(surface);
+
+    surface_blur(surface, canny);
 
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
     gtk_widget_hide(app_wdgts->w_dlg_surface_blur);
 }
+ */
 
+
+void on_btn_surface_blur_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+
+    SDL_Surface *canny = canny_fnc(surface);
+
+    surface_blur(surface, canny);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+}
 
 
 // -------- Perlin Noise --------- //
@@ -2817,6 +2831,19 @@ void on_btn_noise_activate(GtkMenuItem *btn_open
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     noise(surface);
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+}
+
+
+// -------- Mean --------- //
+
+
+void on_btn_mean_activate(GtkMenuItem *btn_open 
+        __attribute__((unused)), app_widgets *app_wdgts)
+{
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    mean(surface);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
