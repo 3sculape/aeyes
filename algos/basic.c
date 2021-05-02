@@ -374,7 +374,7 @@ SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h)
 SDL_Surface* zoom(SDL_Surface* original, double factor)
 {
     SDL_Surface *tmp = resize(original, factor);
-    printf("factor is %f\n", factor);
+    //printf("factor is %f\n", factor);
     saveJPG("rotozoom.JPG", tmp);
     if (factor < 1)
         return tmp;
