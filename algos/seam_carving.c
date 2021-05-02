@@ -32,7 +32,6 @@ void power_map(SDL_Surface *surface, SDL_Surface *edge_map)
             if (j == image_h)  //first row of power init
             {
                 set_pixel(power_map, sr, sg, sb, sa, i, j);
-                printf("sanity check\n");
             }
 
             if (j < image_h)
