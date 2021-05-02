@@ -142,3 +142,97 @@ void tint(SDL_Surface *surface, double factor)
 
     SDL_UnlockSurface(surface);
 }
+
+
+void apply_lut(SDL_Surface *surface, SDL_Surface *lut)
+{
+    int image_h = surface->h;
+    int image_w = surface->w;
+    Uint8 s_r, s_g, s_b, s_a;
+    Uint32 source_pixel;
+    Uint8 l_r, l_g, l_b, l_a;
+    Uint32 lut_pixel;
+    Uint32 lut_x, lut_y;
+
+    for (int j = 0; j < image_h; j++)
+    {
+        for (int i = 0; i < image_w; i++)
+        {
+            source_pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(source_pixel, surface->format, &s_r, &s_g, &s_b, &s_a);
+            s_r /= 4;
+            s_g /= 4;
+            s_b /= 4;
+            lut_x = ((s_b%8)*64) + s_r;
+            lut_y = ((s_b/8)*64) + s_g;
+
+            lut_pixel = get_pixel(lut, lut_x, lut_y);
+            SDL_GetRGBA(lut_pixel, lut->format, &l_r, &l_g, &l_b, &l_a);
+            set_pixel(surface, l_r, l_g, l_b, s_a, i, j);
+        }
+        
+    }
+    
+}
+
+
+void update_gradient_preview(int ra, int ga, int ba, int rb, int gb, int bb)
+{
+    SDL_Surface* gradient = create_surface(256, 40);
+    int a_factor = 255;
+    int b_factor = 0;
+
+    Uint8 r, g, b, a;
+    a = 1;
+
+    for (int i = 0; i < 256; i++)
+    {
+        r = (((a_factor - i)*ra) + ((b_factor + i)*rb))/255;
+        g = (((a_factor - i)*ga) + ((b_factor + i)*gb))/255;
+        b = (((a_factor - i)*ba) + ((b_factor + i)*bb))/255;
+
+        for (int j = 0; j < 40; j++)
+        {
+            set_pixel(gradient, r, g, b, a, i, j);
+        }
+        
+    }
+    
+    savePNG("./gradient.png", gradient);
+    SDL_FreeSurface(gradient);
+
+}
+
+void gradient_colorize(SDL_Surface *surface, 
+        int ra, int ga, int ba, int rb, int gb, int bb)
+{
+    int image_h = surface->h;
+    int image_w = surface->w;
+    Uint8 s_r, s_g, s_b, s_a;
+    Uint32 source_pixel;
+
+    int a_factor = 255;
+    int b_factor = 0;
+
+    Uint8 r, g, b;
+
+
+    for (int j = 0; j < image_h; j++)
+    {
+        for (int i = 0; i < image_w; i++)
+        {
+            source_pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(source_pixel, surface->format, &s_r, &s_g, &s_b, &s_a);
+            a_factor = s_r;
+            b_factor = 255 - s_r;
+
+            r = (((a_factor)*ra) + ((b_factor)*rb))/255;
+            g = (((a_factor)*ga) + ((b_factor)*gb))/255;
+            b = (((a_factor)*ba) + ((b_factor)*bb))/255;
+
+            set_pixel(surface, r, g, b, s_a, i, j);
+        }
+        
+    }
+
+}

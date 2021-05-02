@@ -70,3 +70,4 @@ dkms.conf
 *.png
 gtk
 .vscode
+window_main.glade~

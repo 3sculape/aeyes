@@ -188,10 +188,7 @@ void saturation(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[1] += value * (hsv[1] / 100);
-            if (hsv[1] < 0)
-                hsv[1] = 0;
-            if (hsv[1] > 100)
-                hsv[1] = 100;
+            clamp(hsv[1], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -224,10 +221,7 @@ void exposure(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[2] += value * (hsv[2] / 100);
-            if (hsv[2] < 0)
-                hsv[2] = 0;
-            if (hsv[2] > 100)
-                hsv[2] = 100;
+            clamp(hsv[2], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -237,6 +231,36 @@ void exposure(SDL_Surface *surface, double value)
 
     SDL_UnlockSurface(surface);
 }
+
+void contrast(SDL_Surface *surface, double value)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in contrast");
+        return;
+    }
+
+    double f = (259 * (value + 255)) / (255 * (259 - value));
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+
+            r = clamp(f * (r - 128) + 128, 0, 255);
+            g = clamp(f * (g - 128) + 128, 0, 255);
+            b = clamp(f * (b - 128) + 128, 0, 255);
+
+            set_pixel(surface, r, g, b, a, i, j);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+}
+
 SDL_Surface* image_crop(SDL_Surface* original, size_t x, size_t y, size_t w,
         size_t h)
 {
