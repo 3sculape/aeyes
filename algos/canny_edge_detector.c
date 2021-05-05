@@ -116,8 +116,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
         }
     }
 
-    //savePNG("gx.PNG", copyGx);
-    //savePNG("gy.PNG", copyGy);
+    savePNG("./canny/gx.PNG", copyGx);
+    savePNG("./canny/gy.PNG", copyGy);
 
     SDL_Surface* hypot = create_surface(surface->w, surface->h);
     gsl_matrix* theta = gsl_matrix_calloc(surface->w - 1, surface->h-1);
@@ -144,7 +144,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             gsl_matrix_set(theta, i - 1, j - 1, atan2(tmpy , tmpx));
         }
     }
-    //savePNG("hypot.PNG", hypot);
+    savePNG("./canny/hypot.PNG", hypot);
     SDL_Surface* nonmax = create_surface(surface->w, surface->h);
     Uint8 maxp = 0;
     for (int i = 1; i < hypot->w - 1; i++)
@@ -203,7 +203,7 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             }
         }
     }
-    //savePNG("nonmax.PNG", nonmax);
+    savePNG("./canny/nonmax.PNG", nonmax);
 
     const double maxratio = 0.25;
     const double lowratio = 0.15;
@@ -230,13 +230,14 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
         }
     }
 
-    //savePNG("dualthresh.PNG", dualthresh);
+    savePNG("./canny/dualthresh.PNG", dualthresh);
     for (int i = 0; i < dualthresh->w; ++i) {
         for (int j = 0; j < dualthresh->h; ++j) {
             find_strongest(dualthresh, i, j);
         }
     }
     copy_surface(dualthresh, canny);
+    savePNG("./canny/canny.PNG", canny);
     // Memory cleanup
     gsl_matrix_free(Gx);
     gsl_matrix_free(Gy);

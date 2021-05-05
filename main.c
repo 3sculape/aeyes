@@ -71,6 +71,8 @@ typedef struct {
     GtkWidget *w_image_window;                    // Pointer to image widget
     GtkWidget *w_histo_window;                    // Pointer to histogram widget
     GtkWidget *w_img_gradient_colorize;           // Pointer to gradient image widget
+    GtkWidget *w_left_clip_warning;               // Pointer to warning icon of left clipping
+    GtkWidget *w_right_clip_warning;              // Pointer to warning icon of right clipping
 
     //--- Adjustments --- //
     GtkWidget *w_height_adjustment_crop;          // Pointer to crop height adjustment widget
@@ -354,6 +356,11 @@ int main(int argc, char *argv[])
             "histo_window"));
     widgets->w_img_gradient_colorize= GTK_WIDGET(gtk_builder_get_object(builder,
             "img_gradient_colorize"));
+    widgets->w_left_clip_warning= GTK_WIDGET(gtk_builder_get_object(builder,
+            "left_clip_warning"));
+    widgets->w_right_clip_warning= GTK_WIDGET(gtk_builder_get_object(builder,
+            "right_clip_warning"));
+
 
 
     widgets->w_wb_spin_btn = GTK_WIDGET(gtk_builder_get_object(builder,
@@ -863,6 +870,32 @@ void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
     histo_color(surface);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
             "./new_histo.PNG");
+    
+    SDL_Surface *histogram = load("./new_histo.PNG");
+
+    int clipping = histo_clipping(histogram);
+    if (clipping == 0)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 1)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 2)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    if (clipping == 3)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    
+    SDL_FreeSurface(histogram);
 }
 
 
@@ -923,6 +956,32 @@ void on_btn_open_activate(GtkMenuItem *btn_open __attribute__((unused)),
             histo_color(surface);
             gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
                     "./new_histo.PNG");
+            
+            SDL_Surface *histogram = load("./new_histo.PNG");
+
+            int clipping = histo_clipping(histogram);
+            if (clipping == 0)
+            {
+                gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+                gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+            }
+            if (clipping == 1)
+            {
+                gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+                gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+            }
+            if (clipping == 2)
+            {
+                gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+                gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+            }
+            if (clipping == 3)
+            {
+                gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+                gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+            }
+            
+            SDL_FreeSurface(histogram);
 
             SDL_FreeSurface(surface);
 
@@ -1997,18 +2056,18 @@ void on_btn_edge_trailing_activate(GtkMenuItem *button __attribute__((unused)), 
     gtk_widget_show(app_wdgts->w_dlg_edge_trailing);
 }
 
-void on_btn_cancel_edge_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_cancel_edge_trailing_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     gtk_widget_hide(app_wdgts->w_dlg_edge_trailing);
 }
 
-void on_btn_apply_edge_trailing_clicked(GtkButton *button, app_widgets *app_wdgts)
+void on_btn_apply_edge_trailing_clicked(GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     SDL_Surface *edge_map = canny_fnc(surface);
     
-    gdouble ow = (gdouble)(surface->w);
-    gdouble oh = (gdouble)(surface->h);
+    /* gdouble ow = (gdouble)(surface->w);
+    gdouble oh = (gdouble)(surface->h); */
 
     int kernel_size = 20;
 
@@ -2132,6 +2191,32 @@ void on_btn_undo_all_activate(GtkMenuItem *button __attribute__((unused)),
     histo_color(surface);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
             "./new_histo.PNG");
+    
+    SDL_Surface *histogram = load("./new_histo.PNG");
+
+    int clipping = histo_clipping(histogram);
+    if (clipping == 0)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 1)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 2)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    if (clipping == 3)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    
+    SDL_FreeSurface(histogram);
 
     SDL_FreeSurface(surface);
 }
@@ -2149,6 +2234,33 @@ void on_btn_undo_activate(GtkMenuItem *button __attribute__((unused)),
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
     histo_color(surface);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+
+    SDL_Surface *histogram = load("./new_histo.PNG");
+
+    int clipping = histo_clipping(histogram);
+    if (clipping == 0)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 1)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 2)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    if (clipping == 3)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    
+    SDL_FreeSurface(histogram);
+
     SDL_FreeSurface(surface);
 }
 
@@ -2165,6 +2277,33 @@ void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)),
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
     histo_color(surface);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+
+    SDL_Surface *histogram = load("./new_histo.PNG");
+
+    int clipping = histo_clipping(histogram);
+    if (clipping == 0)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 1)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+    }
+    if (clipping == 2)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    if (clipping == 3)
+    {
+        gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+        gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+    }
+    
+    SDL_FreeSurface(histogram);
+
     SDL_FreeSurface(surface);
 }
 
