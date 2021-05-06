@@ -842,6 +842,7 @@
                         <property name="visible">True</property>
                         <property name="app_paintable">True</property>
                         <property name="can_focus">False</property>
+                        <signal name="button-press-event" handler="on_button_pressed_da" swapped="no"/>
                         <signal name="draw" handler="draw_da" swapped="no"/>
                       </object>
                     </child>

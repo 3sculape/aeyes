@@ -35,7 +35,8 @@ void *gdk_window;
 void *window_id;
 stack *undo_stack;
 stack *redo_stack;
-
+int lastx = -1;
+int lasty = -1;
 // ----- USER DATA STRUCT ----- //
 
 typedef struct {
@@ -798,6 +799,7 @@ int main(int argc, char *argv[])
     gtk_widget_set_sensitive(widgets->w_btn_surface_blur, FALSE);
 
     gtk_builder_connect_signals(builder, widgets);
+    gtk_widget_set_events(widgets->w_image_window, GDK_BUTTON_PRESS_MASK);
 
     g_object_unref(builder);
 
@@ -872,6 +874,8 @@ void draw_da(GtkWidget *da __attribute__((unused)), cairo_t *cr,
 
 void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
 {
+    lastx = -1;
+    lasty = -1;
     savePNG("./tmp.png", surface);
     push_stack(undo_stack, app_wdgts->texture);
     clear_stack_text(redo_stack);
@@ -932,11 +936,22 @@ void put_string1(char string[], char dest[])
     }
 }
 
+void on_button_pressed_da(GtkWidget* widgets __attribute__((unused)),
+        GdkEventButton *event, app_widgets *app_wdgts)
+{
+    if(app_wdgts->image_path == NULL)
+        return;
+    
+    if(event->button == GDK_BUTTON_PRIMARY)
+    {
+        int w, h;
+        SDL_QueryTexture(app_wdgts->texture, NULL, NULL, &w, &h);
+        lastx = (int)clamp(event->x, 0, w - 1);
+        lasty = (int)clamp(event->y, 0, h - 1);
+    }
 
-
-
-
-
+    return;
+}
 
 
 
@@ -2244,6 +2259,8 @@ void on_btn_undo_activate(GtkMenuItem *button __attribute__((unused)),
 {
     if(stack_isempty(undo_stack))
         return;
+    lastx = -1;
+    lasty = -1;
     SDL_Texture *texture = pop_stack(undo_stack);
     push_stack(redo_stack, app_wdgts->texture);
     app_wdgts->texture = texture;
@@ -2290,6 +2307,8 @@ void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)),
 {
     if(stack_isempty(redo_stack))
         return;
+    lastx = -1;
+    lasty = -1;
     SDL_Texture *texture = pop_stack(redo_stack);
     push_stack(undo_stack, app_wdgts->texture);
     app_wdgts->texture = texture;
@@ -3010,3 +3029,4 @@ void on_btn_mean_activate(GtkMenuItem *btn_open
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
+
