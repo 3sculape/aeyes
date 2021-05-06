@@ -91,6 +91,189 @@ error: warnx("unsharp mask function fail");
        return NULL;
 }
 
+void conv(SDL_Surface *surface,SDL_Surface* copy
+        ,int x, int y, gsl_matrix* ker)
+{
+    Uint8 nr, ng, nb, a;
+    nr = 0;
+    ng = 0;
+    nb = 0;
+    for (int offsetx = -1; offsetx < 2; offsetx++)
+    {
+        for (int offsety = -1; offsety < 2; offsety++)
+        {
+            Uint8 r, g, b;
+            double kernelvalue = gsl_matrix_get(ker, 1 + offsetx, 1 + offsety);
+            Uint32 pixel = get_pixel(surface, x + offsetx, y + offsety);
+            if (pixel == (Uint32) -1)
+            {
+                set_pixel(copy, 255, 0, 0, a, x, y);
+                return;
+            }
+            else
+            {
+                SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+                double tmpr = kernelvalue * (double)r;
+                double tmpg = kernelvalue * (double)g;
+                double tmpb = kernelvalue * (double)b;
+                nr += (Uint8)tmpr;
+                ng += (Uint8)tmpg;
+                nb += (Uint8)tmpb;
+            }
+        }
+    }
+    set_pixel(copy, nr, ng, nb, a, x, y);
+}
+
+void mercury(SDL_Surface *surface)
+{
+    SDL_Surface* copy = create_surface(surface->w, surface->h);
+    copy_surface(surface, copy);
+    gaussian_blur(copy, 5);
+
+    gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
+    gsl_matrix_set(Gx, 0, 0, -1);
+    gsl_matrix_set(Gx, 0, 1, 0);
+    gsl_matrix_set(Gx, 0, 2, 1);
+    gsl_matrix_set(Gx, 1, 0, -2);
+    gsl_matrix_set(Gx, 1, 1, 0);
+    gsl_matrix_set(Gx, 1, 2, 2);
+    gsl_matrix_set(Gx, 2, 0, -1);
+    gsl_matrix_set(Gx, 2, 1, 0);
+    gsl_matrix_set(Gx, 2, 2, 1);
+    SDL_Surface* copyGx = create_surface(surface->w, surface->h);
+    for(int i = 0; i < copy->w; i++)
+    {
+        for (int j = 0; j < copy -> h; j++)
+        {
+            conv(copy, copyGx, i, j, Gx);
+        }
+    }
+    copy_surface(copyGx, surface);
+    gsl_matrix_free(Gx);
+    SDL_FreeSurface(copy);
+    SDL_FreeSurface(copyGx);
+}
+
+void convolve_color(SDL_Surface *surface,SDL_Surface* copy
+        ,int x, int y, gsl_matrix* ker)
+{
+    // Variable definitions
+    double nr;
+    double ng;
+    double nb;
+    Uint8 a = 0;
+    nr = 0;
+    ng = 0;
+    nb = 0;
+
+    // Going through the kernel
+    for (int offsetx = -1; offsetx < 2; offsetx++)
+    {
+        for (int offsety = -1; offsety < 2; offsety++)
+        {
+            Uint8 r, g, b;
+            double kernelvalue = gsl_matrix_get(ker, 1 + offsetx, 1 + offsety);
+
+            Uint32 pixel = get_pixel(surface, x + offsety, y + offsetx);
+            if (pixel == (Uint32) -1)
+            {
+                //warnx("fail pixel");
+                set_pixel(copy, 0, 0, 0, a, x, y);
+                return;
+            }
+            else
+            {
+                // Simple sum in function of neighbors with kernel
+                SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+                double tmpr = kernelvalue * (double)r;
+                double tmpg = kernelvalue * (double)g;
+                double tmpb = kernelvalue * (double)b;
+                nr += tmpr;
+                ng += tmpg;
+                nb += tmpb;
+            }
+        }
+    }
+    nr = fabs(nr);
+    ng = fabs(ng);
+    nb = fabs(nb);
+    set_pixel(copy, (Uint8)nr, (Uint8)ng, (Uint8)nb, a, x, y);
+}
+
+SDL_Surface* neon(SDL_Surface *surface)
+{
+    // Defining temporary surfaces to work on
+    SDL_Surface* copy = create_surface(surface->w, surface->h);
+    copy_surface(surface, copy);
+    // Preprocessing (noise reduction)
+    gaussian_blur(copy, 5);
+
+    // Definition of Gradient kernels
+    gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
+    gsl_matrix_set(Gx, 0, 0, -1);
+    gsl_matrix_set(Gx, 0, 1, 0);
+    gsl_matrix_set(Gx, 0, 2, 1);
+    gsl_matrix_set(Gx, 1, 0, -2);
+    gsl_matrix_set(Gx, 1, 1, 0);
+    gsl_matrix_set(Gx, 1, 2, 2);
+    gsl_matrix_set(Gx, 2, 0, -1);
+    gsl_matrix_set(Gx, 2, 1, 0);
+    gsl_matrix_set(Gx, 2, 2, 1);
+    SDL_Surface* copyGx = create_surface(surface->w, surface->h);
+    // Convolution
+    for(int i = 0; i < copy->w; i++)
+    {
+        for (int j = 0; j < copy -> h; j++)
+        {
+            convolve_color(copy, copyGx, i, j, Gx);
+        }
+    }
+    gsl_matrix* Gy = gsl_matrix_calloc(3, 3);
+    gsl_matrix_set(Gy, 0, 0, 1);
+    gsl_matrix_set(Gy, 0, 1, 2);
+    gsl_matrix_set(Gy, 0, 2, 1);
+    gsl_matrix_set(Gy, 1, 0, 0);
+    gsl_matrix_set(Gy, 1, 1, 0);
+    gsl_matrix_set(Gy, 1, 2, 0);
+    gsl_matrix_set(Gy, 2, 0, -1);
+    gsl_matrix_set(Gy, 2, 1, -2);
+    gsl_matrix_set(Gy, 2, 2, -1);
+    SDL_Surface* copyGy = create_surface(surface->w, surface->h);
+    for(int i = 0; i < copy->w; i++)
+    {
+        for (int j = 0; j < copy -> h; j++)
+        {
+            convolve_color(copy, copyGy, i, j, Gy);
+        }
+    }
+    SDL_Surface* hypot = create_surface(surface->w, surface->h);
+    // Computing sqrt(Gx² + Gy²) and theta(y,x) = atan(y/x)
+    for(int i = 1; i < hypot -> w - 1; i++)
+    {
+        for (int j = 1; j < hypot -> h - 1; j++)
+        {
+            Uint8 a; //r, g, b;
+            Uint8 xr, xg, xb;
+            Uint8 yr, yg, yb;
+            Uint32 pixelx = get_pixel(copyGx, i, j);
+            Uint32 pixely = get_pixel(copyGy, i, j);
+
+            SDL_GetRGBA(pixelx, copyGx -> format, &xr, &xg, &xb, &a);
+            SDL_GetRGB(pixely, copyGy -> format, &yr, &yg, &yb);
+            double nr = gsl_hypot((double)xr, (double)yr);
+            double ng = gsl_hypot((double)xg, (double)yg);
+            double nb = gsl_hypot((double)xb, (double)yb);
+            set_pixel(hypot, (Uint8)nr, (Uint8)ng, (Uint8)nb, a, i, j);
+        }
+    }
+    SDL_FreeSurface(copyGx);
+    SDL_FreeSurface(copyGy);
+    SDL_FreeSurface(copy);
+    gsl_matrix_free(Gx);
+    gsl_matrix_free(Gy);
+    return hypot;
+}
 void get_pixel_hist(SDL_Surface *surface, int *rhisto, int *bhisto,
         int *ghisto, int posx, int posy, int x)
 {
@@ -225,5 +408,39 @@ void glitch(SDL_Surface *surface, int x)
     free(bhisto);
     copy_surface(surface2, surface);
     SDL_FreeSurface(surface2);
+    SDL_UnlockSurface(surface);
+}
+
+void black_hole(SDL_Surface *surface, Uint8 *color, double factor)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in vignette");
+        return;
+    }
+
+    factor /= 100.0;
+    double strength;
+    size_t middle[2] = {surface -> w / 2, surface -> h / 2};
+    size_t max_dist = distance(0, 0, middle[0], middle[1]);
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+            Uint32 pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
+
+            double dist = distance(i, j, middle[0], middle[1]);
+            double rel_dist = max_dist - dist;
+            strength = gsl_ran_ugaussian_pdf(rel_dist / (max_dist / 4)) * 2.5;
+            r = r * (1 - strength - factor) + color[0] * (strength + factor);
+            g = g * (1 - strength - factor) + color[1] * (strength + factor);
+            b = b * (1 - strength - factor) + color[2] * (strength + factor);
+
+            set_pixel(surface, r, g, b, a, i, j);
+        }
+    }
+
     SDL_UnlockSurface(surface);
 }

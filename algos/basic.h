@@ -5,6 +5,7 @@
 #include "../utils/lib_sdl.h"
 #include "convert.h"
 #include <SDL2/SDL2_rotozoom.h>
+#include "utility.h"
 
 /*
     All algorithms provided in this header do not
@@ -69,6 +70,14 @@ void saturation(SDL_Surface *surface, double value);
 void exposure(SDL_Surface *surface, double value);
 
 /*
+    Contrast control. Changes the saturation of each pixel to the
+    <value> parameter multiplied with a contrast factor.
+    <surface>: the surface to be processed
+    <value>: the new saturation value
+*/
+void contrast(SDL_Surface *surface, double value);
+
+/*
     Basic image cropping, takes into parameter the source we want to copy from,
     the starting position of the left corner and the width and height of the
     wanted section. Returns the texture create from it
@@ -85,5 +94,8 @@ SDL_Surface* resize(SDL_Surface* original, double factor);
  * Basic image rotate, wrapper to rotozoom for practicality
  */
 SDL_Surface* rotate(SDL_Surface* original, double angle);
+
+// Mirror flip based on axis, xaxis is bool for if flip is on xaxis or nah
+void mirror(SDL_Surface *surface, int xaxis);
 
 #endif
