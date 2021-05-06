@@ -7,7 +7,35 @@
 <link rel="icon" type="image/png" href="img/favicon.png"/>
 </head>
 
-
+<script>
+	function preloadImage(url, i){
+    	var img=new Image();
+    	img.src=url;
+	}
+	
+	var imgs = ["img/softwares/ai.png",
+			   "img/softwares/discord.png",
+			   "img/softwares/dw.png",
+			   "img/softwares/glade.png",
+			   "img/softwares/gtk.png",
+			   "img/softwares/overleaf.png",
+			   "img/softwares/ps.png",
+			   "img/softwares/sdl.png",
+			   "img/softwares/vim.png",
+			   "img/softwares/vsc.png",
+			   "img/team/clement.png",
+			   "img/team/nigel.png",
+			   "img/team/samuel.png",
+			   "img/team/thibaut.png",
+			   "img/colors.png",
+			   "img/deformation.png",
+			   "img/dir_blur.png",
+			   "img/special.png",
+			   "img/overview.png",
+			   ];
+	
+	imgs.forEach(preloadImage);
+</script>
 
 <body>
 	<section class="page page1" id="page1">
@@ -75,7 +103,12 @@
 					</div>
 					<div id="content_place_holder_p3" class="content_place_holder2">
 
-						<div class="p3_element elem6 active" id="el6"></div>
+						<div class="p3_element elem6 active" id="el6">
+							<div class="alignwrap6">
+								<p>Having  accomplished  an  OCR  project  last  semester,  the  AEyes  group  is  back  with  two  new members for another challenge. This  time,  AEyes  will  tackle  image  manipulation.
+									The  goal  is  to  create  a  functioning  image editing software that will allow users to modify pictures in many ways.  The project will revolve around many different algorithms that will be available to the end user on a graphical user interface.</p>	
+							</div>
+													</div>
 						<div class="p3_element elem8" id="el8">
 							<div class="alignwrap8">
 								<div class="teammember member1" onclick="link('https://github.com/nigel-andrews')">

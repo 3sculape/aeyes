@@ -375,3 +375,35 @@ void histo_color(SDL_Surface * surface)
     savePNG("./new_histo.PNG", new_histo);
     SDL_FreeSurface(new_histo);
 }
+
+
+int histo_clipping(SDL_Surface *histogram)
+{
+    int image_h = histogram->h;
+    int image_w = histogram->w;
+
+    Uint8 r1, g1, b1, a1;
+    Uint32 pixel1;
+
+    Uint8 r2, g2, b2, a2;
+    Uint32 pixel2;
+
+    pixel1 = get_pixel(histogram, 0, image_h-1);
+    SDL_GetRGBA(pixel1, histogram->format, &r1, &g1, &b1, &a1);
+    pixel2 = get_pixel(histogram, image_w-1, image_h-1);
+    SDL_GetRGBA(pixel2, histogram->format, &r2, &g2, &b2, &a2);
+
+    int res = 0;
+
+    if((r1 + g1 + b1) != 0)
+    {
+        res+= 1;
+    }
+
+    if((r2 + g2 + b2) != 0)
+    {
+        res+= 2;
+    }
+
+    return res;
+}

@@ -739,3 +739,81 @@ void radial_blur(SDL_Surface *surface, int x)
     SDL_FreeSurface(surface2);
     SDL_UnlockSurface(surface);
 }
+
+void surface_blur(SDL_Surface* surface, SDL_Surface* canny)
+{
+    SDL_Surface *blurred = create_surface(surface->w, surface->h);
+    gsl_matrix* gaussian_filter = gsl_matrix_calloc(3, 3);
+    gsl_matrix_set(gaussian_filter, 0, 0, 0.0625);
+    gsl_matrix_set(gaussian_filter, 2, 0, 0.0625);
+    gsl_matrix_set(gaussian_filter, 0, 2, 0.0625);
+    gsl_matrix_set(gaussian_filter, 2, 2, 0.0625);
+    gsl_matrix_set(gaussian_filter, 0, 1, 0.125);
+    gsl_matrix_set(gaussian_filter, 1, 0, 0.125);
+    gsl_matrix_set(gaussian_filter, 1, 2, 0.125);
+    gsl_matrix_set(gaussian_filter, 2, 1, 0.125);
+    gsl_matrix_set(gaussian_filter, 1, 1, 0.25);
+
+    for (int i = 0; i < surface->w; ++i)
+    {
+        for (int j = 0; j < surface->h; ++j)
+        {
+            Uint32 canny_pixel = get_pixel(canny, i, j);
+            Uint8 canny_r, canny_g, canny_b;
+            SDL_GetRGB(canny_pixel, canny->format, &canny_r, &canny_g,
+                       &canny_b);
+            if (canny_r == 0)
+            {
+                double nr, ng, nb;
+                Uint8 a;
+                nr = 0;
+                ng = 0;
+                nb = 0;
+                a = 0;
+                for (int k = -1; k < 2; ++k)
+                {
+                    for (int l = -1; l < 2; ++l)
+                    {
+                        Uint8 r, g, b;
+                        double kernelvalue = gsl_matrix_get(gaussian_filter, 1
+                        +k,1+l);
+
+                        Uint32 pixel = get_pixel(surface,i + l,j
+                        + k);
+                        if (pixel == (Uint32) -1)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            // Simple sum in function of neighbors with kernel
+                            SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+                            double tmpr = kernelvalue * (double)r;
+                            double tmpg = kernelvalue * (double)g;
+                            double tmpb = kernelvalue * (double)b;
+                            nr += tmpr;
+                            ng += tmpg;
+                            nb += tmpb;
+                        }
+                    }
+                }
+                nr = fabs(nr);
+                ng = fabs(ng);
+                nb = fabs(nb);
+                set_pixel(blurred, (Uint8)nr, (Uint8)ng, (Uint8)nb, a, i, j);
+            }
+            else
+            {
+                Uint32 pixel = get_pixel(surface, i, j);
+                Uint8 r, g, b, a;
+                SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+                set_pixel(blurred, r, g, b, a, i, j);
+            }
+        }
+    }
+
+    copy_surface(blurred, surface);
+
+    SDL_FreeSurface(blurred);
+    gsl_matrix_free(gaussian_filter);
+}

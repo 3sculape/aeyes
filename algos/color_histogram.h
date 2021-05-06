@@ -33,4 +33,6 @@ void color_histogram(SDL_Surface* surface, size_t red[], size_t green[],
         size_t blue[]);
 
 void histo_color(SDL_Surface *surface);
+
+int histo_clipping(SDL_Surface *histogram);
 #endif

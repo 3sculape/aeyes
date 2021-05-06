@@ -34,4 +34,6 @@ void motion_blur(SDL_Surface *surface, int x, double angle);
 // Blur the SDL_Surface *surface with the radial blur.
 // x parameter is the length of the kernel
 void radial_blur(SDL_Surface *surface, int x);
+
+void surface_blur(SDL_Surface* surface, SDL_Surface* canny);
 #endif /* BLURS_H */
