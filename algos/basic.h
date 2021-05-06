@@ -109,5 +109,6 @@ SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h);
 // future upgrade -> being able to choose where to zoom in, right now only
 // center of the image, factor > 0
 SDL_Surface* zoom(SDL_Surface* original, double factor);
-
+// scale the image to the size w, h by streching it.
+SDL_Surface* scale_strech(SDL_Surface *surface, int w, int h);
 #endif
