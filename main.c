@@ -262,6 +262,8 @@ typedef struct {
 } app_widgets;
 
 
+//gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, app_widgets *app_wdgts);
+
 
 int main(int argc, char *argv[])
 {
@@ -285,6 +287,10 @@ int main(int argc, char *argv[])
     gtk_builder_add_from_file(builder, "window_main.glade", NULL);
 
     window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
+
+    //g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press), &window_id);
+    //g_signal_connect(main_window, "on_main_key_press_event", G_CALLBACK(on_key_press), &window_id);
+    //g_signal_connect(window, "key_release_event", G_CALLBACK(on_key_release), &app_widgets);
 
 
     // ----- USER DATA STRUCT GTK LINKING ----- //
@@ -2986,3 +2992,215 @@ void on_btn_mean_activate(GtkMenuItem *btn_open
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
+
+
+
+
+gboolean on_main_window_key_press_event(GtkWidget *widget __attribute__((unused)), GdkEventKey *event, app_widgets *app_wdgts)
+{
+    switch (event->keyval)
+    {
+        case GDK_KEY_z:
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                // ctrl + z
+                on_btn_undo_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            }
+            break;
+        
+        case GDK_KEY_Z:
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                // ctrl + shift + z
+                on_btn_redo_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            }
+            break;
+        
+        case GDK_KEY_u:
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                // ctrl + u
+                on_btn_undo_all_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            }
+            break;
+        
+        case GDK_KEY_s:
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                // ctrl + s
+                on_btn_save_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            }
+            break;
+        
+        case GDK_KEY_o:
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                // ctrl + o
+                on_btn_open_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            }
+            break;
+        
+        case GDK_KEY_q:
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                // ctrl + q
+                on_btn_quit_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            }
+            break;
+        
+        case GDK_KEY_r:
+            if (event->state & GDK_CONTROL_MASK)
+            {
+                // ctrl + r
+                on_btn_rotation_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            }
+            break;
+        
+        case GDK_KEY_S:
+            // shift + s
+            on_btn_scale_activate(GTK_MENU_ITEM(app_wdgts->w_btn_new), app_wdgts);
+            break;
+        
+        default:
+            return FALSE;
+    }
+
+    return FALSE;
+
+    /* // If the 'f' key is pressed, moves the player 1 upwards.
+    if (event->keyval == GDK_KEY_f)
+    {
+        printf("F TO PAY RESPECT NEW\n");
+        return TRUE;
+    }
+
+    if (event->keyval == GDK_KEY_u)
+    {
+        if(stack_isempty(undo_stack))
+            return TRUE;
+        SDL_Texture *texture = pop_stack(undo_stack);
+        push_stack(redo_stack, app_wdgts->texture);
+        app_wdgts->texture = texture;
+        SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+        savePNG("./tmp.png", surface);
+        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+        histo_color(surface);
+        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+
+        SDL_Surface *histogram = load("./new_histo.PNG");
+
+        int clipping = histo_clipping(histogram);
+        if (clipping == 0)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+        }
+        if (clipping == 1)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+        }
+        if (clipping == 2)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+        }
+        if (clipping == 3)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+        }
+        
+        SDL_FreeSurface(histogram);
+
+        SDL_FreeSurface(surface);
+
+        return TRUE;
+    }
+
+    if (event->keyval == GDK_KEY_U)
+    {
+        printf("REDO\n");
+        if(stack_isempty(redo_stack))
+            return TRUE;
+        SDL_Texture *texture = pop_stack(redo_stack);
+        push_stack(undo_stack, app_wdgts->texture);
+        app_wdgts->texture = texture;
+        SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+        savePNG("./tmp.png", surface);
+        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+        histo_color(surface);
+        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+
+        SDL_Surface *histogram = load("./new_histo.PNG");
+
+        int clipping = histo_clipping(histogram);
+        if (clipping == 0)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+        }
+        if (clipping == 1)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
+        }
+        if (clipping == 2)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+        }
+        if (clipping == 3)
+        {
+            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
+            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
+        }
+        
+        SDL_FreeSurface(histogram);
+
+        SDL_FreeSurface(surface);
+    }
+
+    // Otherwise, propagates the signal.
+    else
+        return FALSE; */
+}
+
+
+
+
+// Event handler for the "key-press-event" signal.
+/* gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, app_widgets *app_wdgts)
+{
+    // If the 'f' key is pressed, moves the player 1 upwards.
+    if (event->keyval == GDK_KEY_f)
+    {
+        printf("F TO PAY RESPECT\n");
+        return TRUE;
+    }
+
+    if (event->keyval == GDK_KEY_u)
+    {
+        printf("UNDO CALL\n");
+        if(stack_isempty(undo_stack))
+            return;
+        SDL_Texture *texture = pop_stack(undo_stack);
+        push_stack(redo_stack, app_wdgts->texture);
+        app_wdgts->texture = texture;
+        SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
+        savePNG("./tmp.png", surface);
+        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+        histo_color(surface);
+        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
+
+        SDL_FreeSurface(surface);
+
+        printf("UNDO FINISHED\n");
+        return TRUE;
+    }
+
+    // Otherwise, propagates the signal.
+    else
+        return FALSE;
+} */
+

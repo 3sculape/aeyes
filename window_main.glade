@@ -328,6 +328,8 @@
     <property name="hide_titlebar_when_maximized">True</property>
     <property name="icon">icon.png</property>
     <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
+    <signal name="key-press-event" handler="on_main_window_key_press_event" swapped="no"/>
+    <signal name="key-release-event" handler="on_main_window_key_release_event" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -363,6 +365,7 @@
                       <object class="GtkMenuItem" id="btn_open">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="accel_path">_ctrl + o</property>
                         <property name="label" translatable="yes">Open</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_btn_open_activate" swapped="no"/>
