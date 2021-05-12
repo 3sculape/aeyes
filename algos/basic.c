@@ -192,7 +192,7 @@ void saturation(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[1] += value * (hsv[1] / 100);
-            clamp(hsv[1], 0, 100);
+            hsv[1] = clamp(hsv[1], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -225,7 +225,7 @@ void exposure(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[2] += value * (hsv[2] / 100);
-            clamp(hsv[2], 0, 100);
+            hsv[2] = clamp(hsv[2], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
