@@ -1844,7 +1844,7 @@ void on_btn_apply_binarization_clicked(
             GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    binarization(surface, (char)quantity, ra, ga, ba, rb, gb, bb);
+    binarization(surface, (Uint8)quantity, ra, ga, ba, rb, gb, bb);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 

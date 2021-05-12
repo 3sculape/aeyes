@@ -24,7 +24,8 @@ void grayscale(SDL_Surface *surface)
     SDL_UnlockSurface(surface);
 }
 
-void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, int rb, int gb, int bb)
+void binarization(SDL_Surface *surface, Uint32 threshold, int ra, int ga,
+int ba, int rb, int gb, int bb)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -37,9 +38,11 @@ void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, i
         for (int j = 0; j < surface -> h; j++)
         {
             Uint8 r, g, b, a;
+            Uint32 average;
             Uint32 pixel = get_pixel(surface, i, j);
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
-            if ((r + g + b) / 3 > threshold)
+            average = (r + g + b) / 3;
+            if (average > threshold)
             {
                 r = ra;
                 g = ga;
