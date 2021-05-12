@@ -71,9 +71,15 @@ void twist(SDL_Surface *surface, double factor)
             }
         }
     }
+    SDL_Surface *surface3 = image_crop(surface2, (size_t)factor + 1,
+            (size_t)factor + 1, surface2->w - 2 * (size_t)factor - 1,
+            surface2->h - 2 * (size_t)factor - 1);
 
+    SDL_Surface * surface4 = scale_strech(surface3, surface->w, surface->h);
 
-    copy_surface(surface2, surface);
+    copy_surface(surface4, surface);
     SDL_FreeSurface(surface2);
+    SDL_FreeSurface(surface3);
+    SDL_FreeSurface(surface4);
     SDL_UnlockSurface(surface);
 }
