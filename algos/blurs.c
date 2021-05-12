@@ -4,6 +4,7 @@
 #include "blurs.h"
 #include "utility.h"
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_randist.h>
 #include <math.h>
 
 typedef struct {
@@ -619,7 +620,6 @@ void fast_gaussian_blur(SDL_Surface *surface, int x)
     Uint32 *rect = (Uint32 *)malloc(sizeof(Uint32) * x);
     double sum;
     gsl_vector *filter = gaussian_filter_rect(x, sigma, &sum);
-    printf("%f\n", sum);
     for(int j = 0; j < surface -> h; j++)
     {
         for(int i = 0; i < surface -> w; i++)
@@ -840,3 +840,74 @@ void surface_blur(SDL_Surface* surface, SDL_Surface* canny)
     SDL_FreeSurface(blurred);
     gsl_matrix_free(gaussian_filter);
 }
+
+void vignette_blur(SDL_Surface *surface, int max)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in vignette");
+        return;
+    }
+    int x;
+    double sum;
+    double sigma;
+    double strength;
+    Uint32 *rect = (Uint32 *)malloc(sizeof(Uint32) * max);
+    gsl_vector *filter;
+    SDL_Surface *surface2 = SDL_CreateRGBSurfaceWithFormat(0,
+            surface->w, surface->h, 32, surface->format->format);
+
+    size_t middle[2] = {surface -> w / 2, surface -> h / 2};
+    size_t max_dist = distance(0, 0, middle[0], middle[1]);
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+
+            double dist = distance(i, j, middle[0], middle[1]);
+            double rel_dist = max_dist - dist;
+            strength = gsl_ran_ugaussian_pdf(rel_dist / (max_dist / 4)) * 2.5;
+            x = strength * max;
+            if(x % 2 == 0)
+                x += 1;
+            sigma = sqrt((((x + 4) * (x + 4)) - 1) / 12);
+            filter = gaussian_filter_rect(x, sigma, &sum); 
+            get_pixel_rect(surface, rect, i, j, x, 1);
+            gaussian_average_rect(x, sum, rect, filter, surface, &r, &g, &b,
+                    &a);
+            set_pixel(surface2, r, g, b, a, i, j);
+            gsl_vector_free(filter);
+        }
+    }
+    copy_surface(surface2, surface);
+
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+
+            double dist = distance(i, j, middle[0], middle[1]);
+            double rel_dist = max_dist - dist;
+            strength = gsl_ran_ugaussian_pdf(rel_dist / (max_dist / 4)) * 2.5;
+            x = strength * max;
+            if(x % 2 == 0)
+                x += 1;
+            sigma = sqrt((((x + 4) * (x + 4)) - 1) / 12);
+            filter = gaussian_filter_rect(x, sigma, &sum); 
+            get_pixel_rect(surface, rect, i, j, x, 0);
+            gaussian_average_rect(x, sum, rect, filter, surface, &r, &g, &b,
+                    &a);
+            set_pixel(surface2, r, g, b, a, i, j);
+            gsl_vector_free(filter);
+        }
+    }
+
+    copy_surface(surface2, surface);
+    
+    SDL_FreeSurface(surface2);
+    free(rect);
+    SDL_UnlockSurface(surface);
+}
+

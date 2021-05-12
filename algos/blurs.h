@@ -36,4 +36,6 @@ void motion_blur(SDL_Surface *surface, int x, double angle);
 void radial_blur(SDL_Surface *surface, int x);
 
 void surface_blur(SDL_Surface* surface, SDL_Surface* canny);
+
+void vignette_blur(SDL_Surface *surface, int max);
 #endif /* BLURS_H */
