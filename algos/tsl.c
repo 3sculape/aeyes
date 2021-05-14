@@ -1,6 +1,6 @@
 #include "tsl.h"
 
-void tsl_hue(SDL_Surface *surface, color_t color, double amount)
+void tsl_hue(SDL_Surface *surface, int color, double amount)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -33,7 +33,7 @@ void tsl_hue(SDL_Surface *surface, color_t color, double amount)
     SDL_UnlockSurface(surface);
 }
 
-void tsl_sat(SDL_Surface *surface, color_t color, double amount)
+void tsl_sat(SDL_Surface *surface, int color, double amount)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -66,7 +66,7 @@ void tsl_sat(SDL_Surface *surface, color_t color, double amount)
     SDL_UnlockSurface(surface);
 }
 
-void tsl_val(SDL_Surface *surface, color_t color, double amount)
+void tsl_val(SDL_Surface *surface, int color, double amount)
 {
     if (SDL_LockSurface(surface) != 0)
     {
