@@ -406,3 +406,57 @@ SDL_Surface* zoom(SDL_Surface* original, double factor)
     SDL_FreeSurface(tmp);
     return res;
 }
+
+void symmetry(SDL_Surface* original, int y_axis, int direction)
+{
+    int limit_1, limit_2, offset_i, offset_j;
+    if (y_axis)
+    {
+        limit_1 = original->w / 2;
+        limit_2 = original->h;
+        offset_i = original->w;
+        offset_j = 0;
+    }
+    else
+    {
+        limit_1 = original->w;
+        limit_2 = original->h / 2;
+        offset_i = 0;
+        offset_j = original->h;
+    }
+
+    if (!direction)
+    {
+        for (int i = 0; i < limit_1; i++)
+        {
+            for (int j = 0; j < limit_2; j++)
+            {
+                Uint8 r, g, b, a;
+                Uint32 pixel = get_pixel(original, i, j);
+                SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
+                set_pixel(original, r, g, b, a, abs(offset_i - i),abs(offset_j -
+                                                                      j));
+            }
+        }
+    }
+    else
+    {
+        if (offset_i)
+            limit_2 = 0;
+        else
+            limit_1 = 0;
+        for (int i = original->w - 1; i > limit_1; --i)
+        {
+            for (int j = original->h - 1; j > limit_2; --j)
+            {
+                Uint8 r, g, b, a;
+                Uint32 pixel = get_pixel(original, i, j);
+                SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
+                set_pixel(original, r, g, b, a, abs(offset_i / 2 - (i -
+                offset_i
+                / 2)), abs(offset_j / 2 - (j -
+                offset_j / 2)));
+            }
+        }
+    }
+}

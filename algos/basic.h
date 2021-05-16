@@ -110,4 +110,8 @@ SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h);
 // center of the image, factor > 0
 SDL_Surface* zoom(SDL_Surface* original, double factor);
 
+// Symmetry function, second param is choice for axis (1 for y axis, 0 for x)
+// third param is bool to change direction
+void symmetry(SDL_Surface* original, int y_axis, int direction);
+
 #endif
