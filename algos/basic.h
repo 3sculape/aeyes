@@ -114,4 +114,9 @@ SDL_Surface* zoom(SDL_Surface* original, double factor);
 // third param is bool to change direction
 void symmetry(SDL_Surface* original, int y_axis, int direction);
 
+// offset image from left to right (like caml) by default, orientation (bool)
+// changes the axis (default top to bottom) and direction (bool) changes to the
+// other way
+void offset(SDL_Surface* original, int amount, int direction, int orientation);
+
 #endif
