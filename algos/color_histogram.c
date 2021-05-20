@@ -265,7 +265,7 @@ SDL_Surface* show_histogram(SDL_Surface *surface)
 }
 
 
-inline int three_max(int a, int b, int c) {
+int three_max(int a, int b, int c) {
     if(a <= b) {
         if(b <= c) return c;
         return b;
