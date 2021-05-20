@@ -34,4 +34,16 @@ void noise(SDL_Surface *surface);
 */
 void gaussian_noise(SDL_Surface *surface, double deviation, double intensity);
 
+/*
+    Applies Gaussian noise to the hue of the image
+    <surface>: the surface to be processed
+    <deviation>: the deviation of the Gauss probability
+    density function. 6 is generally considered a proper
+    value for random noise distribution
+    <intensity>: a multiplier applied to the noise
+    intensity. Can be any value (+/-) but high/low
+    values can mess up the color space
+*/
+void color_noise(SDL_Surface *surface, double deviation, double intensity);
+
 #endif
