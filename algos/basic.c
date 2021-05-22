@@ -464,7 +464,11 @@ void symmetry(SDL_Surface* original, int y_axis, int direction)
 void offset(SDL_Surface* original, int amount, int axis)
 {
     SDL_Surface *tmp = create_surface(original->w, original->h);
-
+    if (axis)
+    {
+        if (amount < 6)
+            amount = 6;
+    }
     for (int i = 0; i < original->w; ++i)
     {
         for (int j = 0; j < original->h; ++j)
