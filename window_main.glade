@@ -41,6 +41,12 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="hue_adjustment_custom_hsl">
+    <property name="lower">-180</property>
+    <property name="upper">180</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="hue_adjustment_green">
     <property name="lower">-100</property>
     <property name="upper">100</property>
@@ -77,6 +83,12 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="hue_range_adjustment_custom_hsl">
+    <property name="upper">180</property>
+    <property name="value">30</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="lum_adjustment_blue">
     <property name="lower">-100</property>
     <property name="upper">100</property>
@@ -84,6 +96,12 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="lum_adjustment_bluegreen">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lum_adjustment_custom_hsl">
     <property name="lower">-100</property>
     <property name="upper">100</property>
     <property name="step_increment">1</property>
@@ -125,6 +143,12 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="lum_range_adjustment_custom_hsl">
+    <property name="upper">180</property>
+    <property name="value">30</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkFileFilter" id="lutfilter">
     <patterns>
       <pattern>*.png</pattern>
@@ -148,6 +172,12 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="sat_adjustment_bluegreen">
+    <property name="lower">-100</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_adjustment_custom_hsl">
     <property name="lower">-100</property>
     <property name="upper">100</property>
     <property name="step_increment">1</property>
@@ -188,6 +218,745 @@
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="sat_range_adjustment_custom_hsl">
+    <property name="upper">180</property>
+    <property name="value">30</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkDialog" id="dlg_custom_hsl">
+    <property name="name">Binarization</property>
+    <property name="width_request">420</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Custom HSL</property>
+    <property name="resizable">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">main_window</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="margin_right">20</property>
+            <property name="margin_bottom">20</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_cancel_custom_hsl">
+                <property name="label" translatable="yes">Close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_btn_cancel_custom_hsl_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">420</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">70</property>
+            <property name="margin_bottom">70</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Custom HSL</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
+                <property name="spacing">20</property>
+                <child>
+                  <object class="GtkRadioButton" id="btn_hue_custom_hsl">
+                    <property name="label" translatable="yes">Hue</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">False</property>
+                    <signal name="clicked" handler="on_btn_hue_custom_hsl_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="btn_sat_custom_hsl">
+                    <property name="label" translatable="yes">Sat</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">False</property>
+                    <property name="group">btn_hue_custom_hsl</property>
+                    <signal name="clicked" handler="on_btn_sat_custom_hsl_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="btn_lum_custom_hsl">
+                    <property name="label" translatable="yes">Lum</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">False</property>
+                    <property name="group">btn_hue_custom_hsl</property>
+                    <signal name="clicked" handler="on_btn_lum_custom_hsl_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">30</property>
+                <child>
+                  <object class="GtkRevealer" id="rvl_hue_custom_hsl">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="transition_type">slide-left</property>
+                    <property name="reveal_child">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="width_request">420</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="spacing">100</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">center</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkColorButton" id="color_btn_h_custom_hsl">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="halign">center</property>
+                                    <property name="rgba">rgb(0,0,0)</property>
+                                    <signal name="color-set" handler="on_color_btn_h_custom_hsl_color_set" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Input Color</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkSpinButton" id="hue_custom_hsl_spin_btn">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="halign">center</property>
+                                    <property name="adjustment">hue_adjustment_custom_hsl</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Hue Rotation</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="margin_top">30</property>
+                            <property name="spacing">20</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Input Range</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="range_hue_custom_hsl_spin_btn">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="adjustment">hue_range_adjustment_custom_hsl</property>
+                                <property name="value">30</property>
+                                <signal name="value-changed" handler="on_range_hue_custom_hsl_spin_btn_value_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="input_hue_custom_hsl_img">
+                            <property name="width_request">255</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="valign">center</property>
+                            <property name="margin_top">10</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_apply_custom_hue">
+                            <property name="label" translatable="yes">Apply</property>
+                            <property name="height_request">25</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">end</property>
+                            <property name="margin_right">30</property>
+                            <property name="margin_top">15</property>
+                            <signal name="clicked" handler="on_btn_apply_custom_hue_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="rvl_sat_custom_hsl">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="transition_type">slide-left</property>
+                    <property name="reveal_child">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="width_request">420</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="spacing">100</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">center</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkColorButton" id="color_btn_s_custom_hsl">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="halign">center</property>
+                                    <property name="rgba">rgb(0,0,0)</property>
+                                    <signal name="color-set" handler="on_color_btn_s_custom_hsl_color_set" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Input Color</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkSpinButton" id="sat_custom_hsl_spin_btn">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="halign">center</property>
+                                    <property name="adjustment">sat_adjustment_custom_hsl</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Saturation</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="margin_top">30</property>
+                            <property name="spacing">20</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Input Range</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="range_sat_custom_hsl_spin_btn">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="adjustment">sat_range_adjustment_custom_hsl</property>
+                                <property name="value">30</property>
+                                <signal name="value-changed" handler="on_range_sat_custom_hsl_spin_btn_value_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="input_sat_custom_hsl_img">
+                            <property name="width_request">255</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="valign">center</property>
+                            <property name="margin_top">10</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_apply_custom_sat">
+                            <property name="label" translatable="yes">Apply</property>
+                            <property name="height_request">25</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">end</property>
+                            <property name="margin_right">30</property>
+                            <property name="margin_top">15</property>
+                            <signal name="clicked" handler="on_btn_apply_custom_sat_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="rvl_lum_custom_hsl">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="transition_type">slide-left</property>
+                    <property name="reveal_child">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="width_request">420</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="spacing">100</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">center</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkColorButton" id="color_btn_l_custom_hsl">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="halign">center</property>
+                                    <property name="rgba">rgb(0,0,0)</property>
+                                    <signal name="color-set" handler="on_color_btn_l_custom_hsl_color_set" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Input Color</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkSpinButton" id="lum_custom_hsl_spin_btn">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="halign">center</property>
+                                    <property name="adjustment">lum_adjustment_custom_hsl</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Luminosity</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="margin_top">30</property>
+                            <property name="spacing">20</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Input Range</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="range_lum_custom_hsl_spin_btn">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="adjustment">lum_range_adjustment_custom_hsl</property>
+                                <property name="value">30</property>
+                                <signal name="value-changed" handler="on_range_lum_custom_hsl_spin_btn_value_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="input_lum_custom_hsl_img">
+                            <property name="width_request">255</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="valign">center</property>
+                            <property name="margin_top">10</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_apply_custom_lum">
+                            <property name="label" translatable="yes">Apply</property>
+                            <property name="height_request">25</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">end</property>
+                            <property name="margin_right">30</property>
+                            <property name="margin_top">15</property>
+                            <signal name="clicked" handler="on_btn_apply_custom_lum_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
   <object class="GtkAdjustment" id="size_adjustment_direct_blur">
     <property name="lower">3</property>
@@ -580,52 +1349,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkMenuItem" id="btn_binarization">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Binarization</property>
-                        <signal name="activate" handler="on_btn_binarization_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_negative">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Negative</property>
-                        <signal name="activate" handler="on_btn_negative_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_colorize">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Colorize</property>
-                        <signal name="activate" handler="on_btn_colorize_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_gradient_colorize">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Gradient Colorize</property>
-                        <signal name="activate" handler="on_btn_gradient_colorize_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_vignette">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Vignette</property>
-                        <signal name="activate" handler="on_btn_vignette_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSeparatorMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkMenuItem" id="btn_mean">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -779,6 +1502,59 @@
                         <signal name="activate" handler="on_btn_neon_activate" swapped="no"/>
                       </object>
                     </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="menu_colors">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Colors</property>
+                <child type="submenu">
+                  <object class="GtkMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_binarization">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Binarization</property>
+                        <signal name="activate" handler="on_btn_binarization_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_negative">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Negative</property>
+                        <signal name="activate" handler="on_btn_negative_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_colorize">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Colorize</property>
+                        <signal name="activate" handler="on_btn_colorize_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_gradient_colorize">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Gradient Transfer</property>
+                        <signal name="activate" handler="on_btn_gradient_colorize_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_vignette">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Vignette</property>
+                        <signal name="activate" handler="on_btn_vignette_activate" swapped="no"/>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
@@ -789,8 +1565,16 @@
                       <object class="GtkMenuItem" id="btn_lut">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Charge LUT</property>
+                        <property name="label" translatable="yes">Apply LUT</property>
                         <signal name="activate" handler="on_btn_lut_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="btn_custom_hsl">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Custom HSL</property>
+                        <signal name="activate" handler="on_btn_custom_hsl_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>

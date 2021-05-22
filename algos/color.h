@@ -58,4 +58,8 @@ void update_gradient_preview(int ra, int ga, int ba, int rb, int gb, int bb);
 void gradient_colorize(SDL_Surface *surface, 
         int ra, int ga, int ba, int rb, int gb, int bb);
 
+void three_input_gradient_preview
+    (int ra, int ga, int ba, int rb, int gb, int bb,
+    int rc, int gc, int bc, char *path);
+
 #endif
