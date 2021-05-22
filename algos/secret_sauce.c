@@ -444,3 +444,23 @@ void black_hole(SDL_Surface *surface, Uint8 *color, double factor)
 
     SDL_UnlockSurface(surface);
 }
+
+void old_tv(SDL_Surface* original)
+{
+    SDL_Surface *tmp = create_surface(original->w, original->h);
+
+    for (int i = 0; i < original->w; ++i)
+    {
+        for (int j = 0; j < original->h; ++j)
+        {
+            Uint32 pixel = get_pixel(original, i, j);
+            Uint8 r, g, b, a;
+            SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
+            int new_index;
+            new_index = (j + 3) % original->h;
+            set_pixel(tmp, r, g, b, a, i, new_index);
+        }
+    }
+    copy_surface(tmp, original);
+    SDL_FreeSurface(tmp);
+}
