@@ -461,70 +461,30 @@ void symmetry(SDL_Surface* original, int y_axis, int direction)
     }
 }
 
-void offset(SDL_Surface* original, int amount, int direction, int orientation)
+void offset(SDL_Surface* original, int amount, int axis)
 {
     SDL_Surface *tmp = create_surface(original->w, original->h);
-    int limit_i, limit_j;
-    if (!direction)
-    {
-        if (orientation)
-        {
-            limit_j = original->h;
-            limit_i = original->w;
-        }
-        else
-        {
-            limit_j = original->w;
-            limit_i = original->h;
-        }
-        for (int i = 0; i < limit_i; i++)
-        {
-            for (int j = 0; j < limit_j; j++)
-            {
-                Uint32 pixel = get_pixel(original, i, j);
-                Uint8 r, g, b, a;
-                SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
-                if (!orientation)
-                {
-                    set_pixel(tmp, r, g, b, a, i, (j + amount) % (limit_j -
-                1));
-                }
-                else
-                {
-                    set_pixel(tmp, r, g, b, a, (j + amount) % (limit_j -
-                                                                  1), i);
-                }
-            }
-        }
-    }
-    else
-    {
-        int start_i, start_j;
-        limit_j = 0;
-        limit_i = 0;
-        if (orientation)
-        {
-            start_i = original->h;
-            start_j = original->w;
 
-        }
-        else
+    for (int i = 0; i < original->w; ++i)
+    {
+        for (int j = 0; j < original->h; ++j)
         {
-            start_i = original->w;
-            start_j = original->h;
-       }
-        for (int i = start_i; i > limit_i; --i)
-        {
-            for (int j = start_j; j > limit_j; --j)
+            Uint32 pixel = get_pixel(original, i, j);
+            Uint8 r, g, b, a;
+            SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
+            int new_index;
+            if (axis)
             {
-                Uint32 pixel = get_pixel(original, i, j);
-                Uint8 r, g, b, a;
-                SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
-                int step = j - amount;
-                if (step < 0)
-                    step = limit_j - amount;
-                set_pixel(tmp, r, g, b, a, i, step);
+                new_index = (j + amount) % original->h;
+                int temp = new_index;
+                new_index = i;
+                j = temp;
             }
+            else
+            {
+                new_index = (i + amount) % original->w;
+            }
+            set_pixel(tmp, r, g, b, a, new_index, j);
         }
     }
     copy_surface(tmp, original);
