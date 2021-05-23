@@ -1,5 +1,23 @@
 #include "canny_edge_detector.h"
 
+void histogram(SDL_Surface *org, int histogram[256])
+{
+    for (int i = 0; i < 256; ++i)
+    {
+        histogram[i] = 0;
+    }
+    for (int i = 0; i < org->w; ++i)
+    {
+        for (int j = 0; j < org->h; ++j)
+        {
+            Uint8 r, g, b;
+            Uint32 pix = get_pixel(org, i, j);
+            SDL_GetRGB(pix, org->format, &r, &g, &b);
+            histogram[r] += 1;
+        }
+    }
+}
+
 void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy
         ,int x, int y, gsl_matrix* ker)
 {
@@ -73,8 +91,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     copy_surface(surface, copy);
     // Preprocessing (noise reduction)
     grayscale(copy);
-    gaussian_blur(copy, 7);
-    //savePNG("blur.PNG", copy);
+    median_blur(copy, 13);
+    savePNG("blur.PNG", copy);
 
     // Definition of Gradient kernels
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
@@ -204,14 +222,57 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
         }
     }
     //savePNG("nonmax.PNG", nonmax);
+    // Otsu thresholding
+    int histo[256];
+    int total_p = nonmax->w * nonmax->h;
 
-    const double maxratio = 0.25;
-    const double lowratio = 0.15;
+    histogram(nonmax, histo);
+
+    int sum = 0;
+
+    int maxratio = 0;
+    int var_max = 0;
+    int sumB = 0;
+    int q1 = 0;
+    int q2;
+    int mu1;
+    int mu2;
+
+    for (int i = 0; i < 256; i++)
+    {
+        sum += i * histo[i];
+    }
+
+    for (int t = 0; t < 256; t++)
+    {
+        q1 += histo[t];
+        if (!q1)
+            continue;
+        q2 = total_p - q1;
+        if (!q2)
+            break;
+        sumB += t * histo[t];
+        mu1 = sumB / q1;
+        mu2 = (sum - sumB) / q2;
+        int diff = mu1 - mu2;
+
+        int sigma = q1 * q2 * diff*diff;
+
+        if (sigma > var_max)
+        {
+            maxratio = t;
+            var_max = sigma;
+        }
+    }
+    maxratio = (int) ((double)maxratio * 0.60);
+    int lowratio = (int)(((double)maxratio / 2) * 0.75);
 
     /*Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
     Uint8 lowthreshold = (Uint8)((double)maxp * lowratio);*/
     // Hysterisis
     SDL_Surface* dualthresh = create_surface(surface->w, surface->h);
+
+    printf("%i %i\n", maxratio, lowratio);
 
     for(int i = 0; i < nonmax->w; i++)
     {
@@ -220,10 +281,10 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             Uint8 r, g, b;
             Uint32 pixel = get_pixel(nonmax, i, j);
             SDL_GetRGB(pixel, nonmax->format, &r, &g, &b);
-            if ((double)r/255.0 > maxratio)
+            if (r > maxratio)
                 set_pixel(dualthresh, 255, 255,
                           255, 1, i, j);
-            else if ((double)r/255.0 < lowratio)
+            else if (r < lowratio)
                 set_pixel(dualthresh, 0, 0, 0, 1, i, j);
             else
                 set_pixel(dualthresh, r, g, b, 1, i, j);
