@@ -107,4 +107,13 @@ SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h);
 SDL_Surface* zoom(SDL_Surface* original, double factor);
 // scale the image to the size w, h by streching it.
 SDL_Surface* scale_strech(SDL_Surface *surface, int w, int h);
+
+// Symmetry function, second param is choice for axis (1 for y axis, 0 for x)
+// third param is bool to change direction
+void symmetry(SDL_Surface* original, int y_axis, int direction);
+
+// offset image from left to right (like caml) by default, bool axis for top
+// to bottom by int amount
+void offset(SDL_Surface* original, int amount, int axis);
+
 #endif

@@ -2,10 +2,12 @@
 #include <stdio.h>
 #include <err.h>
 #include "unsharp_masking.h"
+#include "basic.h"
 #include "blurs.h"
 #include "utility.h"
 
-SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
+SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold, int
+contrast_value)
 {
     if (surface == NULL)
         goto error;
@@ -15,6 +17,9 @@ SDL_Surface* sharpen(SDL_Surface *surface, double force, int threshold)
 
     SDL_Surface* org = create_surface(surface->w, surface->h);
     copy_surface(surface, org);
+
+    contrast(org, contrast_value);
+
     if (org == NULL)
         goto error;
     gaussian_blur(org, 5);

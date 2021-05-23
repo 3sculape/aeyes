@@ -6,9 +6,9 @@
 #include "blurs.h"
 #include <stdio.h>
 #include <err.h>
-#include "blurs.h"
 #include "../utils/lib_sdl.h"
 #include "basic.h"
+#include "blurs.h"
 #include <math.h>
 
 void convolve_around_pixel(SDL_Surface *surface,SDL_Surface* copy

@@ -3,6 +3,9 @@
 #include <gsl/gsl_matrix.h>
 #include <stdio.h>
 #include <math.h>
+#include <SDL2/SDL.h>
+#include "../utils/lib_sdl.h"
+#include "basic.h"
 
 /*
     Prints the matrix passed as argument
@@ -48,5 +51,7 @@ double blerp(double a, double b, double c, double d, double tx, double ty);
     <t>: the double on which to apply fading
 */
 double fade(double t);
+
+int otsu_threshold(SDL_Surface* org);
 
 #endif
