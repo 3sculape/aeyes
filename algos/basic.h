@@ -31,6 +31,18 @@ void grayscale(SDL_Surface *surface);
 void negative(SDL_Surface *surface);
 
 /*
+    Colorization of the image. Each pixel is converted to
+    the color defined by the triplet {ra, ga, ba}. If
+    <keep_luminance> is set, each pixel will keep its
+    original L value.
+    <surface>: the surface to be processed
+    <threshold>: the threshold for binarization
+    {ra, ga, ba}: a standard RGB color
+    <keep_luminance>: a boolean
+*/
+void colorize(SDL_Surface *surface, int ra, int ga, int ba, int keep_luminance);
+
+/*
     Image clipping. Turn all fully white pixels into red, and turn
     all fully black pixels into blue.
     <surface>: the surface to be processed

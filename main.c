@@ -23,6 +23,7 @@
 #include "algos/noise.h"
 #include "algos/canny_edge_detector.h"
 #include "algos/seam_carving.h"
+#include "algos/binarize.h"
 
 
 SDL_Window *sdl_window;
