@@ -91,8 +91,8 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     copy_surface(surface, copy);
     // Preprocessing (noise reduction)
     grayscale(copy);
-    median_blur(copy, 13);
-    savePNG("blur.PNG", copy);
+    median_blur(copy, 11);
+    //savePNG("blur.PNG", copy);
 
     // Definition of Gradient kernels
     gsl_matrix* Gx = gsl_matrix_calloc(3, 3);
@@ -229,7 +229,6 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
     histogram(nonmax, histo);
 
     int sum = 0;
-
     int maxratio = 0;
     int var_max = 0;
     int sumB = 0;
@@ -264,15 +263,11 @@ SDL_Surface* canny_fnc(SDL_Surface *surface)
             var_max = sigma;
         }
     }
-    maxratio = (int) ((double)maxratio * 0.60);
-    int lowratio = (int)(((double)maxratio / 2) * 0.75);
+    maxratio = (int) ((double)maxratio * 0.72);
+    int lowratio = maxratio / 2;
 
-    /*Uint8 highthreshold = (Uint8)((double)maxp * maxratio);
-    Uint8 lowthreshold = (Uint8)((double)maxp * lowratio);*/
     // Hysterisis
     SDL_Surface* dualthresh = create_surface(surface->w, surface->h);
-
-    printf("%i %i\n", maxratio, lowratio);
 
     for(int i = 0; i < nonmax->w; i++)
     {
