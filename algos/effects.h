@@ -10,4 +10,6 @@ void swirl(SDL_Surface *surface, double factor);
 // factor value between 0 and 10 are the most pertinent
 void twist(SDL_Surface *surface, double factor);
 
+SDL_Surface *perspective(SDL_Surface *surface, SDL_Point **src, SDL_Point **dst);
+
 #endif /* EFFECTS_H */
