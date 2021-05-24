@@ -436,7 +436,7 @@ void box_blur(SDL_Surface *surface, int x)
 
     SDL_Surface *surface2 = SDL_CreateRGBSurfaceWithFormat(0,
             surface->w, surface->h, 32, surface->format->format);
-    Uint32 *matrix = (Uint32 *)malloc(sizeof(Uint32) * x * x);
+/*    Uint32 *matrix = (Uint32 *)malloc(sizeof(Uint32) * x * x);
     for(int j = 0; j < surface->h; j++)
     {
         for(int i = 0; i < surface->w; i++)
@@ -447,7 +447,30 @@ void box_blur(SDL_Surface *surface, int x)
             set_pixel(surface2, r, g, b, a, i, j);
         }
     }
-    free(matrix);
+    free(matrix);*/
+    Uint32 *rect = (Uint32 *)malloc(sizeof(Uint32) * x);
+    for(int j = 0; j < surface->h; j++)
+    {
+        for(int i = 0; i < surface->w; i++)
+        {
+            Uint8 r, g, b, a;
+            get_pixel_rect(surface, rect, i, j, x, 0);
+            get_average_rect(surface, rect, &r, &g, &b, &a, x);
+            set_pixel(surface2, r, g, b, a, i , j);
+        }
+    }
+
+    for(int j = 0; j < surface->h; j++)
+    {
+        for(int i = 0; i < surface->w; i++)
+        {
+            Uint8 r, g, b, a;
+            get_pixel_rect(surface, rect, i, j, x, 1);
+            get_average_rect(surface, rect, &r, &g, &b, &a, x);
+            set_pixel(surface2, r, g, b, a, i , j);
+        }
+    }
+    free(rect);
     copy_surface(surface2, surface);
     SDL_FreeSurface(surface2);
     SDL_UnlockSurface(surface);

@@ -37,6 +37,12 @@ double lerp(double a, double b, double w)
     return w * a + (1 - w) * b;
 }
 
+double blerp(double a, double b, double c, double d, double tx, double ty)
+{
+	double x = lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
+	return x;
+}
+
 double fade(double t) 
 {
     return t * t * t * (t * (t * 6 - 15) + 10);

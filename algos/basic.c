@@ -1,4 +1,5 @@
 #include "basic.h"
+#include "utility.h"
 
 void grayscale(SDL_Surface *surface)
 {
@@ -23,7 +24,8 @@ void grayscale(SDL_Surface *surface)
     SDL_UnlockSurface(surface);
 }
 
-void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, int rb, int gb, int bb)
+void binarization(SDL_Surface *surface, Uint32 threshold, int ra, int ga,
+int ba, int rb, int gb, int bb)
 {
     if (SDL_LockSurface(surface) != 0)
     {
@@ -36,9 +38,11 @@ void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, i
         for (int j = 0; j < surface -> h; j++)
         {
             Uint8 r, g, b, a;
+            Uint32 average;
             Uint32 pixel = get_pixel(surface, i, j);
             SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
-            if ((r + g + b) / 3 > threshold)
+            average = (r + g + b) / 3;
+            if (average > threshold)
             {
                 r = ra;
                 g = ga;
@@ -188,7 +192,7 @@ void saturation(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[1] += value * (hsv[1] / 100);
-            clamp(hsv[1], 0, 100);
+            hsv[1] = clamp(hsv[1], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -221,7 +225,7 @@ void exposure(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[2] += value * (hsv[2] / 100);
-            clamp(hsv[2], 0, 100);
+            hsv[2] = clamp(hsv[2], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -405,4 +409,70 @@ SDL_Surface* zoom(SDL_Surface* original, double factor)
     SDL_Surface *res = crop_from_center(tmp, original->w, original->h);
     SDL_FreeSurface(tmp);
     return res;
+}
+
+SDL_Surface* scale_strech(SDL_Surface *img, int w, int h)
+{
+	SDL_Surface *simg = SDL_CreateRGBSurface(
+			SDL_SWSURFACE,
+			w,
+			h,
+			img->format->BitsPerPixel,
+			img->format->Rmask,
+			img->format->Gmask,
+			img->format->Bmask,
+			img->format->Amask
+			);
+
+	for(int x = 0; x < w; x++)
+	{
+		for(int y = 0; y < h; y++)
+		{
+			float gx = ((float)x) / ((float)w) * (((float)img->w) - 1);
+			float gy = ((float)y) / ((float)h) * (((float)img->h) - 1);
+			int gxi = (int)gx;
+			int gyi = (int)gy;
+
+			Uint32 pixel1 = get_pixel(img, gxi, gyi);
+			Uint32 pixel2 = get_pixel(img, gxi + 1, gyi);
+			Uint32 pixel3 = get_pixel(img, gxi, gyi + 1);
+			Uint32 pixel4 = get_pixel(img, gxi + 1, gyi + 1);
+
+			Uint8 r1, r2, r3, r4;
+			Uint8 g1, g2, g3, g4;
+			Uint8 b1, b2, b3, b4;
+            Uint8 a;
+			
+			SDL_GetRGBA(pixel1, img->format, &r1, &g1, &b1, &a);
+			SDL_GetRGB(pixel2, img->format, &r2, &g2, &b2);
+			SDL_GetRGB(pixel3, img->format, &r3, &g3, &b3);
+			SDL_GetRGB(pixel4, img->format, &r4, &g4, &b4);
+
+			int r = (int)blerp(
+					(float)r1, 
+					(float)r2, 
+					(float)r3, 
+					(float)r4,
+					gx - (float)gxi,
+					gy - (float)gyi);
+			int g = (int)blerp(
+					(float)g1, 
+					(float)g2, 
+					(float)g3, 
+					(float)g4,
+					gx - (float)gxi,
+					gy - (float)gyi);
+			int b = (int)blerp(
+					(float)b1, 
+					(float)b2, 
+					(float)b3, 
+					(float)b4,
+					gx - (float)gxi,
+					gy - (float)gyi);
+
+            set_pixel(simg, r, g, b, a, x, y);
+		}
+	}
+
+	return simg;
 }

@@ -40,6 +40,8 @@ double distance(int ax, int ay, int bx, int by);
 */
 double lerp(double a, double b, double w);
 
+double blerp(double a, double b, double c, double d, double tx, double ty);
+
 /*
     Fade function as defined by Ken Perlin:
     f(t) = 6t^5 - 15t^4 + 10t^3

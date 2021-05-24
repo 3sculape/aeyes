@@ -35,7 +35,8 @@ void *gdk_window;
 void *window_id;
 stack *undo_stack;
 stack *redo_stack;
-
+int lastx = -1;
+int lasty = -1;
 // ----- USER DATA STRUCT ----- //
 
 typedef struct {
@@ -867,6 +868,7 @@ int main(int argc, char *argv[])
 
 
 
+    widgets->image_path = NULL;
     widgets->texture = NULL;
     undo_stack = malloc(sizeof(stack));
     redo_stack = malloc(sizeof(stack));
@@ -936,6 +938,7 @@ int main(int argc, char *argv[])
     gtk_widget_set_sensitive(widgets->w_btn_surface_blur, FALSE);
 
     gtk_builder_connect_signals(builder, widgets);
+    //gtk_widget_set_events(widgets->w_image_window, GDK_BUTTON_PRESS_MASK);
 
     g_object_unref(builder);
 
@@ -995,16 +998,35 @@ void on_window_main_destroy()
 
 
 
+void draw_da(GtkWidget *da __attribute__((unused)), cairo_t *cr,
+        app_widgets *app_wdgts)
+{
+    GdkPixbuf *pix;
+    GError *err = NULL;
+    if(app_wdgts->image_path == NULL)
+        return;
+    pix = gdk_pixbuf_new_from_file("./tmp.png", &err);
+
+    gdk_cairo_set_source_pixbuf(cr, pix, 0, 0);
+    cairo_paint(cr);
+}
 
 void update_image(SDL_Surface *surface, app_widgets *app_wdgts)
 {
+    lastx = -1;
+    lasty = -1;
     savePNG("./tmp.png", surface);
     push_stack(undo_stack, app_wdgts->texture);
     clear_stack_text(redo_stack);
     app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+    /*gtk_widget_set_size_request(app_wdgts->w_image_window, surface->w,
+            surface->h);
+    gtk_widget_queue_draw_area(app_wdgts->w_image_window, 0, 0, surface->w,
+            surface->h); */
     //show_l_histo(surface);
-    //gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
+                    "./tmp.png");
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
     histo_color(surface);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
             "./new_histo.PNG");
@@ -1055,11 +1077,22 @@ void put_string1(char string[], char dest[])
     }
 }
 
+void on_button_pressed_da(GtkWidget* widgets __attribute__((unused)),
+        GdkEventButton *event, app_widgets *app_wdgts)
+{
+    if(app_wdgts->image_path == NULL)
+        return;
+    
+    if(event->button == GDK_BUTTON_PRIMARY)
+    {
+        int w, h;
+        SDL_QueryTexture(app_wdgts->texture, NULL, NULL, &w, &h);
+        lastx = (int)clamp(event->x, 0, w - 1);
+        lasty = (int)clamp(event->y, 0, h - 1);
+    }
 
-
-
-
-
+    return;
+}
 
 
 
@@ -1081,16 +1114,19 @@ void on_btn_open_activate(GtkMenuItem *btn_open __attribute__((unused)),
             gtk_file_chooser_get_filename(
                     GTK_FILE_CHOOSER(app_wdgts->w_dlg_file_choose));
         if (app_wdgts->image_path != NULL) {
-            gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
-                    app_wdgts->image_path);
 
+            clear_stack_text(undo_stack);
+            clear_stack_text(redo_stack);
             SDL_Surface *surface = load(app_wdgts->image_path);
+            savePNG("./tmp.png", surface);
+
             app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
+            /* gtk_widget_set_size_request(app_wdgts->w_image_window, surface->w,
+                    surface->h); */
+            
+            gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
+                    "./tmp.png");
 
-
-
-            //show_l_histo(surface);
-            //gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./l_histo.PNG");
             histo_color(surface);
             gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),
                     "./new_histo.PNG");
@@ -2367,10 +2403,16 @@ void on_btn_luminance_hsl_clicked(GtkButton *button __attribute__((unused)),
 void on_btn_undo_all_activate(GtkMenuItem *button __attribute__((unused)),
         app_widgets *app_wdgts)
 {
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
-            app_wdgts->image_path);
-
     SDL_Surface *surface = load(app_wdgts->image_path);
+    savePNG("./tmp.png", surface);
+    /* gtk_widget_set_size_request(app_wdgts->w_image_window, surface->w,
+            surface->h);
+    gtk_widget_queue_draw_area(app_wdgts->w_image_window, 0, 0, surface->w,
+            surface->h); */
+
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
+                    "./tmp.png");
+
     app_wdgts->texture = surface_to_texture(surface, sdl_renderer);
 
     histo_color(surface);
@@ -2411,12 +2453,19 @@ void on_btn_undo_activate(GtkMenuItem *button __attribute__((unused)),
 {
     if(stack_isempty(undo_stack))
         return;
+    lastx = -1;
+    lasty = -1;
     SDL_Texture *texture = pop_stack(undo_stack);
     push_stack(redo_stack, app_wdgts->texture);
     app_wdgts->texture = texture;
     SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
     savePNG("./tmp.png", surface);
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+    /* gtk_widget_set_size_request(app_wdgts->w_image_window, surface->w,
+            surface->h);
+    gtk_widget_queue_draw_area(app_wdgts->w_image_window, 0, 0, surface->w,
+            surface->h); */
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
+                    "./tmp.png");
     histo_color(surface);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
 
@@ -2454,12 +2503,19 @@ void on_btn_redo_activate(GtkMenuItem *button __attribute__((unused)),
 {
     if(stack_isempty(redo_stack))
         return;
+    lastx = -1;
+    lasty = -1;
     SDL_Texture *texture = pop_stack(redo_stack);
     push_stack(undo_stack, app_wdgts->texture);
     app_wdgts->texture = texture;
     SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
     savePNG("./tmp.png", surface);
-    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
+    /* gtk_widget_set_size_request(app_wdgts->w_image_window, surface->w,
+            surface->h);
+    gtk_widget_queue_draw_area(app_wdgts->w_image_window, 0, 0, surface->w,
+            surface->h); */
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window),
+                    "./tmp.png");
     histo_color(surface);
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
 
