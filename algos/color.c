@@ -236,3 +236,49 @@ void gradient_colorize(SDL_Surface *surface,
     }
 
 }
+
+
+
+
+
+void three_input_gradient_preview
+    (int ra, int ga, int ba, int rb, int gb, int bb,
+    int rc, int gc, int bc, char *path)
+{
+    SDL_Surface* gradient = create_surface(256, 40);
+    int a_factor = 255;
+    int b_factor = 0;
+
+    Uint8 r, g, b, a;
+    a = 1;
+
+    for (int i = 0; i < 128; i++)
+    {
+        r = (((a_factor - i*2)*ra) + ((b_factor + i*2)*rb))/255;
+        g = (((a_factor - i*2)*ga) + ((b_factor + i*2)*gb))/255;
+        b = (((a_factor - i*2)*ba) + ((b_factor + i*2)*bb))/255;
+
+        for (int j = 0; j < 40; j++)
+        {
+            set_pixel(gradient, r, g, b, a, i, j);
+        }
+        
+    }
+
+    for (int i = 128; i < 256; i++)
+    {
+        r = (((a_factor - ((i-128)*2))*rb) + ((b_factor + ((i-128)*2))*rc))/255;
+        g = (((a_factor - ((i-128)*2))*gb) + ((b_factor + ((i-128)*2))*gc))/255;
+        b = (((a_factor - ((i-128)*2))*bb) + ((b_factor + ((i-128)*2))*bc))/255;
+
+        for (int j = 0; j < 40; j++)
+        {
+            set_pixel(gradient, r, g, b, a, i, j);
+        }
+        
+    }
+    
+    savePNG(path, gradient);
+    SDL_FreeSurface(gradient);
+
+}
