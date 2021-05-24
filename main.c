@@ -1845,10 +1845,7 @@ void on_btn_apply_binarization_clicked(
             GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    //binarization(surface, (Uint8)quantity, ra, ga, ba, rb, gb, bb);
-    Uint8 white[3] = {0, 0, 0};
-    Uint8 black[3] = {255, 255, 255};
-    gaussian_binarization(surface, 3, 1, black, white);
+    binarization(surface, (Uint8)quantity, ra, ga, ba, rb, gb, bb);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
@@ -2378,7 +2375,7 @@ void on_btn_apply_h_red_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_red_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, RED, quantity);
+    tsl_hue(surface, RED, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2390,7 +2387,7 @@ void on_btn_apply_h_orange_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_orange_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, ORANGE, quantity);
+    tsl_hue(surface, ORANGE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2402,7 +2399,7 @@ void on_btn_apply_h_yellow_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_yellow_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, YELLOW, quantity);
+    tsl_hue(surface, YELLOW, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2414,7 +2411,7 @@ void on_btn_apply_h_green_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_green_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, GREEN, quantity);
+    tsl_hue(surface, GREEN, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2426,7 +2423,7 @@ void on_btn_apply_h_bluegreen_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_bluegreen_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, TEAL, quantity);
+    tsl_hue(surface, TEAL, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2438,7 +2435,7 @@ void on_btn_apply_h_blue_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_blue_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, BLUE, quantity);
+    tsl_hue(surface, BLUE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2450,7 +2447,7 @@ void on_btn_apply_h_purple_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_purple_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, PURPLE, quantity);
+    tsl_hue(surface, PURPLE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2462,7 +2459,7 @@ void on_btn_apply_h_magenta_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_h_magenta_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_hue(surface, MAGENTA, quantity);
+    tsl_hue(surface, MAGENTA, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2477,7 +2474,7 @@ void on_btn_apply_s_red_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_red_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, RED, quantity);
+    tsl_sat(surface, RED, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2489,7 +2486,7 @@ void on_btn_apply_s_orange_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_orange_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, ORANGE, quantity);
+    tsl_sat(surface, ORANGE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2501,7 +2498,7 @@ void on_btn_apply_s_yellow_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_yellow_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, YELLOW, quantity);
+    tsl_sat(surface, YELLOW, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2513,7 +2510,7 @@ void on_btn_apply_s_green_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_green_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, GREEN, quantity);
+    tsl_sat(surface, GREEN, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2525,7 +2522,7 @@ void on_btn_apply_s_bluegreen_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_bluegreen_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, TEAL, quantity);
+    tsl_sat(surface, TEAL, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2537,7 +2534,7 @@ void on_btn_apply_s_blue_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_blue_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, BLUE, quantity);
+    tsl_sat(surface, BLUE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2549,7 +2546,7 @@ void on_btn_apply_s_purple_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_purple_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, PURPLE, quantity);
+    tsl_sat(surface, PURPLE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2561,7 +2558,7 @@ void on_btn_apply_s_magenta_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_s_magenta_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_sat(surface, MAGENTA, quantity);
+    tsl_sat(surface, MAGENTA, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2576,7 +2573,7 @@ void on_btn_apply_l_red_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_red_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, RED, quantity);
+    tsl_val(surface, RED, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2588,7 +2585,7 @@ void on_btn_apply_l_orange_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_orange_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, ORANGE, quantity);
+    tsl_val(surface, ORANGE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2600,7 +2597,7 @@ void on_btn_apply_l_yellow_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_yellow_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, YELLOW, quantity);
+    tsl_val(surface, YELLOW, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2612,7 +2609,7 @@ void on_btn_apply_l_green_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_green_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, GREEN, quantity);
+    tsl_val(surface, GREEN, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2624,7 +2621,7 @@ void on_btn_apply_l_bluegreen_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_bluegreen_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, TEAL, quantity);
+    tsl_val(surface, TEAL, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2636,7 +2633,7 @@ void on_btn_apply_l_blue_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_blue_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, BLUE, quantity);
+    tsl_val(surface, BLUE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2648,7 +2645,7 @@ void on_btn_apply_l_purple_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_purple_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, PURPLE, quantity);
+    tsl_val(surface, PURPLE, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
@@ -2660,7 +2657,7 @@ void on_btn_apply_l_magenta_clicked(GtkButton *button __attribute__((unused)),
     (app_wdgts->w_l_magenta_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    tsl_val(surface, MAGENTA, quantity);
+    tsl_val(surface, MAGENTA, quantity, 30);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 }
