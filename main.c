@@ -1325,7 +1325,7 @@ void on_btn_apply_sharpening_clicked(GtkButton *button __attribute__((unused)),
             GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    SDL_Surface *res = sharpen(surface, ((double)quantity)/100, 50);
+    SDL_Surface *res = sharpen(surface, ((double)quantity)/100, 50, 50);
     update_image(res, app_wdgts);
     SDL_FreeSurface(surface);
     SDL_FreeSurface(res);
@@ -1845,7 +1845,10 @@ void on_btn_apply_binarization_clicked(
             GTK_SPIN_BUTTON(app_wdgts->w_threshold_binarization_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    binarization(surface, (Uint8)quantity, ra, ga, ba, rb, gb, bb);
+    //binarization(surface, (Uint8)quantity, ra, ga, ba, rb, gb, bb);
+    Uint8 white[3] = {0, 0, 0};
+    Uint8 black[3] = {255, 255, 255};
+    gaussian_binarization(surface, 3, 1, black, white);
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 

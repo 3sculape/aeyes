@@ -54,4 +54,12 @@ double fade(double t);
 
 int otsu_threshold(SDL_Surface* org);
 
+void get_pixel_around_x(SDL_Surface *surface, Uint32 *matrix,
+        int posx, int posy, int x);
+
+gsl_matrix *gaussian_filter(int x, double sigma, double *sum);
+
+void gaussian_average(size_t x, double sum, Uint32 *matrix, gsl_matrix *filter,
+        SDL_Surface *surface, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a);
+
 #endif
