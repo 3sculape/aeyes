@@ -24,47 +24,11 @@ void grayscale(SDL_Surface *surface)
     SDL_UnlockSurface(surface);
 }
 
-void binarization(SDL_Surface *surface, int threshold, int ra, int ga, int ba, int rb, int gb, int bb)
-{
-    if (SDL_LockSurface(surface) != 0)
-    {
-        warnx("LockSurface fail in binarization");
-        return;
-    }
-
-    for (int i = 0; i < surface -> w; i++)
-    {
-        for (int j = 0; j < surface -> h; j++)
-        {
-            Uint8 r, g, b, a;
-            Uint32 pixel = get_pixel(surface, i, j);
-            SDL_GetRGBA(pixel, surface -> format, &r, &g, &b, &a);
-            if ((r + g + b) / 3 > threshold)
-            {
-                r = ra;
-                g = ga;
-                b = ba;
-            }
-
-            else
-            {
-                r = rb;
-                g = gb;
-                b = bb;
-            }
-
-            set_pixel(surface, r, g, b, a, i, j);
-        }
-    }
-
-    SDL_UnlockSurface(surface);
-}
-
 void colorize(SDL_Surface *surface, int ra, int ga, int ba, int keep_luminance)
 {
     if (SDL_LockSurface(surface) != 0)
     {
-        warnx("LockSurface fail in binarization");
+        warnx("LockSurface fail in colorize");
         return;
     }
 
@@ -189,7 +153,7 @@ void saturation(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[1] += value * (hsv[1] / 100);
-            clamp(hsv[1], 0, 100);
+            hsv[1] = clamp(hsv[1], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -222,7 +186,7 @@ void exposure(SDL_Surface *surface, double value)
             rgb_to_hsv(r, g, b, hsv);
 
             hsv[2] += value * (hsv[2] / 100);
-            clamp(hsv[2], 0, 100);
+            hsv[2] = clamp(hsv[2], 0, 100);
 
             hsv_to_rgb(hsv[0], hsv[1], hsv[2], rgb);
 
@@ -472,4 +436,91 @@ SDL_Surface* scale_strech(SDL_Surface *img, int w, int h)
 	}
 
 	return simg;
+}
+void symmetry(SDL_Surface* original, int y_axis, int direction)
+{
+    int limit_1, limit_2, offset_i, offset_j;
+    if (y_axis)
+    {
+        limit_1 = original->w / 2;
+        limit_2 = original->h;
+        offset_i = original->w;
+        offset_j = 0;
+    }
+    else
+    {
+        limit_1 = original->w;
+        limit_2 = original->h / 2;
+        offset_i = 0;
+        offset_j = original->h;
+    }
+
+    if (!direction)
+    {
+        for (int i = 0; i < limit_1; i++)
+        {
+            for (int j = 0; j < limit_2; j++)
+            {
+                Uint8 r, g, b, a;
+                Uint32 pixel = get_pixel(original, i, j);
+                SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
+                set_pixel(original, r, g, b, a, abs(offset_i - i),abs(offset_j -
+                                                                      j));
+            }
+        }
+    }
+    else
+    {
+        if (offset_i)
+            limit_2 = 0;
+        else
+            limit_1 = 0;
+        for (int i = original->w - 1; i > limit_1; --i)
+        {
+            for (int j = original->h - 1; j > limit_2; --j)
+            {
+                Uint8 r, g, b, a;
+                Uint32 pixel = get_pixel(original, i, j);
+                SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
+                set_pixel(original, r, g, b, a, abs(offset_i / 2 - (i -
+                offset_i
+                / 2)), abs(offset_j / 2 - (j -
+                offset_j / 2)));
+            }
+        }
+    }
+}
+
+void offset(SDL_Surface* original, int amount, int axis)
+{
+    SDL_Surface *tmp = create_surface(original->w, original->h);
+    if (axis)
+    {
+        if (amount < 6)
+            amount = 6;
+    }
+    for (int i = 0; i < original->w; ++i)
+    {
+        for (int j = 0; j < original->h; ++j)
+        {
+            Uint32 pixel = get_pixel(original, i, j);
+            Uint8 r, g, b, a;
+            SDL_GetRGBA(pixel, original->format, &r, &g, &b, &a);
+            int new_index;
+            if (axis)
+            {
+                new_index = (j + amount) % original->h;
+                int temp = new_index;
+                new_index = i;
+                j = temp;
+            }
+            else
+            {
+                new_index = (i + amount) % original->w;
+            }
+            set_pixel(tmp, r, g, b, a, new_index, j);
+        }
+    }
+    copy_surface(tmp, original);
+    SDL_FreeSurface(tmp);
 }
