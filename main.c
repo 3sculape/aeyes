@@ -1758,34 +1758,7 @@ void on_btn_apply_crop_clicked(GtkButton *button __attribute__((unused)),
         (GTK_SPIN_BUTTON(app_wdgts->w_height_crop_spin_btn)));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    SDL_Point **src = malloc(4 * sizeof(SDL_Point));
-    SDL_Point **dst = malloc(4 * sizeof(SDL_Point));
-    src[0] = malloc(sizeof(SDL_Point));
-    src[0]->x = 0;
-    src[0]->y = 0;
-    src[1] = malloc(sizeof(SDL_Point));
-    src[1]->x = surface->w - 1;
-    src[1]->y = 0;
-    src[2] = malloc(sizeof(SDL_Point));
-    src[2]->x = 0;
-    src[2]->y = surface->h - 1;
-    src[3] = malloc(sizeof(SDL_Point));
-    src[3]->x = surface->w - 1;
-    src[3]->y = surface->h - 1;
-    dst[0] = malloc(sizeof(SDL_Point));
-    dst[0]->x = 10;
-    dst[0]->y = 20;
-    dst[1] = malloc(sizeof(SDL_Point));
-    dst[1]->x = surface->w - 50;
-    dst[1]->y = -50;
-    dst[2] = malloc(sizeof(SDL_Point));
-    dst[2]->x = -60;
-    dst[2]->y = surface->h - 100;
-    dst[3] = malloc(sizeof(SDL_Point));
-    dst[3]->x = surface->w + 60;
-    dst[3]->y = surface->h + 80;
-
-    SDL_Surface *res = perspective(surface, src, dst);
+    SDL_Surface *res = image_crop(surface, new_x, new_y, new_w, new_h);
     update_image(res, app_wdgts);
     SDL_FreeSurface(surface);
     SDL_FreeSurface(res);
