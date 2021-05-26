@@ -3235,21 +3235,19 @@ void on_btn_apply_noise_clicked(
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
 
-    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    double strength = (double)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_strength_noise_spin_btn)));
 
     if ((gtk_toggle_button_get_active  (
         GTK_TOGGLE_BUTTON(app_wdgts->w_uniform_noise_rd_btn)
     ))) // if uniform noise is on
     {
-        //noise(surface, strength);
-        printf("UNIFORM NOISE WITH STRENGTH OF: %d\n", strength);
+        gaussian_noise(surface, 6, strength);
     }
 
     else
     {
-        //noise(surface, strength);
-        printf("COLOR NOISE WITH STRENGTH OF: %d\n", strength);
+        color_noise(surface, 6, strength);
     }
 
     update_image(surface, app_wdgts);
