@@ -4,82 +4,13 @@
 #include "blurs.h"
 #include "utility.h"
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_randist.h>
 #include <math.h>
 
 typedef struct {
     int r[256], g[256], b[256];
     int n;
 } color_histo_t;
-
-void get_pixel_around_x(SDL_Surface *surface, Uint32 *matrix,
-        int posx, int posy, int x)
-{
-    for(int j = posy - (x - 1) / 2; j <= posy + (x - 1) / 2; j++)
-    {
-        for(int i = posx - (x - 1) / 2; i <= posx + (x - 1) / 2; i++)
-        {
-            if(j < 0)
-            {
-                if(i < 0)
-                {
-                    matrix[(j - posy + (x - 1) / 2) * x + i
-                        - posx + (x - 1) / 2] =
-                        get_pixel(surface, i + (x - 1) / 2, j + (x - 1) / 2);
-                }
-                else if(i >= surface->w)
-                {
-                    matrix[(j - posy + (x - 1) / 2) * x + i
-                        - posx + (x - 1) / 2] =
-                        get_pixel(surface, i - (x - 1) / 2, j + (x - 1) / 2);
-                }
-                else
-                {
-                    matrix[(j - posy + (x - 1) / 2) * x + i
-                        - posx + (x - 1) / 2] =
-                        get_pixel(surface, i, j + (x - 1) / 2);
-                }
-            }
-
-            else if(j >= surface->h)
-            {
-                if(i < 0)
-                {
-                    matrix[(j - posy + (x - 1) / 2) * x + i
-                        - posx + (x - 1) / 2] =
-                        get_pixel(surface, i + (x - 1) / 2, j - (x - 1) / 2);
-                }
-                else if(i >= surface->w)
-                {
-                    matrix[(j - posy + (x - 1) / 2) * x + i
-                        - posx + (x - 1) / 2] =
-                        get_pixel(surface, i - (x - 1) / 2, j - (x - 1) / 2);
-                }
-                else
-                {
-                    matrix[(j - posy + (x - 1) / 2) * x + i
-                        - posx + (x - 1) / 2] =
-                        get_pixel(surface, i, j - (x - 1) / 2);
-                }
-            }
-
-            else if(i < 0)
-            {
-                matrix[(j - posy + (x - 1) / 2) * x + i - posx + (x - 1) / 2] =
-                    get_pixel(surface, i + (x - 1) / 2, j);
-            }
-            else if(i >= surface->w)
-            {
-                matrix[(j - posy + (x - 1) / 2) * x + i - posx + (x - 1) / 2] =
-                    get_pixel(surface, i - (x - 1) / 2, j);
-            }
-            else
-            {
-                matrix[(j - posy + (x - 1) / 2) * x + i - posx + (x - 1) / 2] =
-                    get_pixel(surface, i, j);
-            }
-        }
-    }
-}
 
 void get_pixel_rect(SDL_Surface *surface, Uint32 *rect, int posx, int posy,
         int x, int hor)
@@ -286,27 +217,6 @@ void get_average_rect(SDL_Surface *surface, Uint32 *rect, Uint8 *r, Uint8 *g,
     *b = totb;
 }
 
-gsl_matrix *gaussian_filter(int x, double sigma, double *sum)
-{
-    gsl_matrix *matrix = gsl_matrix_calloc(x, x);
-    *sum = 0;
-
-    for(int j = -1 * (x - 1) / 2; j <= (x - 1) / 2; j++)
-    {
-        for(int i = -1 * (x - 1) / 2; i <= (x - 1) / 2; i++)
-        {
-            double d;
-            d = exp(-1 * (double)(i * i + j * j) / (2 * sigma * sigma)) /
-                sqrt(2 * sigma * sigma * M_PI);
-            gsl_matrix_set(matrix, (size_t)(i + (x - 1) / 2),
-                    (size_t)(j + (x - 1) / 2), d);
-            *sum += d;
-        }
-    }
-
-    return matrix;
-}
-
 gsl_vector *gaussian_filter_rect(int x, double sigma, double *sum)
 {
     gsl_vector *rect = gsl_vector_calloc(x);
@@ -322,35 +232,6 @@ gsl_vector *gaussian_filter_rect(int x, double sigma, double *sum)
     }
 
     return rect;
-}
-
-void gaussian_average(size_t x, double sum, Uint32 *matrix, gsl_matrix *filter,
-        SDL_Surface *surface, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a)
-{
-    double rtot = 0;
-    double gtot = 0;
-    double btot = 0;
-    for(size_t j = 0; j < x; j++)
-    {
-        for(size_t i = 0; i < x; i++)
-        {
-            SDL_GetRGB(matrix[j * x + i], surface->format, r, g, b);
-            rtot += gsl_matrix_get(filter, i, j) * (double)(*r);
-            gtot += gsl_matrix_get(filter, i, j) * (double)(*g);
-            btot += gsl_matrix_get(filter, i, j) * (double)(*b);
-        }
-    }
-
-    SDL_GetRGBA(matrix[((x - 1) / 2) * x + (x - 1) / 2],
-            surface->format, r, g, b, a);
-
-    rtot /= sum;
-    gtot /= sum;
-    btot /= sum;
-
-    *r = (Uint8)rtot;
-    *g = (Uint8)gtot;
-    *b = (Uint8)btot;
 }
 
 void gaussian_average_rect(size_t x, double sum, Uint32 *rect,
@@ -619,7 +500,6 @@ void fast_gaussian_blur(SDL_Surface *surface, int x)
     Uint32 *rect = (Uint32 *)malloc(sizeof(Uint32) * x);
     double sum;
     gsl_vector *filter = gaussian_filter_rect(x, sigma, &sum);
-    printf("%f\n", sum);
     for(int j = 0; j < surface -> h; j++)
     {
         for(int i = 0; i < surface -> w; i++)
@@ -840,3 +720,74 @@ void surface_blur(SDL_Surface* surface, SDL_Surface* canny)
     SDL_FreeSurface(blurred);
     gsl_matrix_free(gaussian_filter);
 }
+
+void vignette_blur(SDL_Surface *surface, int max)
+{
+    if (SDL_LockSurface(surface) != 0)
+    {
+        warnx("LockSurface fail in vignette");
+        return;
+    }
+    int x;
+    double sum;
+    double sigma;
+    double strength;
+    Uint32 *rect = (Uint32 *)malloc(sizeof(Uint32) * max);
+    gsl_vector *filter;
+    SDL_Surface *surface2 = SDL_CreateRGBSurfaceWithFormat(0,
+            surface->w, surface->h, 32, surface->format->format);
+
+    size_t middle[2] = {surface -> w / 2, surface -> h / 2};
+    size_t max_dist = distance(0, 0, middle[0], middle[1]);
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+
+            double dist = distance(i, j, middle[0], middle[1]);
+            double rel_dist = max_dist - dist;
+            strength = gsl_ran_ugaussian_pdf(rel_dist / (max_dist / 4)) * 2.5;
+            x = strength * max;
+            if(x % 2 == 0)
+                x += 1;
+            sigma = sqrt((((x + 4) * (x + 4)) - 1) / 12);
+            filter = gaussian_filter_rect(x, sigma, &sum); 
+            get_pixel_rect(surface, rect, i, j, x, 1);
+            gaussian_average_rect(x, sum, rect, filter, surface, &r, &g, &b,
+                    &a);
+            set_pixel(surface2, r, g, b, a, i, j);
+            gsl_vector_free(filter);
+        }
+    }
+    copy_surface(surface2, surface);
+
+    for (int i = 0; i < surface -> w; i++)
+    {
+        for (int j = 0; j < surface -> h; j++)
+        {
+            Uint8 r, g, b, a;
+
+            double dist = distance(i, j, middle[0], middle[1]);
+            double rel_dist = max_dist - dist;
+            strength = gsl_ran_ugaussian_pdf(rel_dist / (max_dist / 4)) * 2.5;
+            x = strength * max;
+            if(x % 2 == 0)
+                x += 1;
+            sigma = sqrt((((x + 4) * (x + 4)) - 1) / 12);
+            filter = gaussian_filter_rect(x, sigma, &sum); 
+            get_pixel_rect(surface, rect, i, j, x, 0);
+            gaussian_average_rect(x, sum, rect, filter, surface, &r, &g, &b,
+                    &a);
+            set_pixel(surface2, r, g, b, a, i, j);
+            gsl_vector_free(filter);
+        }
+    }
+
+    copy_surface(surface2, surface);
+    
+    SDL_FreeSurface(surface2);
+    free(rect);
+    SDL_UnlockSurface(surface);
+}
+

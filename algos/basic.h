@@ -23,16 +23,12 @@
 void grayscale(SDL_Surface *surface);
 
 /*
-    Colored thresholding of the image. Each pixel strictly above
-    the threshold is set to {ra, ga, ba}, and the rest
-    is set to {rb, gb, bb}
+    Negative of the image. For each pixel, substract its current
+    red value from 255 to obtain its new red value, and repeat for
+    all colors.
     <surface>: the surface to be processed
-    <threshold>: the threshold for binarization
-    {ra, ga, ba}: the first RGB color (when > threshold)
-    {rb, gb, bb}: the first RGB color (when < threshold)
 */
-void binarization(SDL_Surface *surface, Uint32 threshold, int ra, int ga,
-int ba, int rb, int gb, int bb);
+void negative(SDL_Surface *surface);
 
 /*
     Colorization of the image. Each pixel is converted to
@@ -45,14 +41,6 @@ int ba, int rb, int gb, int bb);
     <keep_luminance>: a boolean
 */
 void colorize(SDL_Surface *surface, int ra, int ga, int ba, int keep_luminance);
-
-/*
-    Negative of the image. For each pixel, substract its current
-    red value from 255 to obtain its new red value, and repeat for
-    all colors.
-    <surface>: the surface to be processed
-*/
-void negative(SDL_Surface *surface);
 
 /*
     Image clipping. Turn all fully white pixels into red, and turn
@@ -119,4 +107,13 @@ SDL_Surface *crop_from_center(SDL_Surface* original, size_t w, size_t h);
 SDL_Surface* zoom(SDL_Surface* original, double factor);
 // scale the image to the size w, h by streching it.
 SDL_Surface* scale_strech(SDL_Surface *surface, int w, int h);
+
+// Symmetry function, second param is choice for axis (1 for y axis, 0 for x)
+// third param is bool to change direction
+void symmetry(SDL_Surface* original, int y_axis, int direction);
+
+// offset image from left to right (like caml) by default, bool axis for top
+// to bottom by int amount
+void offset(SDL_Surface* original, int amount, int axis);
+
 #endif
