@@ -70,6 +70,7 @@ typedef struct {
     GtkWidget *w_dlg_surface_blur;                // Pointer to surface blur dialog box
     GtkWidget *w_dlg_custom_hsl;                  // Pointer to custom HSL dialog box
     GtkWidget *w_dlg_perspective_transform;       // Pointer to perspective transform dialog box
+    GtkWidget *w_dlg_smart_resize;                // Pointer to the smart resiez dialog box
 
     //--- Windows --- //
     GtkWidget *w_image_window;                    // Pointer to image widget
@@ -139,6 +140,7 @@ typedef struct {
     GtkWidget *w_size_surface_blur_spin_btn;      // Pointer to strength of surface blur
     GtkWidget *w_strength_perspective_spin_btn;   // Pointer to strength of perspective
     GtkWidget *w_contrast_sharp_spin_btn;         // Pointer to contrast of sharpening
+    GtkWidget *w_quantity_smart_resize_spin_btn;  // Pointer to the quantity to remove of smart resize
     
 
     GtkWidget *w_height_crop_spin_btn;            // Pointer to new height crop Spin Button widget
@@ -188,6 +190,8 @@ typedef struct {
 
     GtkWidget *w_color_btn_a_gradient;            // Pointer to button color a of gradient colorize
     GtkWidget *w_color_btn_b_gradient;            // Pointer to button color b of gradient colorize
+    GtkWidget *w_color_btn_c_gradient;            // Pointer to button color c of gradient colorize
+
 
     GtkWidget *w_color_btn_vignette;              // Pointer to button color of vignette
 
@@ -284,6 +288,8 @@ typedef struct {
     GtkWidget *w_otsu_thresholding_rd_btn;       // Pointer to radio button Gaussian auto threshold binarization
 
     GtkWidget *w_uniform_noise_rd_btn;           // Pointer to radio button noise uniform
+
+    GtkWidget *w_gradient_transfer_bicolor_rd_btn; // Pointer to radio button gradient transfer bicolor
 
 
     //--- Toggle Buttons ---//
@@ -390,6 +396,8 @@ int main(int argc, char *argv[])
             "dlg_custom_hsl"));
     widgets->w_dlg_perspective_transform=GTK_WIDGET(gtk_builder_get_object(builder,
             "dlg_perspective_transform"));
+    widgets->w_dlg_smart_resize=GTK_WIDGET(gtk_builder_get_object(builder,
+            "dlg_smart_resize"));
 
 
             
@@ -534,6 +542,8 @@ int main(int argc, char *argv[])
         GTK_WIDGET(gtk_builder_get_object(builder, "strength_sharp_spin_btn"));
     widgets->w_contrast_sharp_spin_btn =
         GTK_WIDGET(gtk_builder_get_object(builder, "contrast_sharp_spin_btn"));
+    widgets->w_quantity_smart_resize_spin_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder, "quantity_smart_resize_spin_btn"));
     widgets->w_size_mean_blur_spin_btn =
         GTK_WIDGET(gtk_builder_get_object(builder, "size_mean_blur_spin_btn"));
     widgets->w_size_median_blur_spin_btn =
@@ -620,6 +630,8 @@ int main(int argc, char *argv[])
             "color_btn_a_gradient"));
     widgets->w_color_btn_b_gradient = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_b_gradient"));
+    widgets->w_color_btn_c_gradient = GTK_WIDGET(gtk_builder_get_object(builder,
+            "color_btn_c_gradient"));
     widgets->w_color_btn_vignette = GTK_WIDGET(gtk_builder_get_object(builder,
             "color_btn_vignette"));
     
@@ -845,6 +857,11 @@ int main(int argc, char *argv[])
     
     widgets->w_uniform_noise_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "uniform_noise_rd_btn"));
+        
+    widgets->w_gradient_transfer_bicolor_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "gradient_transfer_bicolor_rd_btn"));
+    
+    
     
 
     
@@ -934,7 +951,7 @@ int main(int argc, char *argv[])
     gtk_widget_set_sensitive(widgets->w_btn_sav, FALSE);
 
 
-    gtk_widget_set_sensitive(widgets->w_btn_smart_resize, FALSE);
+    //gtk_widget_set_sensitive(widgets->w_btn_smart_resize, FALSE);
     gtk_widget_set_sensitive(widgets->w_btn_surface_blur, FALSE);
 
     gtk_builder_connect_signals(builder, widgets);
@@ -1466,7 +1483,7 @@ void on_btn_apply_sharpening_clicked(GtkButton *button __attribute__((unused)),
             GTK_SPIN_BUTTON(app_wdgts->w_contrast_sharp_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    SDL_Surface *res = sharpen(surface, ((double)quantity)/100, 50);
+    SDL_Surface *res = sharpen(surface, ((double)quantity)/100, contrast);
     update_image(res, app_wdgts);
     SDL_FreeSurface(surface);
     SDL_FreeSurface(res);
@@ -2921,7 +2938,8 @@ void on_btn_gradient_colorize_activate(GtkMenuItem *btn_open
     gtk_color_chooser_set_rgba (
         GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &black);
     gtk_color_chooser_set_rgba (
-        GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &white);
+        GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &white);
+    gtk_widget_set_sensitive(app_wdgts->w_color_btn_b_gradient, FALSE);
     gtk_widget_show(app_wdgts->w_dlg_gradient_colorize);
 }
 
@@ -2938,11 +2956,15 @@ void on_btn_apply_gradient_colorize_clicked(
     
     GdkRGBA colora;
     GdkRGBA colorb;
+    GdkRGBA colorc;
 
     gtk_color_chooser_get_rgba(
             GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
     gtk_color_chooser_get_rgba(
             GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &colorc);
+
 
     int ra= (int)((colora.red)*255);
     int ga= (int)((colora.green)*255);
@@ -2952,9 +2974,23 @@ void on_btn_apply_gradient_colorize_clicked(
     int gb= (int)((colorb.green)*255);
     int bb= (int)((colorb.blue)*255);
 
+    int rc= (int)((colorc.red)*255);
+    int gc= (int)((colorc.green)*255);
+    int bc= (int)((colorc.blue)*255);
+
     grayscale(surface);
 
-    gradient_colorize(surface, ra, ga, ba, rb, gb, bb);
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_gradient_transfer_bicolor_rd_btn)
+    ))) // if bicolor is on
+    {
+        gradient_colorize(surface, ra, ga, ba, rc, gc, bc);
+    }
+
+    else
+    {
+        three_input_gradient_colorize(surface, ra, ga, ba,rb, gb, bb, rc, gc, bc);
+    }
 
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
@@ -2968,11 +3004,15 @@ void on_color_btn_a_gradient_color_set(
 {
     GdkRGBA colora;
     GdkRGBA colorb;
+    GdkRGBA colorc;
 
     gtk_color_chooser_get_rgba(
             GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
     gtk_color_chooser_get_rgba(
             GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &colorc);
+
 
     int ra= (int)((colora.red)*255);
     int ga= (int)((colora.green)*255);
@@ -2982,7 +3022,23 @@ void on_color_btn_a_gradient_color_set(
     int gb= (int)((colorb.green)*255);
     int bb= (int)((colorb.blue)*255);
 
-    update_gradient_preview(ra, ga, ba, rb, gb, bb);
+    int rc= (int)((colorc.red)*255);
+    int gc= (int)((colorc.green)*255);
+    int bc= (int)((colorc.blue)*255);
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_gradient_transfer_bicolor_rd_btn)
+    ))) // if bicolor is on
+    {
+        update_gradient_preview(ra, ga, ba, rc, gc, bc);
+    }
+
+    else
+    {
+        three_input_gradient_preview
+        (ra,ga,ba,rb,gb,bb,rc,gc,bc, "./gradient.png");
+    }
+
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
         "./gradient.png");
 }
@@ -2992,11 +3048,15 @@ void on_color_btn_b_gradient_color_set(
 {
     GdkRGBA colora;
     GdkRGBA colorb;
+    GdkRGBA colorc;
 
     gtk_color_chooser_get_rgba(
             GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
     gtk_color_chooser_get_rgba(
             GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &colorc);
+
 
     int ra= (int)((colora.red)*255);
     int ga= (int)((colora.green)*255);
@@ -3006,13 +3066,165 @@ void on_color_btn_b_gradient_color_set(
     int gb= (int)((colorb.green)*255);
     int bb= (int)((colorb.blue)*255);
 
-    update_gradient_preview(ra, ga, ba, rb, gb, bb);
+    int rc= (int)((colorc.red)*255);
+    int gc= (int)((colorc.green)*255);
+    int bc= (int)((colorc.blue)*255);
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_gradient_transfer_bicolor_rd_btn)
+    ))) // if bicolor is on
+    {
+        update_gradient_preview(ra, ga, ba, rc, gc, bc);
+    }
+
+    else
+    {
+        three_input_gradient_preview
+        (ra,ga,ba,rb,gb,bb,rc,gc,bc, "./gradient.png");
+    }
+
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
         "./gradient.png");
 }
 
 
+void on_color_btn_c_gradient_color_set(
+        GtkColorButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    GdkRGBA colora;
+    GdkRGBA colorb;
+    GdkRGBA colorc;
 
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &colorc);
+
+
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int rb= (int)((colorb.red)*255);
+    int gb= (int)((colorb.green)*255);
+    int bb= (int)((colorb.blue)*255);
+
+    int rc= (int)((colorc.red)*255);
+    int gc= (int)((colorc.green)*255);
+    int bc= (int)((colorc.blue)*255);
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_gradient_transfer_bicolor_rd_btn)
+    ))) // if bicolor is on
+    {
+        update_gradient_preview(ra, ga, ba, rc, gc, bc);
+    }
+
+    else
+    {
+        three_input_gradient_preview
+        (ra,ga,ba,rb,gb,bb,rc,gc,bc, "./gradient.png");
+    }
+
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
+        "./gradient.png");
+}
+
+
+void on_gradient_transfer_bicolor_rd_btn_clicked(
+    GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    GdkRGBA colora;
+    GdkRGBA colorb;
+    GdkRGBA colorc;
+
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &colorc);
+
+
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int rb= (int)((colorb.red)*255);
+    int gb= (int)((colorb.green)*255);
+    int bb= (int)((colorb.blue)*255);
+
+    int rc= (int)((colorc.red)*255);
+    int gc= (int)((colorc.green)*255);
+    int bc= (int)((colorc.blue)*255);
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_gradient_transfer_bicolor_rd_btn)
+    ))) // if bicolor is on
+    {
+        gtk_widget_set_sensitive(app_wdgts->w_color_btn_b_gradient, FALSE);
+        update_gradient_preview(ra, ga, ba, rc, gc, bc);
+    }
+
+    else
+    {
+        gtk_widget_set_sensitive(app_wdgts->w_color_btn_b_gradient, TRUE);
+        three_input_gradient_preview
+        (ra,ga,ba,rb,gb,bb,rc,gc,bc, "./gradient.png");
+    }
+
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
+        "./gradient.png");
+}
+
+
+void on_gradient_transfer_tricolor_rd_btn_clicked(
+    GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+        GdkRGBA colora;
+    GdkRGBA colorb;
+    GdkRGBA colorc;
+
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_a_gradient), &colora);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_b_gradient), &colorb);
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &colorc);
+
+
+    int ra= (int)((colora.red)*255);
+    int ga= (int)((colora.green)*255);
+    int ba= (int)((colora.blue)*255);
+
+    int rb= (int)((colorb.red)*255);
+    int gb= (int)((colorb.green)*255);
+    int bb= (int)((colorb.blue)*255);
+
+    int rc= (int)((colorc.red)*255);
+    int gc= (int)((colorc.green)*255);
+    int bc= (int)((colorc.blue)*255);
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_gradient_transfer_bicolor_rd_btn)
+    ))) // if bicolor is on
+    {
+        gtk_widget_set_sensitive(app_wdgts->w_color_btn_b_gradient, FALSE);
+        update_gradient_preview(ra, ga, ba, rc, gc, bc);
+    }
+
+    else
+    {
+        gtk_widget_set_sensitive(app_wdgts->w_color_btn_b_gradient, TRUE);
+        three_input_gradient_preview
+        (ra,ga,ba,rb,gb,bb,rc,gc,bc, "./gradient.png");
+    }
+
+    gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_img_gradient_colorize),
+        "./gradient.png");
+}
 
 
 
@@ -3021,16 +3233,32 @@ void on_color_btn_b_gradient_color_set(
 void on_btn_smart_resize_activate(GtkMenuItem *btn_open 
         __attribute__((unused)), app_widgets *app_wdgts)
 {
-    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-    SDL_Surface *edge_map = canny_fnc(surface);
-    SDL_Surface *sobel = load("./hypot.PNG");
-    power_map(surface, sobel);
-
-    SDL_FreeSurface(surface);
-    SDL_FreeSurface(edge_map);
-    SDL_FreeSurface(sobel);
+    gtk_widget_show(app_wdgts->w_dlg_smart_resize);
 }
 
+void on_btn_cancel_smart_resize_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    gtk_widget_hide(app_wdgts->w_dlg_smart_resize);
+}
+
+void on_btn_apply_smart_resize_clicked(
+        GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
+{
+    int nb_lines = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_quantity_smart_resize_spin_btn)));
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    
+    SDL_Surface *sobel = seam_hypot(surface);
+    
+
+    SDL_Surface *res = power_map_new(surface, sobel, nb_lines);
+    update_image(res, app_wdgts);
+
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(res);
+    SDL_FreeSurface(sobel);
+}
 
 
 // -------- Vignette --------- //

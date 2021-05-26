@@ -14,8 +14,15 @@
 
 void power_map(SDL_Surface *surface, SDL_Surface *edge_map);
 
+SDL_Surface* power_map_new(SDL_Surface *surface, SDL_Surface *edge_map, int nb_to_remove);
+
 int min_three(int a, int b, int c);
 
+double min_three_double(double a, double b, double c);
+
 int min_two(int a, int b);
+
+
+SDL_Surface* seam_hypot(SDL_Surface *surface);
 
 #endif

@@ -35,4 +35,8 @@ void color_histogram(SDL_Surface* surface, size_t red[], size_t green[],
 void histo_color(SDL_Surface *surface);
 
 int histo_clipping(SDL_Surface *histogram);
+
+int three_max(int a, int b, int c);
+
+int color_get_max(int arr[]);
 #endif

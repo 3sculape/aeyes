@@ -1,7 +1,7 @@
-CC=gcc -rdynamic -export-dynamic
+CC=gcc -rdynamic -export-dynamic -fsanitize=address
 CPPFLAGS=`pkg-config --cflags sdl2` `pkg-config --cflags gtk+-3.0` -MMD
 
-CFLAGS=-Wall -Wextra -std=c99 -O3
+CFLAGS=-Wall -Wextra -std=c99 -g
 LDFLAGS=$(PTHREAD) $(GTKLIB) -export-dynamic
 
 # Source for SDL and GTK compilation

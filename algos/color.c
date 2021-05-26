@@ -282,3 +282,53 @@ void three_input_gradient_preview
     SDL_FreeSurface(gradient);
 
 }
+
+
+
+void three_input_gradient_colorize
+    (SDL_Surface *surface, int ra, int ga, int ba, int rb, int gb, int bb,
+    int rc, int gc, int bc)
+{
+    int image_h = surface->h;
+    int image_w = surface->w;
+    Uint8 s_r, s_g, s_b, s_a;
+    Uint32 source_pixel;
+
+    int a_factor = 255;
+    int b_factor = 0;
+
+    Uint8 r, g, b;
+
+
+    for (int j = 0; j < image_h; j++)
+    {
+        for (int i = 0; i < image_w; i++)
+        {
+            source_pixel = get_pixel(surface, i, j);
+            SDL_GetRGBA(source_pixel, surface->format, &s_r, &s_g, &s_b, &s_a);
+            a_factor = 255;
+
+            if (s_r < 128)
+            {
+                r = (((a_factor - s_r*2)*ra) + ((b_factor + s_r*2)*rb))/255;
+                g = (((a_factor - s_r*2)*ga) + ((b_factor + s_r*2)*gb))/255;
+                b = (((a_factor - s_r*2)*ba) + ((b_factor + s_r*2)*bb))/255;
+            }
+
+            else
+            {
+                r = (((a_factor - ((s_r-128)*2))*rb) + ((b_factor + ((s_r-128)*2))*rc))/255;
+                g = (((a_factor - ((s_r-128)*2))*gb) + ((b_factor + ((s_r-128)*2))*gc))/255;
+                b = (((a_factor - ((s_r-128)*2))*bb) + ((b_factor + ((s_r-128)*2))*bc))/255;
+            }
+            
+            /* r = (((a_factor)*ra) + ((b_factor)*rb))/255;
+            g = (((a_factor)*ga) + ((b_factor)*gb))/255;
+            b = (((a_factor)*ba) + ((b_factor)*bb))/255; */
+
+            set_pixel(surface, r, g, b, s_a, i, j);
+        }
+        
+    }
+
+}
