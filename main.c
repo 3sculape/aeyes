@@ -24,6 +24,7 @@
 #include "algos/canny_edge_detector.h"
 #include "algos/seam_carving.h"
 #include "algos/binarize.h"
+#include "algos/bilateral_filter.h"
 
 
 SDL_Window *sdl_window;
@@ -291,6 +292,10 @@ typedef struct {
     GtkWidget *w_uniform_noise_rd_btn;           // Pointer to radio button noise uniform
 
     GtkWidget *w_gradient_transfer_bicolor_rd_btn; // Pointer to radio button gradient transfer bicolor
+
+    GtkWidget *w_surface_blur_light_rd_btn;     // Pointer to radio button preset light surface blur
+    GtkWidget *w_surface_blur_moderate_rd_btn;     // Pointer to radio button preset moderate surface blur
+    GtkWidget *w_surface_blur_heavy_rd_btn;     // Pointer to radio button preset haevy surface blur
 
 
     //--- Toggle Buttons ---//
@@ -862,6 +867,15 @@ int main(int argc, char *argv[])
     widgets->w_gradient_transfer_bicolor_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
             "gradient_transfer_bicolor_rd_btn"));
     
+
+    widgets->w_surface_blur_light_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "surface_blur_light_rd_btn"));
+    widgets->w_surface_blur_moderate_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "surface_blur_moderate_rd_btn"));
+    widgets->w_surface_blur_heavy_rd_btn = GTK_WIDGET(gtk_builder_get_object(builder,
+            "surface_blur_heavy_rd_btn"));
+    
+    
     
     
 
@@ -953,7 +967,7 @@ int main(int argc, char *argv[])
 
 
     //gtk_widget_set_sensitive(widgets->w_btn_smart_resize, FALSE);
-    gtk_widget_set_sensitive(widgets->w_btn_surface_blur, FALSE);
+    //gtk_widget_set_sensitive(widgets->w_btn_surface_blur, FALSE);
 
     gtk_builder_connect_signals(builder, widgets);
     //gtk_widget_set_events(widgets->w_image_window, GDK_BUTTON_PRESS_MASK);
@@ -1768,8 +1782,8 @@ void on_btn_cancel_resize_clicked(GtkButton *button, app_widgets *app_wdgts)
 
 void on_btn_apply_resize_clicked(GtkButton *button, app_widgets *app_wdgts)
 {
-    gint height_quantity = 0;
-    gint width_quantity = 0;
+    int height_quantity = 0;
+    int width_quantity = 0;
 
     height_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_height_resize_spin_btn));
     width_quantity = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->w_width_resize_spin_btn));
@@ -1777,6 +1791,12 @@ void on_btn_apply_resize_clicked(GtkButton *button, app_widgets *app_wdgts)
     gint reset_value = 0;
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_height_resize_spin_btn), reset_value);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_width_resize_spin_btn), reset_value);
+
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+    SDL_Surface *res = scale_strech(surface, width_quantity, height_quantity);
+    update_image(res, app_wdgts);
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(res);
 
     gtk_widget_hide(app_wdgts->w_dlg_resize);
 }
@@ -3360,7 +3380,7 @@ void on_btn_apply_twist_clicked(
 // -------- Surface Blur --------- //
 
 
-/* void on_btn_surface_blur_activate(GtkMenuItem *btn_open 
+void on_btn_surface_blur_activate(GtkMenuItem *btn_open 
         __attribute__((unused)), app_widgets *app_wdgts)
 {
     gtk_widget_show(app_wdgts->w_dlg_surface_blur);
@@ -3377,32 +3397,40 @@ void on_btn_apply_surface_blur_clicked(
 {
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
 
-    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
-    (app_wdgts->w_size_surface_blur_spin_btn)));
+    double strength = (double)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_size_surface_blur_spin_btn)))/5;
 
-    SDL_Surface *canny = canny_fnc(surface);
+    if (strength < 5)
+    {
+        strength = 1;
+    }
+    
 
-    surface_blur(surface, canny);
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_surface_blur_light_rd_btn)
+    ))) // light preset
+    {
+        bilateral_filter(surface, strength, 10, 50);
+    }
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_surface_blur_moderate_rd_btn)
+    ))) // moderate preset
+    {
+        bilateral_filter(surface, strength, 20, 20);
+    }
+
+    if ((gtk_toggle_button_get_active  (
+        GTK_TOGGLE_BUTTON(app_wdgts->w_surface_blur_heavy_rd_btn)
+    ))) // heavy preset
+    {
+        bilateral_filter(surface, strength, 50, 10);
+    }
 
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
     gtk_widget_hide(app_wdgts->w_dlg_surface_blur);
-}
- */
-
-
-void on_btn_surface_blur_activate(GtkMenuItem *btn_open 
-        __attribute__((unused)), app_widgets *app_wdgts)
-{
-    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-
-    SDL_Surface *canny = canny_fnc(surface);
-
-    surface_blur(surface, canny);
-
-    update_image(surface, app_wdgts);
-    SDL_FreeSurface(surface);
 }
 
 
@@ -3477,11 +3505,16 @@ void on_btn_cancel_custom_hsl_clicked(
 void on_btn_apply_custom_hue_clicked(
         GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
+
     int hue_rotation = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_hue_custom_hsl_spin_btn)));
 
     int hue_range = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_range_hue_custom_hsl_spin_btn)));
+
+    double amount = (double)hue_rotation;
+    double range = (double)hue_range;
 
     GdkRGBA colorb;
 
@@ -3540,6 +3573,11 @@ void on_btn_apply_custom_hue_clicked(
     int gc = (int)born_sup_color[1];
     int bc = (int)born_sup_color[2];
 
+    tsl_hue(surface, (int)hsl_color[0], amount, range);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
     three_input_gradient_preview(ra, ga, ba, rb, gb, bb, rc, gc, bc, "./prev_range_hue.png");
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_input_hue_custom_hsl_img),
         "./prev_range_hue.png");
@@ -3549,25 +3587,16 @@ void on_btn_apply_custom_hue_clicked(
 void on_btn_apply_custom_sat_clicked(
         GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
-    /* SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-
-    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
-    (app_wdgts->w_strength_noise_spin_btn)));
-
-    double factor = (double)strength/20;
-
-    noise(surface, factor);
-
-    update_image(surface, app_wdgts);
-    SDL_FreeSurface(surface);
-
-    gtk_widget_hide(app_wdgts->w_dlg_noise); */
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
 
     int sat_strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_sat_custom_hsl_spin_btn)));
 
     int sat_range = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_range_sat_custom_hsl_spin_btn)));
+
+    double amount = (double)sat_strength;
+    double range = (double)sat_range;
 
     GdkRGBA colorb;
 
@@ -3626,6 +3655,11 @@ void on_btn_apply_custom_sat_clicked(
     int gc = (int)born_sup_color[1];
     int bc = (int)born_sup_color[2];
 
+    tsl_sat(surface, (int)hsl_color[0], amount, range);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
+
     three_input_gradient_preview(ra, ga, ba, rb, gb, bb, rc, gc, bc, "./prev_range_sat.png");
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_input_sat_custom_hsl_img),
         "./prev_range_sat.png");
@@ -3634,25 +3668,16 @@ void on_btn_apply_custom_sat_clicked(
 void on_btn_apply_custom_lum_clicked(
         GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
-    /* SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
-
-    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
-    (app_wdgts->w_strength_noise_spin_btn)));
-
-    double factor = (double)strength/20;
-
-    noise(surface, factor);
-
-    update_image(surface, app_wdgts);
-    SDL_FreeSurface(surface);
-
-    gtk_widget_hide(app_wdgts->w_dlg_noise); */
+    SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
 
     int lum_strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_lum_custom_hsl_spin_btn)));
 
     int lum_range = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_range_lum_custom_hsl_spin_btn)));
+
+    double amount = (double)lum_strength;
+    double range = (double)lum_range;
 
     GdkRGBA colorb;
 
@@ -3710,6 +3735,11 @@ void on_btn_apply_custom_lum_clicked(
     int rc = (int)born_sup_color[0];
     int gc = (int)born_sup_color[1];
     int bc = (int)born_sup_color[2];
+
+    tsl_val(surface, (int)hsl_color[0], amount, range);
+
+    update_image(surface, app_wdgts);
+    SDL_FreeSurface(surface);
 
     three_input_gradient_preview(ra, ga, ba, rb, gb, bb, rc, gc, bc, "./prev_range_lum.png");
     gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_input_lum_custom_hsl_img),
@@ -4411,30 +4441,87 @@ void on_btn_cancel_perspective_clicked(
 void on_btn_apply_perspective_clicked(
         GtkButton *button __attribute__((unused)), app_widgets *app_wdgts)
 {
-    int side = 0;
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
 
-    int strength = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
-    (app_wdgts->w_strength_perspective_spin_btn)));
+    double h = surface->h;
+    double w = surface->w;
+
+    SDL_Point** src = malloc(4*(sizeof(SDL_Point)));
+    SDL_Point** dst = malloc(4*(sizeof(SDL_Point)));
+
+    for (size_t i = 0; i < 4; i++)
+    {
+        src[i] = calloc(1, sizeof(SDL_Point));
+        dst[i] = calloc(1, sizeof(SDL_Point));
+    }
+    
+    src[1]->x = w-1;
+    src[2]->y = h-1;
+    src[3]->x = w-1;
+    src[3]->y = h-1;
+
+    double strength = (double)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+    (app_wdgts->w_strength_perspective_spin_btn)))/2;
 
     if ((gtk_toggle_button_get_active  (
         GTK_TOGGLE_BUTTON(app_wdgts->w_vertical_perspective_transform_rd_btn)
-    ))) // if auto threshold is on
+    ))) // if vertical is on
     {
-        printf("VERTICAL PERSPECTIVE APPLIED WITH STRENGTH %d\n", strength);
+        if (strength > 0)
+        {
+            dst[1]->x = w-1;
+            dst[3]->x = w-1;
+            dst[3]->y = h-1;
+            dst[0]->y = -1*(h/2)*(strength/100);
+            dst[2]->y = h-1+(h/2)*(strength/100);
+        }
+
+        else
+        {
+            dst[1]->x = w-1;
+            dst[1]->y = (h/2)*(strength/100);
+            dst[3]->x = w-1;
+            dst[3]->y = h-1+(h/2)*(-1*strength/100);
+            dst[2]->y = h-1;
+        }
     }
 
-    else
+    else // if horizontal is on
     {
-        side = 1;
-        printf("HORIZONTAL APPLIED WITH STRENGTH %d\n", strength);
+        if (strength > 0)
+        {
+            dst[1]->x = w-1;
+            dst[3]->x = w-1 +(w/2)*(strength/100) ;
+            dst[3]->y = h-1;
+            dst[2]->y = h-1;
+            dst[2]->x = -1*(w/2)*(strength/100);
+        }
+
+        else
+        {
+            dst[1]->x = w-1 +(w/2)*(-1*strength/100);
+            dst[3]->x = w-1;
+            dst[3]->y = h-1;
+            dst[2]->y = h-1;
+            dst[0]->x = (w/2)*(strength/100);
+        }
     }
-    
 
-    
+    SDL_Surface *res = perspective(surface, src, dst);
+    update_image(res, app_wdgts);
 
-    update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
+    SDL_FreeSurface(res);
+
+    for (size_t i = 0; i < 4; i++)
+    {
+        free(dst[i]);
+        free(src[i]);
+    }
+
+    free(dst);
+    free(src);
+    
 
     gtk_widget_hide(app_wdgts->w_dlg_perspective_transform);
 }
@@ -4463,7 +4550,7 @@ void on_btn_apply_blur_vignette_clicked(
 
     int quantity = (int)(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
     (app_wdgts->w_strength_blur_vignette_spin_btn)));
-    //blur_vignette(surface, quantity);
+    vignette_blur(surface, quantity);
 
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);

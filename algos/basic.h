@@ -67,7 +67,12 @@ void exposure(SDL_Surface *surface, double value);
 
 /*
     Contrast control. Changes the saturation of each pixel to the
-    <value> parameter multiplied with a contrast factor.
+    <value> parameter multiplied with a contrast factor.+
+
+
+
+
+    
     <surface>: the surface to be processed
     <value>: the new saturation value
 */
