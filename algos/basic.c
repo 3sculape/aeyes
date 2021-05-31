@@ -496,7 +496,7 @@ void offset(SDL_Surface* original, int amount, int axis)
     SDL_Surface *tmp = create_surface(original->w, original->h);
     if (axis)
     {
-        if (amount < 6)
+        if (amount % original->h < 6)
             amount = 6;
     }
     for (int i = 0; i < original->w; ++i)
