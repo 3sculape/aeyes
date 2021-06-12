@@ -26,8 +26,9 @@ typedef enum color color_t;
     <surface>: the surface to be processed
     <color>: a value as defined in the enum above or a custom value
     <amount>: the amount of rotation to be applied (can be anything)
+    <range>: the range of pixels to target
 */
-void tsl_hue(SDL_Surface *surface, int color, double amount);
+void tsl_hue(SDL_Surface *surface, int color, double amount, double range);
 
 /*
     Saturation modification. Gets all pixels in the range defined by <range>
@@ -35,8 +36,9 @@ void tsl_hue(SDL_Surface *surface, int color, double amount);
     <surface>: the surface to be processed
     <color>: a value as defined in the enum above or a custom value
     <amount>: the amount of saturation to apply (can be anything)
+    <range>: the range of pixels to target
 */
-void tsl_sat(SDL_Surface *surface, int color, double amount);
+void tsl_sat(SDL_Surface *surface, int color, double amount, double range);
 
 /*
     Value modification. Gets all pixels in the range defined by <range>
@@ -44,7 +46,8 @@ void tsl_sat(SDL_Surface *surface, int color, double amount);
     <surface>: the surface to be processed
     <color>: a value as defined in the enum above or a custom value
     <amount>: the amount of value to apply (can be anything)
+    <range>: the range of pixels to target
 */
-void tsl_val(SDL_Surface *surface, int color, double amount);
+void tsl_val(SDL_Surface *surface, int color, double amount, double range);
 
 #endif

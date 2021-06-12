@@ -26,4 +26,6 @@ void mercury(SDL_Surface *surface);
 
 SDL_Surface* neon(SDL_Surface *surface);
 
+void old_tv(SDL_Surface* original);
+
 #endif

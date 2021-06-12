@@ -3,6 +3,9 @@
 #include <gsl/gsl_matrix.h>
 #include <stdio.h>
 #include <math.h>
+#include <SDL2/SDL.h>
+#include "../utils/lib_sdl.h"
+#include "basic.h"
 
 /*
     Prints the matrix passed as argument
@@ -48,5 +51,15 @@ double blerp(double a, double b, double c, double d, double tx, double ty);
     <t>: the double on which to apply fading
 */
 double fade(double t);
+
+int otsu_threshold(SDL_Surface* org);
+
+void get_pixel_around_x(SDL_Surface *surface, Uint32 *matrix,
+        int posx, int posy, int x);
+
+gsl_matrix *gaussian_filter(int x, double sigma, double *sum);
+
+void gaussian_average(size_t x, double sum, Uint32 *matrix, gsl_matrix *filter,
+        SDL_Surface *surface, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a);
 
 #endif
