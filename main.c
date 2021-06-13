@@ -103,7 +103,6 @@ typedef struct {
     GtkWidget *w_symmetry_inverse_check_btn;      // Pointer to symmetry inverse direction check button
     GtkWidget *w_edge_trailing_inverse_check_btn; // Pointer to inverse edge trailing check button
     GtkWidget *w_check_auto_threshold_bin;        // Pointer to auto threshold binarization Check Button
-    GtkWidget *w_twist_fit_to_scale_check_btn;   // Pointer to fit to scale in twist check button
 
     //--- Paths --- //
     gchar     *image_path;                        // Image path to give to Pre-Processing
@@ -149,7 +148,6 @@ typedef struct {
     GtkWidget *w_size_surface_blur_spin_btn;      // Pointer to strength of surface blur
     GtkWidget *w_strength_perspective_spin_btn;   // Pointer to strength of perspective
     GtkWidget *w_strength_offset_spin_btn;        // Pointer to strength of offset
-    GtkWidget *w_contrast_sharp_spin_btn;         // Pointer to contrast of sharpening
     GtkWidget *w_quantity_smart_resize_spin_btn;  // Pointer to the quantity to remove of smart resize
     
 
@@ -564,8 +562,6 @@ int main(int argc, char *argv[])
 
     widgets->w_strength_sharp_spin_btn =
         GTK_WIDGET(gtk_builder_get_object(builder, "strength_sharp_spin_btn"));
-    widgets->w_contrast_sharp_spin_btn =
-        GTK_WIDGET(gtk_builder_get_object(builder, "contrast_sharp_spin_btn"));
     widgets->w_quantity_smart_resize_spin_btn =
         GTK_WIDGET(gtk_builder_get_object(builder, "quantity_smart_resize_spin_btn"));
     widgets->w_size_mean_blur_spin_btn =
@@ -753,9 +749,6 @@ int main(int argc, char *argv[])
     widgets->w_check_auto_threshold_bin =
         GTK_WIDGET(gtk_builder_get_object(builder,
             "check_auto_threshold_bin"));
-    widgets->w_twist_fit_to_scale_check_btn =
-        GTK_WIDGET(gtk_builder_get_object(builder,
-            "twist_fit_to_scale_check_btn"));
 
 
 
@@ -1529,8 +1522,6 @@ void on_btn_apply_sharpening_clicked(GtkButton *button __attribute__((unused)),
 
     quantity = gtk_spin_button_get_value_as_int(
             GTK_SPIN_BUTTON(app_wdgts->w_strength_sharp_spin_btn));
-    contrast = gtk_spin_button_get_value_as_int(
-            GTK_SPIN_BUTTON(app_wdgts->w_contrast_sharp_spin_btn));
 
     SDL_Surface *surface = texture_to_surface(app_wdgts->texture, sdl_renderer);
     SDL_Surface *res = sharpen(surface, ((double)quantity)/100, 50, contrast);
@@ -2209,8 +2200,6 @@ void on_btn_apply_colorize_clicked(GtkButton *button __attribute__((unused)),
     {
         keep_luminance = 1;
     }
-
-    g_print("KEEP LUMINANCE: %d\n", keep_luminance);
 
     colorize(surface, r, g, b, keep_luminance);
     update_image(surface, app_wdgts);
@@ -3094,6 +3083,8 @@ void on_btn_gradient_colorize_activate(GtkMenuItem *btn_open
     gtk_color_chooser_set_rgba (
         GTK_COLOR_CHOOSER(app_wdgts->w_color_btn_c_gradient), &white);
     gtk_widget_set_sensitive(app_wdgts->w_color_btn_b_gradient, FALSE);
+    gtk_toggle_button_set_active(
+        GTK_TOGGLE_BUTTON(app_wdgts->w_gradient_transfer_bicolor_rd_btn), TRUE);
     gtk_widget_show(app_wdgts->w_dlg_gradient_colorize);
 }
 
@@ -3490,19 +3481,8 @@ void on_btn_apply_twist_clicked(
 
     double factor = (double)strength/5;
 
-    if ((gtk_toggle_button_get_active  (
-        GTK_TOGGLE_BUTTON(app_wdgts->w_twist_fit_to_scale_check_btn)
-    ))) // if fit to scale is on
-    {
-        twist(surface, factor);
-    }
-
-    else
-    {
-        twist(surface, factor);
-    }
+    twist(surface, factor);
     
-
     update_image(surface, app_wdgts);
     SDL_FreeSurface(surface);
 
@@ -4453,143 +4433,7 @@ gboolean on_main_window_key_press_event(GtkWidget *widget __attribute__((unused)
     }
 
     return FALSE;
-
-    /* // If the 'f' key is pressed, moves the player 1 upwards.
-    if (event->keyval == GDK_KEY_f)
-    {
-        printf("F TO PAY RESPECT NEW\n");
-        return TRUE;
-    }
-
-    if (event->keyval == GDK_KEY_u)
-    {
-        if(stack_isempty(undo_stack))
-            return TRUE;
-        SDL_Texture *texture = pop_stack(undo_stack);
-        push_stack(redo_stack, app_wdgts->texture);
-        app_wdgts->texture = texture;
-        SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
-        savePNG("./tmp.png", surface);
-        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
-        histo_color(surface);
-        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
-
-        SDL_Surface *histogram = load("./new_histo.PNG");
-
-        int clipping = histo_clipping(histogram);
-        if (clipping == 0)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
-        }
-        if (clipping == 1)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
-        }
-        if (clipping == 2)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
-        }
-        if (clipping == 3)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
-        }
-        
-        SDL_FreeSurface(histogram);
-
-        SDL_FreeSurface(surface);
-
-        return TRUE;
-    }
-
-    if (event->keyval == GDK_KEY_U)
-    {
-        printf("REDO\n");
-        if(stack_isempty(redo_stack))
-            return TRUE;
-        SDL_Texture *texture = pop_stack(redo_stack);
-        push_stack(undo_stack, app_wdgts->texture);
-        app_wdgts->texture = texture;
-        SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
-        savePNG("./tmp.png", surface);
-        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
-        histo_color(surface);
-        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
-
-        SDL_Surface *histogram = load("./new_histo.PNG");
-
-        int clipping = histo_clipping(histogram);
-        if (clipping == 0)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
-        }
-        if (clipping == 1)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, FALSE);
-        }
-        if (clipping == 2)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, FALSE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
-        }
-        if (clipping == 3)
-        {
-            gtk_widget_set_visible (app_wdgts->w_left_clip_warning, TRUE);
-            gtk_widget_set_visible (app_wdgts->w_right_clip_warning, TRUE);
-        }
-        
-        SDL_FreeSurface(histogram);
-
-        SDL_FreeSurface(surface);
-    }
-
-    // Otherwise, propagates the signal.
-    else
-        return FALSE; */
 }
-
-
-
-
-// Event handler for the "key-press-event" signal.
-/* gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, app_widgets *app_wdgts)
-{
-    // If the 'f' key is pressed, moves the player 1 upwards.
-    if (event->keyval == GDK_KEY_f)
-    {
-        printf("F TO PAY RESPECT\n");
-        return TRUE;
-    }
-
-    if (event->keyval == GDK_KEY_u)
-    {
-        printf("UNDO CALL\n");
-        if(stack_isempty(undo_stack))
-            return;
-        SDL_Texture *texture = pop_stack(undo_stack);
-        push_stack(redo_stack, app_wdgts->texture);
-        app_wdgts->texture = texture;
-        SDL_Surface *surface = texture_to_surface(texture, sdl_renderer);
-        savePNG("./tmp.png", surface);
-        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_image_window), "./tmp.png");
-        histo_color(surface);
-        gtk_image_set_from_file(GTK_IMAGE(app_wdgts->w_histo_window),"./new_histo.PNG");
-
-        SDL_FreeSurface(surface);
-
-        printf("UNDO FINISHED\n");
-        return TRUE;
-    }
-
-    // Otherwise, propagates the signal.
-    else
-        return FALSE;
-} */
 
 
 // ---------- Perspective Transform ---------- // 
