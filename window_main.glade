@@ -422,15 +422,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkMenuItem" id="btn_new">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">New</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="on_btn_new_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkMenuItem" id="btn_open">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -447,14 +438,6 @@
                         <property name="label" translatable="yes">Save</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_btn_save_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_save_as">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Save As</property>
-                        <signal name="activate" handler="on_btn_save_as_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -609,20 +592,6 @@
                         <signal name="activate" handler="on_btn_swirl_activate" swapped="no"/>
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkSeparatorMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_preferences">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Preferences</property>
-                        <signal name="activate" handler="on_btn_preferences_activate" swapped="no"/>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>
@@ -636,28 +605,6 @@
                   <object class="GtkMenu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_clipping_reveal">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Clipping Reveal</property>
-                        <signal name="activate" handler="on_btn_clipping_reveal_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSeparatorMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_fit_to_scale">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Fit to Scale</property>
-                        <signal name="activate" handler="on_btn_fit_to_scale_activate" swapped="no"/>
-                      </object>
-                    </child>
                     <child>
                       <object class="GtkMenuItem" id="btn_refresh_texture">
                         <property name="visible">True</property>
@@ -772,14 +719,6 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Sharpen</property>
                         <signal name="activate" handler="on_btn_sharpen_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="btn_edge_enhance">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Edge Enhancement</property>
-                        <signal name="activate" handler="on_btn_edge_enhance_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
