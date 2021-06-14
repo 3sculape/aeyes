@@ -2107,7 +2107,7 @@ void on_btn_apply_binarization_clicked(
             GTK_TOGGLE_BUTTON(app_wdgts->w_gauss_thresholding_rd_btn)
         ))) // if gauss is on
         {
-            gaussian_binarization(surface, 5, 5, color1, color2);
+            gaussian_binarization(surface, 5, 1, color1, color2);
         }
 
         else
