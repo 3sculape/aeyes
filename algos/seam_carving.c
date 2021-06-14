@@ -157,14 +157,6 @@ SDL_Surface *power_map_new(SDL_Surface *surface, SDL_Surface *edge_map,
   Uint8 sr, sg, sb, sa;
   Uint32 s_pixel;
 
-  Uint8 r1, g1, b1, a1;
-  Uint32 pixel1;
-  Uint8 r2, g2, b2, a2;
-  Uint32 pixel2;
-  Uint8 r3, g3, b3, a3;
-  Uint32 pixel3;
-
-  Uint8 min = 0;
 
   double p_current;
   double p_left;
@@ -226,11 +218,11 @@ SDL_Surface *power_map_new(SDL_Surface *surface, SDL_Surface *edge_map,
 
   int *to_remove = malloc((image_h) * (sizeof(int)));
 
-  for (size_t x = 0; x < nb_to_remove; x++) {
+  for (int x = 0; x < nb_to_remove; x++) {
 
     double min_of_row;
     min_of_row = 1;
-    for (size_t i = 2; i < image_w - 1; i++) {
+    for (int i = 2; i < image_w - 1; i++) {
       if (gsl_matrix_get(power_map_matrix, i, 0) <
           gsl_matrix_get(power_map_matrix, min_of_row, 0)) {
         min_of_row = i;
@@ -242,8 +234,6 @@ SDL_Surface *power_map_new(SDL_Surface *surface, SDL_Surface *edge_map,
     double mid;
     double right;
 
-    double test1;
-    double test2;
 
     for (int j = 0; j < image_h; j++) {
       to_remove[j] = current_index;
@@ -264,8 +254,6 @@ SDL_Surface *power_map_new(SDL_Surface *surface, SDL_Surface *edge_map,
                                (size_t)(j + 1));
           current_index += min_two_index_right(left, mid);
         } else {
-          test1 = current_index - 1;
-          test2 = j + 1;
           left = gsl_matrix_get(power_map_matrix, (size_t)(current_index - 1),
                                 (size_t)(j + 1));
           mid = gsl_matrix_get(power_map_matrix, (size_t)(current_index),
@@ -285,10 +273,10 @@ SDL_Surface *power_map_new(SDL_Surface *surface, SDL_Surface *edge_map,
     gsl_matrix *power_map_update_matrix =
         gsl_matrix_calloc(image_w - 1, image_h);
 
-    for (size_t j = 0; j < image_h; j++) {
+    for (int j = 0; j < image_h; j++) {
       int index = 0;
 
-      for (size_t i = 0; i < image_w; i++) {
+      for (int i = 0; i < image_w; i++) {
         if (to_remove[j] != i) {
           p_pixel = get_pixel(power_map, i, j);
           SDL_GetRGBA(p_pixel, power_map->format, &pr, &pg, &pb, &pa);
@@ -336,8 +324,8 @@ SDL_Surface *black_white(SDL_Surface *surface) {
   Uint8 pr, pg, pb, pa;
   Uint32 p_pixel;
 
-  for (size_t j = 0; j < h; j++) {
-    for (size_t i = 0; i < w; i++) {
+  for (int j = 0; j < h; j++) {
+    for (int i = 0; i < w; i++) {
       p_pixel = get_pixel(surface, i, j);
       SDL_GetRGBA(p_pixel, surface->format, &pr, &pg, &pb, &pa);
       int sum = (pr + pg + pb) / 3;
@@ -400,8 +388,8 @@ SDL_Surface *seam_hypot(SDL_Surface *surface) {
         }
       }
 
-      double grad_x = abs(three_sum_x);
-      double grad_y = abs(three_sum_y);
+      double grad_x = fabs(three_sum_x);
+      double grad_y = fabs(three_sum_y);
 
       Uint8 grad_hyp = sqrt((grad_x * grad_x) + (grad_y * grad_y));
 

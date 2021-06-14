@@ -1643,23 +1643,27 @@ void on_btn_apply_radial_blur_clicked(GtkButton *button __attribute__((unused)),
 
 //------------ Resize ------------//
 
-void on_btn_resize_activate(GtkMenuItem *button, app_widgets *app_wdgts) {
-  gtk_widget_show(app_wdgts->w_dlg_resize);
+void on_btn_resize_activate(GtkMenuItem *button __attribute__((unused)),
+        app_widgets *app_wdgts)
+{
+    gtk_widget_show(app_wdgts->w_dlg_resize);
 }
 
-void on_btn_cancel_resize_clicked(GtkButton *button, app_widgets *app_wdgts) {
+void on_btn_cancel_resize_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts) {
   gint reset_value = 0;
   gtk_spin_button_set_value(
       GTK_SPIN_BUTTON(app_wdgts->w_height_resize_spin_btn), reset_value);
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->w_width_resize_spin_btn),
                             reset_value);
-
   gtk_widget_hide(app_wdgts->w_dlg_resize);
 }
 
-void on_btn_apply_resize_clicked(GtkButton *button, app_widgets *app_wdgts) {
-  int height_quantity = 0;
-  int width_quantity = 0;
+void on_btn_apply_resize_clicked(GtkButton *button __attribute__((unused)),
+        app_widgets *app_wdgts)
+{
+    int height_quantity = 0;
+    int width_quantity = 0;
 
   height_quantity = gtk_spin_button_get_value_as_int(
       GTK_SPIN_BUTTON(app_wdgts->w_height_resize_spin_btn));
@@ -3554,8 +3558,6 @@ void on_btn_lum_custom_hsl_clicked(GtkButton *button __attribute__((unused)),
 void on_color_btn_h_custom_hsl_color_set(GtkColorButton *button
                                          __attribute__((unused)),
                                          app_widgets *app_wdgts) {
-  int hue_rotation = (int)(gtk_spin_button_get_value_as_int(
-      GTK_SPIN_BUTTON(app_wdgts->w_hue_custom_hsl_spin_btn)));
 
   int hue_range = (int)(gtk_spin_button_get_value_as_int(
       GTK_SPIN_BUTTON(app_wdgts->w_range_hue_custom_hsl_spin_btn)));
@@ -3621,8 +3623,6 @@ void on_color_btn_h_custom_hsl_color_set(GtkColorButton *button
 void on_color_btn_s_custom_hsl_color_set(GtkColorButton *button
                                          __attribute__((unused)),
                                          app_widgets *app_wdgts) {
-  int sat_strength = (int)(gtk_spin_button_get_value_as_int(
-      GTK_SPIN_BUTTON(app_wdgts->w_sat_custom_hsl_spin_btn)));
 
   int sat_range = (int)(gtk_spin_button_get_value_as_int(
       GTK_SPIN_BUTTON(app_wdgts->w_range_sat_custom_hsl_spin_btn)));
@@ -3688,8 +3688,6 @@ void on_color_btn_s_custom_hsl_color_set(GtkColorButton *button
 void on_color_btn_l_custom_hsl_color_set(GtkColorButton *button
                                          __attribute__((unused)),
                                          app_widgets *app_wdgts) {
-  int lum_strength = (int)(gtk_spin_button_get_value_as_int(
-      GTK_SPIN_BUTTON(app_wdgts->w_lum_custom_hsl_spin_btn)));
 
   int lum_range = (int)(gtk_spin_button_get_value_as_int(
       GTK_SPIN_BUTTON(app_wdgts->w_range_lum_custom_hsl_spin_btn)));
@@ -3755,8 +3753,6 @@ void on_color_btn_l_custom_hsl_color_set(GtkColorButton *button
 void on_range_hue_custom_hsl_spin_btn_value_changed(GtkSpinButton *button
                                                     __attribute__((unused)),
                                                     app_widgets *app_wdgts) {
-  int hue_rotation = (int)(gtk_spin_button_get_value_as_int(
-      GTK_SPIN_BUTTON(app_wdgts->w_hue_custom_hsl_spin_btn)));
 
   int hue_range = (int)(gtk_spin_button_get_value_as_int(
       GTK_SPIN_BUTTON(app_wdgts->w_range_hue_custom_hsl_spin_btn)));
@@ -3822,8 +3818,6 @@ void on_range_hue_custom_hsl_spin_btn_value_changed(GtkSpinButton *button
 void on_range_sat_custom_hsl_spin_btn_value_changed(GtkSpinButton *button
                                                     __attribute__((unused)),
                                                     app_widgets *app_wdgts) {
-  int sat_strength = (int)(gtk_spin_button_get_value_as_int(
-      GTK_SPIN_BUTTON(app_wdgts->w_sat_custom_hsl_spin_btn)));
 
   int sat_range = (int)(gtk_spin_button_get_value_as_int(
       GTK_SPIN_BUTTON(app_wdgts->w_range_sat_custom_hsl_spin_btn)));
@@ -3889,8 +3883,6 @@ void on_range_sat_custom_hsl_spin_btn_value_changed(GtkSpinButton *button
 void on_range_lum_custom_hsl_spin_btn_value_changed(GtkSpinButton *button
                                                     __attribute__((unused)),
                                                     app_widgets *app_wdgts) {
-  int lum_strength = (int)(gtk_spin_button_get_value_as_int(
-      GTK_SPIN_BUTTON(app_wdgts->w_lum_custom_hsl_spin_btn)));
 
   int lum_range = (int)(gtk_spin_button_get_value_as_int(
       GTK_SPIN_BUTTON(app_wdgts->w_range_lum_custom_hsl_spin_btn)));
