@@ -170,9 +170,7 @@ void apply_lut(SDL_Surface *surface, SDL_Surface *lut)
             SDL_GetRGBA(lut_pixel, lut->format, &l_r, &l_g, &l_b, &l_a);
             set_pixel(surface, l_r, l_g, l_b, s_a, i, j);
         }
-        
     }
-    
 }
 
 
@@ -195,12 +193,9 @@ void update_gradient_preview(int ra, int ga, int ba, int rb, int gb, int bb)
         {
             set_pixel(gradient, r, g, b, a, i, j);
         }
-        
     }
-    
     savePNG("./gradient.png", gradient);
     SDL_FreeSurface(gradient);
-
 }
 
 void gradient_colorize(SDL_Surface *surface, 
@@ -232,9 +227,7 @@ void gradient_colorize(SDL_Surface *surface,
 
             set_pixel(surface, r, g, b, s_a, i, j);
         }
-        
     }
-
 }
 
 
@@ -262,7 +255,6 @@ void three_input_gradient_preview
         {
             set_pixel(gradient, r, g, b, a, i, j);
         }
-        
     }
 
     for (int i = 128; i < 256; i++)
@@ -275,12 +267,9 @@ void three_input_gradient_preview
         {
             set_pixel(gradient, r, g, b, a, i, j);
         }
-        
     }
-    
     savePNG(path, gradient);
     SDL_FreeSurface(gradient);
-
 }
 
 
@@ -321,14 +310,11 @@ void three_input_gradient_colorize
                 g = (((a_factor - ((s_r-128)*2))*gb) + ((b_factor + ((s_r-128)*2))*gc))/255;
                 b = (((a_factor - ((s_r-128)*2))*bb) + ((b_factor + ((s_r-128)*2))*bc))/255;
             }
-            
             /* r = (((a_factor)*ra) + ((b_factor)*rb))/255;
             g = (((a_factor)*ga) + ((b_factor)*gb))/255;
             b = (((a_factor)*ba) + ((b_factor)*bb))/255; */
 
             set_pixel(surface, r, g, b, s_a, i, j);
         }
-        
     }
-
 }

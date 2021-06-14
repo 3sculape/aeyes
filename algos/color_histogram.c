@@ -307,7 +307,7 @@ void histo_color(SDL_Surface * surface)
             total_g[g] += 1;
             total_b[b] += 1;
         }
-        
+
     }
 
     int max_r = color_get_max(total_r);
@@ -365,13 +365,10 @@ void histo_color(SDL_Surface * surface)
 
             set_pixel(new_histo, green_r, green_g, green_b + 255, 1,
                 x, start_b);
-            
             start_b -= 1;
             col_h_b -= 1;
         }
-        
     }
-    
     savePNG("./new_histo.PNG", new_histo);
     SDL_FreeSurface(new_histo);
 }

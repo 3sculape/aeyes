@@ -403,7 +403,6 @@ SDL_Surface* scale_strech(SDL_Surface *img, int w, int h)
 			Uint8 g1, g2, g3, g4;
 			Uint8 b1, b2, b3, b4;
             Uint8 a;
-			
 			SDL_GetRGBA(pixel1, img->format, &r1, &g1, &b1, &a);
 			SDL_GetRGB(pixel2, img->format, &r2, &g2, &b2);
 			SDL_GetRGB(pixel3, img->format, &r3, &g3, &b3);
